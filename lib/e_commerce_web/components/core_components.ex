@@ -17,7 +17,7 @@ defmodule ECommerceWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import ECommerceWeb.Gettext
+  use Gettext, backend: ECommerceWeb.Gettext
 
   @doc """
   Renders a modal.

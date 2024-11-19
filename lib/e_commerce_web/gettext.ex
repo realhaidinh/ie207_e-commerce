@@ -20,5 +20,5 @@ defmodule ECommerceWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :e_commerce
+  use Gettext.Backend, otp_app: :e_commerce
 end
