@@ -1,0 +1,20 @@
+<.header>
+  Listing Products
+</.header>
+
+<.table
+  id="products"
+  rows={@products}
+  row_click={fn product -> JS.navigate(~p"/products/#{product}") end}
+>
+  <:col :let={product} label="Title"><%= product.title %></:col>
+  <:col :let={product} label="Description"><%= product.description %></:col>
+  <:col :let={product} label="Price"><%= product.price %></:col>
+  <:col :let={product} label="Stock"><%= product.stock %></:col>
+  <:col :let={product} label="Slug"><%= product.slug %></:col>
+  <:action :let={product}>
+    <div class="sr-only">
+      <.link navigate={~p"/products/#{product}"}>Show</.link>
+    </div>
+  </:action>
+</.table>

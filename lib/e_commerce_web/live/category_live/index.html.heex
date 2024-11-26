@@ -1,0 +1,18 @@
+<.header>
+  Listing Categories
+</.header>
+
+<.table
+  id="categories"
+  rows={@categories}
+  row_click={fn category -> JS.navigate(~p"/categories/#{category.id}") end}
+>
+  <:col :let={category} label="Title"><%= category.title %></:col>
+  <:col :let={category} label="Path"><%= category.path %></:col>
+  <:col :let={category} label="Level"><%= category.level %></:col>
+  <:action :let={category}>
+    <div class="sr-only">
+      <.link navigate={~p"/categories/#{category.id}"}>Show</.link>
+    </div>
+  </:action>
+</.table>

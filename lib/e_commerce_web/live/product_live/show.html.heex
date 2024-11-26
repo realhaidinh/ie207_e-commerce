@@ -1,0 +1,14 @@
+<.header>
+  Product <%= @product.title %>
+  <:subtitle>This is a product record from your database.</:subtitle>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @product.title %></:item>
+  <:item title="Description"><%= @product.description %></:item>
+  <:item title="Price"><%= @product.price %></:item>
+  <:item title="Stock"><%= @product.stock %></:item>
+  <:item title="Slug"><%= @product.slug %></:item>
+</.list>
+
+<.back navigate={~p"/products"}>Back to products</.back>

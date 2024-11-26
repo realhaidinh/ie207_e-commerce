@@ -1,0 +1,30 @@
+<.header>
+  <%= @category.title %>
+  <:subtitle>This is a category record from your database.</:subtitle>
+</.header>
+<.back navigate={~p"/categories"}>Back to categories</.back>
+<div class="category-information">
+  <.list>
+    <:item title="Id"><%= @category.id %></:item>
+    <:item title="Title"><%= @category.title %></:item>
+    <:item title="Path"><%= @category.path %></:item>
+    <:item title="Level"><%= @category.level %></:item>
+  </.list>
+</div>
+<div class="subcategories-table">
+  <h1>Subcategories</h1>
+  <.table
+    id="subcategories"
+    rows={@subcategories}
+    row_click={fn category -> JS.navigate(~p"/categories/#{category.id}") end}
+  >
+    <:col :let={category} label="Title"><%= category.title %></:col>
+    <:col :let={category} label="Path"><%= category.path %></:col>
+    <:col :let={category} label="Level"><%= category.level %></:col>
+    <:action :let={category}>
+      <div class="sr-only">
+        <.link navigate={~p"/categories/#{category.id}"}>Show</.link>
+      </div>
+    </:action>
+  </.table>
+</div>

@@ -1,4 +1,5 @@
 defmodule ECommerceWeb.Router do
+
   use ECommerceWeb, :router
 
   pipeline :browser do
@@ -16,6 +17,11 @@ defmodule ECommerceWeb.Router do
 
   scope "/", ECommerceWeb do
     pipe_through :browser
+
+    live "/products", ProductLive.Index, :index
+    live "/products/:id", ProductLive.Show, :show
+    live "/categories", CategoryLive.Index, :index
+    live "/categories/:id", CategoryLive.Show, :show
 
     get "/", PageController, :home
   end
