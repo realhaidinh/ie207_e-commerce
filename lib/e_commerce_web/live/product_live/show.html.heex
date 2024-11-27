@@ -17,7 +17,10 @@
   <:item title="Stock"><%= @product.stock %></:item>
   <:item title="Sold"><%= @product.sold %></:item>
   <:item title="Slug"><%= @product.slug %></:item>
-
 </.list>
-
+<.button
+  phx-click="add"
+>
+  Add to cart
+</.button>
 <.back navigate={~p"/products"}>Back to products</.back>

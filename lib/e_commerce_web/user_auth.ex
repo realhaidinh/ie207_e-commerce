@@ -5,7 +5,7 @@ defmodule ECommerceWeb.UserAuth do
   import Phoenix.Controller
 
   alias ECommerce.Accounts
-
+  alias ECommerce.ShoppingCart
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
@@ -146,11 +146,17 @@ defmodule ECommerceWeb.UserAuth do
       end
   """
   def on_mount(:mount_current_user, _params, session, socket) do
-    {:cont, mount_current_user(socket, session)}
+    {:cont,
+     socket
+     |> mount_current_user(session)
+     |> mount_current_cart}
   end
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
-    socket = mount_current_user(socket, session)
+    socket =
+      socket
+      |> mount_current_user(session)
+      |> mount_current_cart
 
     if socket.assigns.current_user do
       {:cont, socket}
@@ -165,7 +171,10 @@ defmodule ECommerceWeb.UserAuth do
   end
 
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
-    socket = mount_current_user(socket, session)
+    socket =
+      socket
+      |> mount_current_user(session)
+      |> mount_current_cart
 
     if socket.assigns.current_user do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
@@ -178,6 +187,21 @@ defmodule ECommerceWeb.UserAuth do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
+      end
+    end)
+  end
+
+  defp mount_current_cart(socket) do
+    Phoenix.Component.assign_new(socket, :cart, fn ->
+      if socket.assigns.current_user do
+        user_id = socket.assigns.current_user.id
+
+        if cart = ShoppingCart.get_cart_by_user_id(user_id) do
+          cart
+        else
+          {:ok, new_cart} = ShoppingCart.create_cart(user_id)
+          new_cart
+        end
       end
     end)
   end
