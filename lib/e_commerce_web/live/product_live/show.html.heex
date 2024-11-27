@@ -1,6 +1,13 @@
 <.header>
-  Product <%= @product.title %>
-  <:subtitle>This is a product record from your database.</:subtitle>
+  <div class="flex items-center product-breadcrumb">
+    <%= for category <- @product.categories do %>
+      <.link navigate={~p"/categories/#{category.id}"}>
+        <%= category.title %>
+      </.link>
+      <span>/</span>
+    <% end %>
+    <span><%= @product.title %></span>
+  </div>
 </.header>
 
 <.list>
@@ -8,7 +15,9 @@
   <:item title="Description"><%= @product.description %></:item>
   <:item title="Price"><%= @product.price %></:item>
   <:item title="Stock"><%= @product.stock %></:item>
+  <:item title="Sold"><%= @product.sold %></:item>
   <:item title="Slug"><%= @product.slug %></:item>
+
 </.list>
 
 <.back navigate={~p"/products"}>Back to products</.back>

@@ -102,7 +102,7 @@ defmodule ECommerce.Catalog do
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
     category = get_category!(attrs["category_id"])
-    [_ | category_ids] = String.split(category.path, "/")
+    category_ids = Regex.split(~r/\//, category.path, trim: true)
     categories = list_categories_by_id(category_ids)
 
     product
