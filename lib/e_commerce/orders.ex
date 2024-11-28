@@ -7,7 +7,7 @@ defmodule ECommerce.Orders do
   alias ECommerce.Orders.LineItem
   alias ECommerce.ShoppingCart
   alias ECommerce.Repo
-
+  alias ECommerce.Catalog.Product
   alias ECommerce.Orders.Order
 
   @doc """
@@ -145,12 +145,24 @@ defmodule ECommerce.Orders do
   def complete_order(order, %ShoppingCart.Cart{} = cart) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:order, order)
+    |> Ecto.Multi.update_all(
+      :reduce_product_stock,
+      fn %{order: order} ->
+        from(p in Product,
+        left_join: i in LineItem,
+        on: p.id == i.product_id,
+        where: i.order_id == ^order.id,
+        update: [inc: [sold: i.quantity], inc: [stock: -i.quantity]]
+      )
+      end, []
+    )
     |> Ecto.Multi.run(:prune_cart, fn _repo, _changes ->
       ShoppingCart.prune_cart_items(cart)
     end)
     |> Repo.transaction()
     |> case do
       {:ok, %{order: order}} -> {:ok, order}
+      {1, _} -> :ok
       {:error, name, value, _changes_so_far} -> {:error, {name, value}}
     end
   end

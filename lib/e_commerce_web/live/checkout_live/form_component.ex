@@ -9,26 +9,25 @@ defmodule ECommerceWeb.CheckoutLive.FormComponent do
     <div>
       <.table id="order-products" rows={@cart.cart_items}>
         <:col :let={item} label="Sản phẩm"><%= item.product.title %></:col>
-        
+
         <:col :let={item} label="Đơn giá"><%= item.price_when_carted %></:col>
-        
+
         <:col :let={item} label="Số lượng"><%= item.quantity %></:col>
-        
+
         <:col :let={item} label="Thành tiền"><%= item.price_when_carted * item.quantity %></:col>
       </.table>
-      
+
       <.simple_form
         for={@changeset}
         id="order-form"
         phx-target={@myself}
         phx-submit="pay"
-        data-confirm="Xác nhận đặt hàng"
       >
         <.input field={@changeset[:buyer_name]} type="text" label="Họ tên" />
         <.input field={@changeset[:buyer_address]} type="text" label="Địa chỉ" />
         <.input field={@changeset[:buyer_phone]} type="text" label="Số điện thoại" />
         <:actions>
-          <.button phx-disable-with="...">Đặt hàng</.button>
+          <.button phx-disable-with="..." data-confirm="Xác nhận đặt hàng">Đặt hàng</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -49,10 +48,10 @@ defmodule ECommerceWeb.CheckoutLive.FormComponent do
   def handle_event("pay", %{"order" => order_params}, socket) do
     cart = socket.assigns.cart
 
-    Orders.make_order(cart)
+    order = Orders.make_order(cart)
     |> Orders.change_order(order_params)
     |> Orders.complete_order(cart)
 
-    {:noreply, socket}
+    {:noreply, push_patch(socket, to: ~p"/checkout/success/#{order.id}")}
   end
 end

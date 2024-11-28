@@ -8,7 +8,7 @@ defmodule ECommerceWeb.CartLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.simple_form :let={f} for={@changeset} phx-target={@myself} phx-submit="update">
+      <.simple_form :let={f} for={@changeset} phx-target={@myself} phx-change="update" phx-throttle="100">
         <.inputs_for :let={item_form} field={f[:cart_items]}>
           <% item = item_form.data %>
           <.input
@@ -21,16 +21,13 @@ defmodule ECommerceWeb.CartLive.FormComponent do
             class="rounded-lg bg-zinc-900 text-sm font-semibold leading-6 text-white py-1 px-2"
             phx-click="remove"
             phx-value-product_id={item.product.id}
+            data-confirm="Bạn có chắc chắn bỏ sản phẩm này"
           >
             Delete
           </.link>
         </.inputs_for>
-        
-        <:actions>
-          <.button>Update cart</.button>
-        </:actions>
       </.simple_form>
-       <b>Total</b>: <%= ShoppingCart.total_cart_price(@cart) %>
+      <b>Tổng thanh toán</b>: <%= ShoppingCart.total_cart_price(@cart) %>
     </div>
     """
   end
@@ -52,8 +49,7 @@ defmodule ECommerceWeb.CartLive.FormComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Cart updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> put_flash(:info, "Cập nhật giỏ hàng thành công")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}

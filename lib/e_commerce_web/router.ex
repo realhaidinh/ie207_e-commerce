@@ -89,6 +89,7 @@ defmodule ECommerceWeb.Router do
       live "/categories", CategoryLive.Index, :index
       live "/categories/:id", CategoryLive.Show, :show
       live "/checkout", CheckoutLive.Index, :index
+      live "/checkout/success/:order_id", CheckoutLive.Success, :success
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
