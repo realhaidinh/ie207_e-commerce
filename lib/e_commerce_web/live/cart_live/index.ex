@@ -22,9 +22,9 @@ defmodule ECommerceWeb.CartLive.Index do
   @impl true
   def handle_info({:cart_updated, updated_cart}, socket) do
     {:noreply,
-    socket
-    |> assign(:cart, updated_cart)
-    |> assign(:changeset, ShoppingCart.change_cart(updated_cart))}
+     socket
+     |> assign(:cart, updated_cart)
+     |> assign(:changeset, ShoppingCart.change_cart(updated_cart))}
   end
 
   @impl true

@@ -5,6 +5,7 @@ defmodule ECommerceWeb.OrderLive.Index do
   def mount(_params, _session, socket) do
     {:ok, load_user_orders(socket)}
   end
+
   @impl true
   def handle_params(params, _uri, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}

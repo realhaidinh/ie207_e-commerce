@@ -10,7 +10,7 @@ defmodule ECommerce.ShoppingCart do
   alias ECommerce.ShoppingCart.{Cart, CartItem}
 
   def subscribe(), do: Phoenix.PubSub.subscribe(ECommerce.PubSub, "cart")
-  defp broadcast({:error, _reason} = error, _event), do: error
+  # defp broadcast({:error, _reason} = error, _event), do: error
 
   defp broadcast({:ok, cart} = _message, _event) do
     Phoenix.PubSub.broadcast(ECommerce.PubSub, "cart", {:cart_updated, cart})

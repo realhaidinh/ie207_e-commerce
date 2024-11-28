@@ -84,7 +84,7 @@ defmodule ECommerce.Orders do
         %LineItem{
           product_id: item.product_id,
           price: item.price_when_carted,
-          quantity: item.quantity,
+          quantity: item.quantity
         }
       end)
 

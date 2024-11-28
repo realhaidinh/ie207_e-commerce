@@ -11,14 +11,21 @@ defmodule ECommerceWeb.CartLive.FormComponent do
       <.simple_form :let={f} for={@changeset} phx-target={@myself} phx-submit="update">
         <.inputs_for :let={item_form} field={f[:cart_items]}>
           <% item = item_form.data %>
-          <.input class="sm-2 w-50" field={item_form[:quantity]} type="number" label={item.product.title} /> <%= ShoppingCart.total_item_price(
-            item
-          ) %>
-          <.link class="rounded-lg bg-zinc-900 text-sm font-semibold leading-6 text-white py-1 px-2" phx-click="remove" phx-value-product_id={item.product.id}>
+          <.input
+            class="sm-2 w-50"
+            field={item_form[:quantity]}
+            type="number"
+            label={item.product.title}
+          /> <%= ShoppingCart.total_item_price(item) %>
+          <.link
+            class="rounded-lg bg-zinc-900 text-sm font-semibold leading-6 text-white py-1 px-2"
+            phx-click="remove"
+            phx-value-product_id={item.product.id}
+          >
             Delete
           </.link>
         </.inputs_for>
-
+        
         <:actions>
           <.button>Update cart</.button>
         </:actions>
