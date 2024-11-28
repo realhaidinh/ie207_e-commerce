@@ -11,10 +11,12 @@ defmodule ECommerce.ShoppingCart do
 
   def subscribe(), do: Phoenix.PubSub.subscribe(ECommerce.PubSub, "cart")
   defp broadcast({:error, _reason} = error, _event), do: error
+
   defp broadcast({:ok, cart} = _message, _event) do
     Phoenix.PubSub.broadcast(ECommerce.PubSub, "cart", {:cart_updated, cart})
     {:ok, cart}
   end
+
   def list_carts do
     Repo.all(Cart)
   end
@@ -43,14 +45,20 @@ defmodule ECommerce.ShoppingCart do
     end
   end
 
-  defp reload_cart(%Cart{} = cart), do: get_cart_by_user_id(cart.user_id)
+  defp reload_cart(%Cart{} = cart) do
+    cart = get_cart_by_user_id(cart.user_id)
+    broadcast({:ok, cart}, :cart_updated)
+    cart
+  end
 
   def change_cart(%Cart{} = cart, attrs \\ %{}) do
     Cart.changeset(cart, attrs)
   end
+
   def add_item_to_cart(cart, product_id) when is_nil(cart) or is_nil(product_id) do
     {:error, nil}
   end
+
   def add_item_to_cart(%Cart{} = cart, product_id) do
     product = Catalog.get_product!(product_id)
 
@@ -66,8 +74,8 @@ defmodule ECommerce.ShoppingCart do
 
     case result do
       {:ok, _} ->
-        result = {:ok, reload_cart(cart)}
-        broadcast(result, :item_added)
+        {:ok, reload_cart(cart)}
+
       {:error, changeset} ->
         {:error, changeset}
     end
@@ -82,9 +90,7 @@ defmodule ECommerce.ShoppingCart do
         )
       )
 
-    result = {:ok, reload_cart(cart)}
-    broadcast(result, :item_removed)
-    result
+    {:ok, reload_cart(cart)}
   end
 
   def update_cart(%Cart{} = cart, attrs) do
@@ -100,9 +106,7 @@ defmodule ECommerce.ShoppingCart do
     end)
     |> Repo.transaction()
     |> case do
-      {:ok, %{cart: cart}} ->
-        result = {:ok, reload_cart(cart)}
-        broadcast(result, :cart_updated)
+      {:ok, %{cart: cart}} -> {:ok, reload_cart(cart)}
       {:error, :cart, changeset, _changes_so_far} -> {:error, changeset}
     end
   end

@@ -5,7 +5,7 @@ defmodule ECommerce.Orders.Order do
   schema "orders" do
     field :total_price, :integer
     field :user_id, :id
-    field :buyer_addres, :string
+    field :buyer_address, :string
     field :buyer_phone, :string
     field :buyer_name, :string
     field :status, :string, default: ""

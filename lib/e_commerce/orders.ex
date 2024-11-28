@@ -74,20 +74,25 @@ defmodule ECommerce.Orders do
     |> Repo.insert()
   end
 
-  def order_changeset(%ShoppingCart.Cart{} = cart, attrs \\ %{}) do
+  def insert_order(changeset) do
+    Repo.insert(changeset)
+  end
+
+  def make_order(%ShoppingCart.Cart{} = cart) do
     line_items =
       Enum.map(cart.cart_items, fn item ->
-        %{product_id: item.product_id, price: item.price_when_carted, quantity: item.quantity}
+        %LineItem{
+          product_id: item.product_id,
+          price: item.price_when_carted,
+          quantity: item.quantity,
+        }
       end)
 
-    order =
-      Ecto.Changeset.change(%Order{},
-        user_id: cart.user_id,
-        total_price: ShoppingCart.total_cart_price(cart),
-        line_items: line_items
-      )
-
-    Order.changeset(order, attrs)
+    %Order{
+      user_id: cart.user_id,
+      total_price: ShoppingCart.total_cart_price(cart),
+      line_items: line_items
+    }
   end
 
   @doc """
@@ -137,7 +142,7 @@ defmodule ECommerce.Orders do
     Order.changeset(order, attrs)
   end
 
-  def complete_order(%Order{} = order, %ShoppingCart.Cart{} = cart) do
+  def complete_order(order, %ShoppingCart.Cart{} = cart) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:order, order)
     |> Ecto.Multi.run(:prune_cart, fn _repo, _changes ->
@@ -149,7 +154,6 @@ defmodule ECommerce.Orders do
       {:error, name, value, _changes_so_far} -> {:error, {name, value}}
     end
   end
-
 
   @doc """
   Returns the list of order_line_items.

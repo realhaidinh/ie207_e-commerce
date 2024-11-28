@@ -1,5 +1,4 @@
 defmodule ECommerceWeb.Router do
-  alias ECommerceWeb.OrderLive
   use ECommerceWeb, :router
 
   import ECommerceWeb.UserAuth
@@ -88,6 +87,7 @@ defmodule ECommerceWeb.Router do
       live "/products/:id", ProductLive.Show, :show
       live "/categories", CategoryLive.Index, :index
       live "/categories/:id", CategoryLive.Show, :show
+      live "/checkout", CheckoutLive.Index, :index
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
