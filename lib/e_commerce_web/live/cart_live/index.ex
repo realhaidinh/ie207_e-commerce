@@ -5,6 +5,7 @@ defmodule ECommerceWeb.CartLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket), do: ShoppingCart.subscribe()
     {:ok, assign(socket, :page_title, "Listing Cart")}
   end
 
@@ -19,21 +20,19 @@ defmodule ECommerceWeb.CartLive.Index do
   end
 
   @impl true
-  def handle_info({ECommerceWeb.CartLive.FormComponent, {:updated, cart}}, socket) do
+  def handle_info({:cart_updated, updated_cart}, socket) do
     {:noreply,
-     socket
-     |> assign(:cart, cart)
-     |> assign(:changeset, ShoppingCart.change_cart(cart))}
+    socket
+    |> assign(:cart, updated_cart)
+    |> assign(:changeset, ShoppingCart.change_cart(updated_cart))}
   end
 
   @impl true
   def handle_event("remove", %{"product_id" => product_id}, socket) do
-    {:ok, cart} = ShoppingCart.remove_item_from_cart(socket.assigns.cart, product_id)
+    {:ok, _cart} = ShoppingCart.remove_item_from_cart(socket.assigns.cart, product_id)
 
     {:noreply,
      socket
-     |> put_flash(:info, "Item removed from your cart")
-     |> assign(:cart, cart)
-     |> assign(:changeset, ShoppingCart.change_cart(cart))}
+     |> put_flash(:info, "Item removed from your cart")}
   end
 end

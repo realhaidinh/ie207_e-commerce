@@ -9,6 +9,12 @@ defmodule ECommerce.ShoppingCart do
 
   alias ECommerce.ShoppingCart.{Cart, CartItem}
 
+  def subscribe(), do: Phoenix.PubSub.subscribe(ECommerce.PubSub, "cart")
+  defp broadcast({:error, _reason} = error, _event), do: error
+  defp broadcast({:ok, cart} = _message, _event) do
+    Phoenix.PubSub.broadcast(ECommerce.PubSub, "cart", {:cart_updated, cart})
+    {:ok, cart}
+  end
   def list_carts do
     Repo.all(Cart)
   end
@@ -60,8 +66,8 @@ defmodule ECommerce.ShoppingCart do
 
     case result do
       {:ok, _} ->
-        {:ok, reload_cart(cart)}
-
+        result = {:ok, reload_cart(cart)}
+        broadcast(result, :item_added)
       {:error, changeset} ->
         {:error, changeset}
     end
@@ -76,7 +82,9 @@ defmodule ECommerce.ShoppingCart do
         )
       )
 
-    {:ok, reload_cart(cart)}
+    result = {:ok, reload_cart(cart)}
+    broadcast(result, :item_removed)
+    result
   end
 
   def update_cart(%Cart{} = cart, attrs) do
@@ -92,7 +100,9 @@ defmodule ECommerce.ShoppingCart do
     end)
     |> Repo.transaction()
     |> case do
-      {:ok, %{cart: cart}} -> {:ok, reload_cart(cart)}
+      {:ok, %{cart: cart}} ->
+        result = {:ok, reload_cart(cart)}
+        broadcast(result, :cart_updated)
       {:error, :cart, changeset, _changes_so_far} -> {:error, changeset}
     end
   end
@@ -105,6 +115,11 @@ defmodule ECommerce.ShoppingCart do
     Enum.reduce(cart.cart_items, 0, fn item, acc ->
       acc + total_item_price(item)
     end)
+  end
+
+  def prune_cart_items(%Cart{} = cart) do
+    {_, _} = Repo.delete_all(from(i in CartItem, where: i.cart_id == ^cart.id))
+    {:ok, reload_cart(cart)}
   end
 
   def list_cart_items do

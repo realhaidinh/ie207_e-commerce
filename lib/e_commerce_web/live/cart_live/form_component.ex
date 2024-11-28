@@ -29,13 +29,8 @@ defmodule ECommerceWeb.CartLive.FormComponent do
   end
 
   @impl true
-  def update(%{cart: cart} = assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(ShoppingCart.change_cart(cart))
-     end)}
+  def update(assigns, socket) do
+    {:ok, assign(socket, assigns)}
   end
 
   @impl true
@@ -45,8 +40,8 @@ defmodule ECommerceWeb.CartLive.FormComponent do
 
   defp update_cart(socket, cart_params) do
     case ShoppingCart.update_cart(socket.assigns.cart, cart_params) do
-      {:ok, cart} ->
-        notify_parent({:updated, cart})
+      {:ok, _cart} ->
+        # notify_parent({:updated, cart})
 
         {:noreply,
          socket
@@ -58,5 +53,5 @@ defmodule ECommerceWeb.CartLive.FormComponent do
     end
   end
 
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+  # defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

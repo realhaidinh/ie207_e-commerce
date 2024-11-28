@@ -1,4 +1,5 @@
 defmodule ECommerceWeb.Router do
+  alias ECommerceWeb.OrderLive
   use ECommerceWeb, :router
 
   import ECommerceWeb.UserAuth
@@ -70,6 +71,8 @@ defmodule ECommerceWeb.Router do
       on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/cart", CartLive.Index, :index
+      live "/users/orders", OrderLive.Index, :index
+      live "/users/orders/:id", OrderLive.Show, :show
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
   end

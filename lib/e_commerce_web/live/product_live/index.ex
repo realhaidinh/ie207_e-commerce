@@ -16,6 +16,5 @@ defmodule ECommerceWeb.ProductLive.Index do
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Products")
-    |> assign(:product, nil)
   end
 end
