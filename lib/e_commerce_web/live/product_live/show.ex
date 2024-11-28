@@ -14,7 +14,8 @@ defmodule ECommerceWeb.ProductLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:product, Catalog.get_product!(id))}
+     |> assign(:product, Catalog.get_product!(id))
+     |> assign(:reviews, Catalog.list_reviews_by_product(id))}
   end
 
   @impl true

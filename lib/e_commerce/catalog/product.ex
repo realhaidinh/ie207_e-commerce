@@ -1,7 +1,7 @@
 defmodule ECommerce.Catalog.Product do
   use Ecto.Schema
   import Ecto.Changeset
-  alias ECommerce.Catalog.Category
+  alias ECommerce.Catalog.{Category, Review}
 
   schema "products" do
     field :description, :string
@@ -10,11 +10,14 @@ defmodule ECommerce.Catalog.Product do
     field :stock, :integer
     field :sold, :integer, default: 0
     field :slug, :string
-
+    field :rating, :decimal, virtual: true
     many_to_many :categories, Category,
       join_through: "product_categories",
       on_replace: :delete,
       preload_order: [asc: :level]
+
+    has_many :reviews, Review,
+      preload_order: [desc: :inserted_at]
 
     timestamps(type: :utc_datetime)
   end

@@ -37,4 +37,19 @@ defmodule ECommerce.CatalogFixtures do
 
     category
   end
+
+  @doc """
+  Generate a review.
+  """
+  def review_fixture(attrs \\ %{}) do
+    {:ok, review} =
+      attrs
+      |> Enum.into(%{
+        content: "some content",
+        rating: 42
+      })
+      |> ECommerce.Catalog.create_review()
+
+    review
+  end
 end

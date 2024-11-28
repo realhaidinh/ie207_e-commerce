@@ -4,6 +4,7 @@ defmodule ECommerce.Catalog do
   """
 
   import Ecto.Query, warn: false
+  alias ECommerce.Catalog.Review
   alias ECommerce.Repo
   alias ECommerce.Catalog.Category
   alias ECommerce.Catalog.Product
@@ -36,7 +37,13 @@ defmodule ECommerce.Catalog do
 
   """
   def get_product!(id) do
-    Repo.get!(Product, id) |> Repo.preload(:categories)
+    Repo.one!(
+      from p in Product,
+      where: p.id == ^id,
+      left_join: r in assoc(p, :reviews),
+      select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+      preload: [:categories]
+    )
   end
 
   @doc """
@@ -222,5 +229,120 @@ defmodule ECommerce.Catalog do
   """
   def change_category(%Category{} = category, attrs \\ %{}) do
     Category.changeset(category, attrs)
+  end
+
+  alias ECommerce.Catalog.Review
+
+  @doc """
+  Returns the list of reviews.
+
+  ## Examples
+
+      iex> list_reviews()
+      [%Review{}, ...]
+
+  """
+  def list_reviews do
+    Repo.all(Review)
+  end
+
+  def list_reviews_by_product(product_id) do
+    Repo.all(
+      from r in Review,
+        where: r.product_id == ^product_id,
+        left_join: u in assoc(r, :user),
+        order_by: [desc: :inserted_at],
+        preload: [user: u]
+    )
+  end
+
+  @doc """
+  Gets a single review.
+
+  Raises `Ecto.NoResultsError` if the Review does not exist.
+
+  ## Examples
+
+      iex> get_review!(123)
+      %Review{}
+
+      iex> get_review!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_review!(id), do: Repo.get!(Review, id)
+
+  @doc """
+  Creates a review.
+
+  ## Examples
+
+      iex> create_review(%{field: value})
+      {:ok, %Review{}}
+
+      iex> create_review(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_review(attrs \\ %{}) do
+    %Review{}
+    |> Review.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_review(user_id, product_id, attrs \\ %{}) do
+    %Review{
+      user_id: user_id,
+      product_id: product_id
+    }
+    |> Review.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a review.
+
+  ## Examples
+
+      iex> update_review(review, %{field: new_value})
+      {:ok, %Review{}}
+
+      iex> update_review(review, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_review(%Review{} = review, attrs) do
+    review
+    |> Review.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a review.
+
+  ## Examples
+
+      iex> delete_review(review)
+      {:ok, %Review{}}
+
+      iex> delete_review(review)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_review(%Review{} = review) do
+    Repo.delete(review)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking review changes.
+
+  ## Examples
+
+      iex> change_review(review)
+      %Ecto.Changeset{data: %Review{}}
+
+  """
+  def change_review(%Review{} = review, attrs \\ %{}) do
+    Review.changeset(review, attrs)
   end
 end
