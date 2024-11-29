@@ -1,10 +1,8 @@
 defmodule ECommerceWeb.Router do
   use ECommerceWeb, :router
-
   import ECommerceWeb.AdminAuth
 
   import ECommerceWeb.UserAuth
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -19,9 +17,14 @@ defmodule ECommerceWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
   end
-
+  pipeline :admin do
+    plug :set_layout, :admin
+  end
+  pipeline :public do
+    plug :set_layout, :user
+  end
   scope "/", ECommerceWeb do
-    pipe_through :browser
+    pipe_through [:browser, :public]
 
     get "/", PageController, :home
   end
@@ -51,7 +54,7 @@ defmodule ECommerceWeb.Router do
   ## Authentication routes
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :public]
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{ECommerceWeb.UserAuth, :redirect_if_user_is_authenticated}] do
@@ -65,7 +68,7 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :public]
 
     live_session :require_authenticated_user,
       on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}] do
@@ -78,7 +81,7 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :public]
 
     delete "/users/log_out", UserSessionController, :delete
 
@@ -98,7 +101,7 @@ defmodule ECommerceWeb.Router do
   ## Authentication routes
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser, :redirect_if_admin_is_authenticated]
+    pipe_through [:browser, :redirect_if_admin_is_authenticated, :admin]
 
     live_session :redirect_if_admin_is_authenticated,
       on_mount: [{ECommerceWeb.AdminAuth, :redirect_if_admin_is_authenticated}] do
@@ -111,12 +114,20 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser, :require_authenticated_admin]
+    pipe_through [:browser, :require_authenticated_admin, :admin]
 
     live_session :require_authenticated_admin,
       on_mount: [{ECommerceWeb.AdminAuth, :ensure_authenticated}] do
       live "/settings", AdminSettingsLive, :edit
       live "/settings/confirm_email/:token", AdminSettingsLive, :confirm_email
+      live "/dashboard/catalog/products", Admin.Dashboard.DashboardLive, :products
+      live "/dashboard/catalog/products/:id", Admin.Dashboard.DashboardLive, :product
+      live "/dashboard/catalog/categories", Admin.Dashboard.DashboardLive, :categories
+      live "/dashboard/catalog/categories/:id", Admin.Dashboard.DashboardLive, :category
+      live "/dashboard/sales/orders", Admin.Dashboard.DashboardLive, :order
+      live "/dashboard/sales/orders/:id", Admin.Dashboard.DashboardLive, :order
+      live "/dashboard/customers", Admin.Dashboard.DashboardLive, :users
+      live "/dashboard/customers/:id", Admin.Dashboard.DashboardLive, :user
     end
   end
 
@@ -130,5 +141,8 @@ defmodule ECommerceWeb.Router do
       live "/confirm/:token", AdminConfirmationLive, :edit
       live "/confirm", AdminConfirmationInstructionsLive, :new
     end
+  end
+  defp set_layout(conn, layout) do
+    assign(conn, :current_layout, layout)
   end
 end

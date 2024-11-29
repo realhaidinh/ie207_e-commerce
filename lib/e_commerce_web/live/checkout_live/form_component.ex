@@ -17,12 +17,7 @@ defmodule ECommerceWeb.CheckoutLive.FormComponent do
         <:col :let={item} label="Thành tiền"><%= item.price_when_carted * item.quantity %></:col>
       </.table>
 
-      <.simple_form
-        for={@changeset}
-        id="order-form"
-        phx-target={@myself}
-        phx-submit="pay"
-      >
+      <.simple_form for={@changeset} id="order-form" phx-target={@myself} phx-submit="pay">
         <.input field={@changeset[:buyer_name]} type="text" label="Họ tên" />
         <.input field={@changeset[:buyer_address]} type="text" label="Địa chỉ" />
         <.input field={@changeset[:buyer_phone]} type="text" label="Số điện thoại" />
@@ -48,10 +43,11 @@ defmodule ECommerceWeb.CheckoutLive.FormComponent do
   def handle_event("pay", %{"order" => order_params}, socket) do
     cart = socket.assigns.cart
 
-    order = Orders.make_order(cart)
-    |> Orders.change_order(order_params)
-    |> Orders.complete_order(cart)
+    {:ok, order} =
+      Orders.make_order(cart)
+      |> Orders.change_order(order_params)
+      |> Orders.complete_order(cart)
 
-    {:noreply, push_patch(socket, to: ~p"/checkout/success/#{order.id}")}
+    {:noreply, push_navigate(socket, to: ~p"/checkout/success/#{order.id}")}
   end
 end

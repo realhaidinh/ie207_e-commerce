@@ -192,9 +192,9 @@ defmodule ECommerceWeb.UserAuth do
   end
 
   defp mount_current_cart(socket) do
-    Phoenix.Component.assign_new(socket, :cart, fn ->
-      if socket.assigns.current_user do
-        user_id = socket.assigns.current_user.id
+    Phoenix.Component.assign_new(socket, :cart, fn %{current_user: current_user} ->
+      if current_user do
+        user_id = current_user.id
 
         if cart = ShoppingCart.get_cart_by_user_id(user_id) do
           cart

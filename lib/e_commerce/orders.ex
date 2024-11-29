@@ -48,7 +48,7 @@ defmodule ECommerce.Orders do
       ** (Ecto.NoResultsError)
 
   """
-  def get_order!(id), do: Repo.get!(Order, id)
+  def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload(line_items: [:product])
 
   def get_order!(user_id, id) do
     Order

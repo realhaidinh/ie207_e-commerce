@@ -1,0 +1,20 @@
+<.link patch={~p"/admin/dashboard/catalog/products"}>
+  Sản phẩm
+</.link>
+
+<.link patch={~p"/admin/dashboard/catalog/categories"}>
+  Danh mục sản phẩm
+</.link>
+
+<.link patch={~p"/admin/dashboard/sales/orders"}>
+  Đơn hàng
+</.link>
+
+<.link patch={~p"/admin/dashboard/customers"}>
+  Khách hàng
+</.link>
+
+<%= case @live_action do %>
+    <% :order -> %>
+    <%= live_render(@socket, ECommerceWeb.Admin.Dashboard.OrderLive, id: "order_manage", session: %{"id" => @id, "action" => @action}) %>
+<% end %>
