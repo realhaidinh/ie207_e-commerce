@@ -8,7 +8,7 @@
     <.header>
       My Cart
     </.header>
-    
+
     <.live_component
       module={ECommerceWeb.CartLive.FormComponent}
       id={@cart.id}
@@ -18,6 +18,6 @@
       patch={~p"/cart"}
     />
   <% end %>
-  
+
   <.back navigate={~p"/products"}>Back to products</.back>
 </div>

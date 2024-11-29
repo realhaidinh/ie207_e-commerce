@@ -14,7 +14,8 @@
   Khách hàng
 </.link>
 
-<%= case @live_action do %>
-    <% :order -> %>
-    <%= live_render(@socket, ECommerceWeb.Admin.Dashboard.OrderLive, id: "order_manage", session: %{"id" => @id, "action" => @action}) %>
-<% end %>
+<.live_component
+  id={get_page_id(@live_action)}
+  module={get_page_component(@live_action)}
+  item_id={@item_id}
+/>

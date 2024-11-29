@@ -39,10 +39,10 @@ defmodule ECommerce.Catalog do
   def get_product!(id) do
     Repo.one!(
       from p in Product,
-      where: p.id == ^id,
-      left_join: r in assoc(p, :reviews),
-      select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
-      preload: [:categories]
+        where: p.id == ^id,
+        left_join: r in assoc(p, :reviews),
+        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+        preload: [:categories]
     )
   end
 

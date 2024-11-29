@@ -149,12 +149,13 @@ defmodule ECommerce.Orders do
       :reduce_product_stock,
       fn %{order: order} ->
         from(p in Product,
-        left_join: i in LineItem,
-        on: p.id == i.product_id,
-        where: i.order_id == ^order.id,
-        update: [inc: [sold: i.quantity], inc: [stock: -i.quantity]]
-      )
-      end, []
+          left_join: i in LineItem,
+          on: p.id == i.product_id,
+          where: i.order_id == ^order.id,
+          update: [inc: [sold: i.quantity], inc: [stock: -i.quantity]]
+        )
+      end,
+      []
     )
     |> Ecto.Multi.run(:prune_cart, fn _repo, _changes ->
       ShoppingCart.prune_cart_items(cart)

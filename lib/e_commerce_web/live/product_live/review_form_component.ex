@@ -13,7 +13,7 @@ defmodule ECommerceWeb.ProductLive.ReviewFormComponent do
         phx-target={@myself}
         phx-submit="submit_review"
       >
-        <.input field={@review_form[:rating]} type="number" label="Rating" min="1" max="5" value="1"/>
+        <.input field={@review_form[:rating]} type="number" label="Rating" min="1" max="5" value="1" />
         <.input field={@review_form[:content]} type="text" label="Content" />
         <:actions>
           <.button phx-disable-with="...">Đánh giá</.button>

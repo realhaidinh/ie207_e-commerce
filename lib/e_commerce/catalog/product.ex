@@ -11,13 +11,13 @@ defmodule ECommerce.Catalog.Product do
     field :sold, :integer, default: 0
     field :slug, :string
     field :rating, :decimal, virtual: true
+
     many_to_many :categories, Category,
       join_through: "product_categories",
       on_replace: :delete,
       preload_order: [asc: :level]
 
-    has_many :reviews, Review,
-      preload_order: [desc: :inserted_at]
+    has_many :reviews, Review, preload_order: [desc: :inserted_at]
 
     timestamps(type: :utc_datetime)
   end

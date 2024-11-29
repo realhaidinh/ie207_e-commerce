@@ -8,7 +8,13 @@ defmodule ECommerceWeb.CartLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.simple_form :let={f} for={@changeset} phx-target={@myself} phx-change="update" phx-throttle="100">
+      <.simple_form
+        :let={f}
+        for={@changeset}
+        phx-target={@myself}
+        phx-change="update"
+        phx-throttle="100"
+      >
         <.inputs_for :let={item_form} field={f[:cart_items]}>
           <% item = item_form.data %>
           <.input

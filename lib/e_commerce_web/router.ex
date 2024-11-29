@@ -3,6 +3,7 @@ defmodule ECommerceWeb.Router do
   import ECommerceWeb.AdminAuth
 
   import ECommerceWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -17,12 +18,15 @@ defmodule ECommerceWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
   end
+
   pipeline :admin do
     plug :set_layout, :admin
   end
+
   pipeline :public do
     plug :set_layout, :user
   end
+
   scope "/", ECommerceWeb do
     pipe_through [:browser, :public]
 
@@ -124,7 +128,7 @@ defmodule ECommerceWeb.Router do
       live "/dashboard/catalog/products/:id", Admin.Dashboard.DashboardLive, :product
       live "/dashboard/catalog/categories", Admin.Dashboard.DashboardLive, :categories
       live "/dashboard/catalog/categories/:id", Admin.Dashboard.DashboardLive, :category
-      live "/dashboard/sales/orders", Admin.Dashboard.DashboardLive, :order
+      live "/dashboard/sales/orders", Admin.Dashboard.DashboardLive, :orders
       live "/dashboard/sales/orders/:id", Admin.Dashboard.DashboardLive, :order
       live "/dashboard/customers", Admin.Dashboard.DashboardLive, :users
       live "/dashboard/customers/:id", Admin.Dashboard.DashboardLive, :user
@@ -142,6 +146,7 @@ defmodule ECommerceWeb.Router do
       live "/confirm", AdminConfirmationInstructionsLive, :new
     end
   end
+
   defp set_layout(conn, layout) do
     assign(conn, :current_layout, layout)
   end

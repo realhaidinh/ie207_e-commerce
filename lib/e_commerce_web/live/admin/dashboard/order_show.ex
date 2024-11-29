@@ -1,19 +1,35 @@
-defmodule ECommerceWeb.CheckoutLive.Success do
+defmodule ECommerceWeb.Admin.Dashboard.OrderShow do
   alias ECommerce.Orders
-  use ECommerceWeb, :live_view
+  use ECommerceWeb, :live_component
+
+  @impl true
+  def mount(socket) do
+    {:ok, socket}
+  end
+
+  @impl true
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign_new(:order, fn -> Orders.get_order!(assigns.item_id) end)}
+  end
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
       <.header>
-        Đã đặt thành công đơn hàng <%= @order.id %>
+        Mã đơn hàng: <%= @order.id %> |
+        Trạng thái đơn hàng: <%= @order.status %>
       </.header>
       
       <.table
         id="order-products"
         rows={@order.line_items}
-        row_click={fn item -> JS.navigate(~p"/products/#{item.product.id}") end}
+        row_click={
+          fn item -> JS.navigate(~p"/admin/dashboard/catalog/products/#{item.product.id}") end
+        }
       >
         <:col :let={item} label="Sản phẩm"><%= item.product.title %></:col>
         
@@ -33,17 +49,5 @@ defmodule ECommerceWeb.CheckoutLive.Success do
       <p>Số điện thoại nhận hàng: <%= @order.buyer_phone %></p>
     </div>
     """
-  end
-
-  @impl true
-  def mount(_params, _session, socket) do
-    {:ok, socket}
-  end
-
-  @impl true
-  def handle_params(%{"order_id" => order_id}, _uri, socket) do
-    %{current_user: %{id: user_id}} = socket.assigns
-    order = Orders.get_order!(user_id, order_id)
-    {:noreply, assign(socket, :order, order)}
   end
 end
