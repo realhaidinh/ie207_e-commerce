@@ -19,21 +19,21 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductShow do
   def render(assigns) do
     ~H"""
     <div>
-    <.list>
-      <:item title="Title"><%= @product.title %></:item>
+      <.list>
+        <:item title="Title"><%= @product.title %></:item>
 
-      <:item title="Description"><%= @product.description %></:item>
+        <:item title="Description"><%= @product.description %></:item>
 
-      <:item title="Price"><%= @product.price %></:item>
+        <:item title="Price"><%= @product.price %></:item>
 
-      <:item title="Stock"><%= @product.stock %></:item>
+        <:item title="Stock"><%= @product.stock %></:item>
 
-      <:item title="Sold"><%= @product.sold %></:item>
+        <:item title="Sold"><%= @product.sold %></:item>
 
-      <:item title="Slug"><%= @product.slug %></:item>
+        <:item title="Slug"><%= @product.slug %></:item>
 
-      <:item title="Review"><%= @product.rating %></:item>
-    </.list>
+        <:item title="Review"><%= @product.rating %></:item>
+      </.list>
     </div>
     """
   end
