@@ -3,16 +3,25 @@ defmodule ECommerceWeb.Admin.Dashboard.DashboardLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, assign(socket, :is_modal_open, false)}
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _uri, socket) do
+  def handle_params(%{"id" => id} = _params, _uri, socket) do
     {:noreply, assign(socket, :item_id, id)}
   end
 
   def handle_params(_params, _uri, socket) do
     {:noreply, assign(socket, :item_id, nil)}
+  end
+
+  @impl true
+  def handle_info(:open_modal, socket) do
+    {:noreply, assign(socket, :is_modal_open, true)}
+  end
+
+  def handle_info(:close_modal, socket) do
+    {:noreply, assign(socket, :is_modal_open, false)}
   end
 
   defp get_page_component(:category), do: ECommerceWeb.Admin.Dashboard.CategoryShow

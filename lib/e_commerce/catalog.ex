@@ -157,8 +157,12 @@ defmodule ECommerce.Catalog do
     )
   end
 
+  def get_subcategory_path(%Category{} = category) do
+    "#{category.path}#{category.id}/"
+  end
+
   def get_subcategories(%Category{} = category) do
-    subpath = "#{category.path}#{category.id}/"
+    subpath = get_subcategory_path(category)
 
     Repo.all(
       from c in Category,
@@ -183,6 +187,8 @@ defmodule ECommerce.Catalog do
     |> change_category(attrs)
     |> Repo.insert()
   end
+
+  def insert_category(%Ecto.Changeset{} = chset), do: Repo.insert(chset)
 
   @doc """
   Updates a category.
