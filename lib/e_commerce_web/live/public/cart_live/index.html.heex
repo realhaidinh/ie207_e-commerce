@@ -1,0 +1,23 @@
+<div>
+  <%= if @cart.cart_items == [] do %>
+    <.header>
+      My Cart
+      <:subtitle>Your cart is empty</:subtitle>
+    </.header>
+  <% else %>
+    <.header>
+      My Cart
+    </.header>
+
+    <.live_component
+      module={ECommerceWeb.Public.CartLive.FormComponent}
+      id={@cart.id}
+      title={@page_title}
+      cart={@cart}
+      changeset={@changeset}
+      patch={~p"/cart"}
+    />
+  <% end %>
+
+  <.back navigate={~p"/products"}>Back to products</.back>
+</div>

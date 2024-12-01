@@ -1,0 +1,123 @@
+<aside
+  id="sidebar-multi-level-sidebar"
+  class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+  aria-label="Sidebar"
+>
+  <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+    <ul class="space-y-2 font-medium">
+      <li>
+        <button
+          type="button"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          aria-controls="dropdown-prod"
+          data-collapse-toggle="dropdown-prod"
+        >
+          <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+            Quản lý sản phẩm
+          </span>
+          <svg
+            class="w-3 h-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+        </button>
+        <ul id="dropdown-prod" class="hidden py-2 space-y-2">
+          <li>
+            <.link
+              patch={~p"/admin/dashboard/catalog/products"}
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+            >
+              Danh sách sản phẩm
+            </.link>
+          </li>
+          <li>
+            <.link
+              patch={~p"/#"}
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+            >
+              Thêm sản phẩm
+            </.link>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          aria-controls="dropdown-cat"
+          data-collapse-toggle="dropdown-cat"
+        >
+          <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+            Quản lý danh mục
+          </span>
+          <svg
+            class="w-3 h-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+        </button>
+        <ul id="dropdown-cat" class="hidden py-2 space-y-2">
+          <li>
+            <.link
+              patch={~p"/admin/dashboard/catalog/categories"}
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+            >
+              Danh sách danh mục
+            </.link>
+          </li>
+          <li>
+            <.link
+              patch={~p"/#"}
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+            >
+              Thêm danh mục
+            </.link>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <.link
+          patch={~p"/admin/dashboard/customers"}
+          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+        >
+          <span class="flex-1 ms-3 whitespace-nowrap">Quản lý khách hàng</span>
+        </.link>
+      </li>
+      <li>
+        <.link
+          patch={~p"/admin/dashboard/sales/orders"}
+          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+        >
+          <span class="flex-1 ms-3 whitespace-nowrap">Quản lý đơn hàng</span>
+        </.link>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+<.live_component
+  id={get_page_id(@live_action)}
+  module={get_page_component(@live_action)}
+  item_id={@item_id}
+  is_modal_open={@is_modal_open}
+/>

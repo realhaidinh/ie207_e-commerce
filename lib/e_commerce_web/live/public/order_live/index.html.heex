@@ -1,0 +1,22 @@
+<div>
+  <%= for order <- @orders do %>
+    <h1>
+      Trạng thái đơn hàng: <%= order.status %>
+      Tổng tiền: <%= order.total_price %>
+    </h1>
+
+    <.table
+      id={"order-#{order.id}"}
+      rows={order.line_items}
+      row_click={fn item -> JS.navigate(~p"/products/#{item.product.id}") end}
+    >
+      <:col :let={item} label="Sản phẩm"><%= item.product.title %></:col>
+
+      <:col :let={item} label="Đơn giá"><%= item.price %></:col>
+
+      <:col :let={item} label="Số lượng"><%= item.quantity %></:col>
+
+      <:col :let={item} label="Thành tiền"><%= item.price * item.quantity %></:col>
+    </.table>
+  <% end %>
+</div>

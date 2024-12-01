@@ -62,10 +62,10 @@ defmodule ECommerceWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{ECommerceWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live "/users/register", UserRegistrationLive, :new
-      live "/users/log_in", UserLoginLive, :new
-      live "/users/reset_password", UserForgotPasswordLive, :new
-      live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/register", Public.UserRegistrationLive, :new
+      live "/users/log_in", Public.UserLoginLive, :new
+      live "/users/reset_password", Public.UserForgotPasswordLive, :new
+      live "/users/reset_password/:token", Public.UserResetPasswordLive, :edit
     end
 
     post "/users/log_in", UserSessionController, :create
@@ -76,11 +76,11 @@ defmodule ECommerceWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/cart", CartLive.Index, :index
-      live "/users/orders", OrderLive.Index, :index
-      live "/users/orders/:id", OrderLive.Show, :show
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/users/settings", Public.UserSettingsLive, :edit
+      live "/cart", Public.CartLive.Index, :index
+      live "/users/orders", Public.OrderLive.Index, :index
+      live "/users/orders/:id", Public.OrderLive.Show, :show
+      live "/users/settings/confirm_email/:token", Public.UserSettingsLive, :confirm_email
     end
   end
 
@@ -91,14 +91,14 @@ defmodule ECommerceWeb.Router do
 
     live_session :current_user,
       on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}] do
-      live "/products", ProductLive.Index, :index
-      live "/products/:id", ProductLive.Show, :show
-      live "/categories", CategoryLive.Index, :index
-      live "/categories/:id", CategoryLive.Show, :show
-      live "/checkout", CheckoutLive.Index, :index
-      live "/checkout/success/:order_id", CheckoutLive.Success, :success
-      live "/users/confirm/:token", UserConfirmationLive, :edit
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
+      live "/products", Public.ProductLive.Index, :index
+      live "/products/:id", Public.ProductLive.Show, :show
+      live "/categories", Public.CategoryLive.Index, :index
+      live "/categories/:id", Public.CategoryLive.Show, :show
+      live "/checkout", Public.CheckoutLive.Index, :index
+      live "/checkout/success/:order_id", Public.CheckoutLive.Success, :success
+      live "/users/confirm/:token", Public.UserConfirmationLive, :edit
+      live "/users/confirm", Public.UserConfirmationInstructionsLive, :new
     end
   end
 
@@ -109,9 +109,9 @@ defmodule ECommerceWeb.Router do
 
     live_session :redirect_if_admin_is_authenticated,
       on_mount: [{ECommerceWeb.AdminAuth, :redirect_if_admin_is_authenticated}] do
-      live "/log_in", AdminLoginLive, :new
-      live "/reset_password", AdminForgotPasswordLive, :new
-      live "/reset_password/:token", AdminResetPasswordLive, :edit
+      live "/log_in", Admin.LoginLive, :new
+      live "/reset_password", Admin.ForgotPasswordLive, :new
+      live "/reset_password/:token", Admin.ResetPasswordLive, :edit
     end
 
     post "/log_in", AdminSessionController, :create
@@ -122,16 +122,16 @@ defmodule ECommerceWeb.Router do
 
     live_session :require_authenticated_admin,
       on_mount: [{ECommerceWeb.AdminAuth, :ensure_authenticated}] do
-      live "/settings", AdminSettingsLive, :edit
-      live "/settings/confirm_email/:token", AdminSettingsLive, :confirm_email
-      live "/dashboard/catalog/products", Admin.Dashboard.DashboardLive, :products
-      live "/dashboard/catalog/products/:id", Admin.Dashboard.DashboardLive, :product
-      live "/dashboard/catalog/categories", Admin.Dashboard.DashboardLive, :categories
-      live "/dashboard/catalog/categories/:id", Admin.Dashboard.DashboardLive, :category
-      live "/dashboard/sales/orders", Admin.Dashboard.DashboardLive, :orders
-      live "/dashboard/sales/orders/:id", Admin.Dashboard.DashboardLive, :order
-      live "/dashboard/customers", Admin.Dashboard.DashboardLive, :users
-      live "/dashboard/customers/:id", Admin.Dashboard.DashboardLive, :user
+      live "/settings", Admin.SettingsLive, :edit
+      live "/settings/confirm_email/:token", Admin.SettingsLive, :confirm_email
+      live "/dashboard/catalog/products", Admin.DashboardLive.Index, :products
+      live "/dashboard/catalog/products/:id", Admin.DashboardLive.Index, :product
+      live "/dashboard/catalog/categories", Admin.DashboardLive.Index, :categories
+      live "/dashboard/catalog/categories/:id", Admin.DashboardLive.Index, :category
+      live "/dashboard/sales/orders", Admin.DashboardLive.Index, :orders
+      live "/dashboard/sales/orders/:id", Admin.DashboardLive.Index, :order
+      live "/dashboard/customers", Admin.DashboardLive.Index, :users
+      live "/dashboard/customers/:id", Admin.DashboardLive.Index, :user
     end
   end
 
@@ -142,8 +142,8 @@ defmodule ECommerceWeb.Router do
 
     live_session :current_admin,
       on_mount: [{ECommerceWeb.AdminAuth, :mount_current_admin}] do
-      live "/confirm/:token", AdminConfirmationLive, :edit
-      live "/confirm", AdminConfirmationInstructionsLive, :new
+      live "/confirm/:token", Admin.ConfirmationLive, :edit
+      live "/confirm", Admin.ConfirmationInstructionsLive, :new
     end
   end
 
