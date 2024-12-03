@@ -1,12 +1,11 @@
 <div>
   <%= if @cart.cart_items == [] do %>
     <.header>
-      My Cart
-      <:subtitle>Your cart is empty</:subtitle>
+      <:subtitle>Giỏ hàng trống</:subtitle>
     </.header>
   <% else %>
     <.header>
-      My Cart
+      Số sản phẩm <%= length(@cart.cart_items) %>
     </.header>
 
     <.live_component

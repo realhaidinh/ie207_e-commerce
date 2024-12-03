@@ -5,19 +5,22 @@ defmodule ECommerceWeb.Admin.Category.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="relative overflow-x-auto">
+    <div class="p-4 sm:ml-64">
       <.link phx-click="open_new_category_modal" phx-target={@myself}>
         <.button>Tạo danh mục mới</.button>
       </.link>
-      <.table
+      <.data_table
+        table_id="search-table"
         id="categories"
         rows={@categories}
+        searchable="true"
+        sortable="true"
         row_click={
           fn category -> JS.patch(~p"/admin/dashboard/catalog/categories/#{category.id}") end
         }
       >
         <:col :let={category} label="Tên danh mục"><%= category.title %></:col>
-      </.table>
+      </.data_table>
       <.modal
         :if={@is_modal_open}
         show

@@ -1,7 +1,6 @@
 defmodule ECommerceWeb.Admin.Product.Index do
   alias ECommerce.Catalog
   use ECommerceWeb, :live_component
-
   @impl true
   def mount(socket) do
     {:ok, assign(socket, :products, Catalog.list_products())}
@@ -10,10 +9,14 @@ defmodule ECommerceWeb.Admin.Product.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
-      <.table
+    <div class="p-4 sm:ml-64">
+    <.header>Danh sách sản phẩm</.header>
+      <.data_table
+        table_id="search-table"
         id="products"
         rows={@products}
+        searchable="true"
+        sortable="true"
         row_click={fn product -> JS.patch(~p"/admin/dashboard/catalog/products/#{product}") end}
       >
         <:col :let={product} label="Tên sản phẩm"><%= product.title %></:col>
@@ -25,7 +28,7 @@ defmodule ECommerceWeb.Admin.Product.Index do
         <:col :let={product} label="Đã bán"><%= product.sold %></:col>
 
         <:col :let={product} label="Đánh giá"><%= product.rating %></:col>
-      </.table>
+      </.data_table>
     </div>
     """
   end

@@ -8,7 +8,7 @@ defmodule ECommerceWeb.Admin.Category.Form do
       <.simple_form for={@form} id="category-form" phx-target={@myself} phx-submit="save">
         <.input field={@form[:title]} type="text" label="Title" />
         <:actions>
-          <.button phx-disable-with="Saving...">Lưu</.button>
+          <.button phx-disable-with="...">Lưu</.button>
         </:actions>
       </.simple_form>
     </section>

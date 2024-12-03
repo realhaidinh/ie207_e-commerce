@@ -86,7 +86,7 @@ defmodule ECommerceWeb do
       # Core UI components and translation
       import ECommerceWeb.CoreComponents
       import ECommerceWeb.Gettext
-
+      import ECommerceWeb.Components
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

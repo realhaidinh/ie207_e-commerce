@@ -1,13 +1,16 @@
 <.header>
-  <div class="flex items-center product-breadcrumb">
+  <%!-- <div class="flex items-center product-breadcrumb">
     <%= for category <- @product.categories do %>
-      <.link navigate={~p"/categories/#{category.id}"}>
+      <.link patch={~p"/categories/#{category.id}"}>
         <%= category.title %>
       </.link>
       <span>/</span>
     <% end %>
     <span><%= @product.title %></span>
-  </div>
+  </div> --%>
+  <% categories =
+    Enum.map(@product.categories, fn cat -> Map.put(cat, :url, "/categories/#{cat.id}") end) %>
+  <.breadcrumb pages={categories} current_page={@product.title} />
 </.header>
 
 <.list>
@@ -22,7 +25,7 @@
 <.button phx-click="add">
   Add to cart
 </.button>
-<.back navigate={~p"/products"}>Back to products</.back>
+<.back navigate={~p"/products"}>Về trang sản phẩm</.back>
 
 <h3>Đăng đánh giá</h3>
 <.live_component

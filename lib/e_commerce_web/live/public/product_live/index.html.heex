@@ -2,20 +2,10 @@
   Listing Products
 </.header>
 
-<.table
-  id="products"
-  rows={@products}
-  row_click={fn product -> JS.navigate(~p"/products/#{product}") end}
->
-  <:col :let={product} label="Title"><%= product.title %></:col>
-  <:col :let={product} label="Description"><%= product.description %></:col>
-  <:col :let={product} label="Price"><%= product.price %></:col>
-  <:col :let={product} label="Stock"><%= product.stock %></:col>
-  <:col :let={product} label="Sold"><%= product.sold %></:col>
-  <:col :let={product} label="Slug"><%= product.slug %></:col>
-  <:action :let={product}>
-    <div class="sr-only">
-      <.link navigate={~p"/products/#{product}"}>Show</.link>
-    </div>
-  </:action>
-</.table>
+<ul class="grid grid-cols-4 gap-8">
+  <%= for product <- @products do %>
+    <li class="result-item">
+      <.card product={product} />
+    </li>
+  <% end %>
+</ul>

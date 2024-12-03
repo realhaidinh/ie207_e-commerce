@@ -19,7 +19,12 @@ defmodule ECommerce.Catalog do
 
   """
   def list_products do
-    Repo.all(Product)
+    Repo.all(
+      from p in Product,
+      left_join: r in assoc(p, :reviews),
+      select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+      group_by: [p.id]
+    )
   end
 
   @doc """

@@ -10,10 +10,13 @@ defmodule ECommerceWeb.Admin.Order.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
-      <.table
+    <div class="p-4 sm:ml-64">
+      <.data_table
+        table_id="search-table"
         id="orders-table"
         rows={@orders}
+        searchable="true"
+        sortable="true"
         row_click={fn order -> JS.patch(~p"/admin/dashboard/sales/orders/#{order.id}") end}
       >
         <:col :let={order} label="Mã đơn hàng"><%= order.id %></:col>
@@ -21,7 +24,7 @@ defmodule ECommerceWeb.Admin.Order.Index do
         <:col :let={order} label="Tổng tiền"><%= order.total_price %></:col>
 
         <:col :let={order} label="Trạng thái"><%= order.status %></:col>
-      </.table>
+      </.data_table>
     </div>
     """
   end

@@ -174,7 +174,7 @@ defmodule ECommerceWeb.UserAuth do
     socket =
       socket
       |> mount_current_user(session)
-      |> mount_current_cart
+      |> mount_current_cart()
 
     if socket.assigns.current_user do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
@@ -199,8 +199,7 @@ defmodule ECommerceWeb.UserAuth do
         if cart = ShoppingCart.get_cart_by_user_id(user_id) do
           cart
         else
-          {:ok, new_cart} = ShoppingCart.create_cart(user_id)
-          new_cart
+          ShoppingCart.create_cart(user_id) |> elem(1)
         end
       end
     end)

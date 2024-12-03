@@ -74,7 +74,7 @@ defmodule ECommerceWeb.Router do
   scope "/", ECommerceWeb do
     pipe_through [:browser, :require_authenticated_user, :public]
 
-    live_session :require_authenticated_user,
+    live_session :require_authenticated_user, layout: {ECommerceWeb.Layouts, :public},
       on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", Public.UserSettingsLive, :edit
       live "/cart", Public.CartLive.Index, :index
@@ -89,7 +89,7 @@ defmodule ECommerceWeb.Router do
 
     delete "/users/log_out", UserSessionController, :delete
 
-    live_session :current_user,
+    live_session :current_user, layout: {ECommerceWeb.Layouts, :public},
       on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}] do
       live "/products", Public.ProductLive.Index, :index
       live "/products/:id", Public.ProductLive.Show, :show
@@ -105,9 +105,9 @@ defmodule ECommerceWeb.Router do
   ## Authentication routes
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser, :redirect_if_admin_is_authenticated, :admin]
+    pipe_through [:browser, :redirect_if_admin_is_authenticated]
 
-    live_session :redirect_if_admin_is_authenticated,
+    live_session :redirect_if_admin_is_authenticated, layout: {ECommerceWeb.Layouts, :admin},
       on_mount: [{ECommerceWeb.AdminAuth, :redirect_if_admin_is_authenticated}] do
       live "/log_in", Admin.LoginLive, :new
       live "/reset_password", Admin.ForgotPasswordLive, :new
@@ -120,7 +120,7 @@ defmodule ECommerceWeb.Router do
   scope "/admin", ECommerceWeb do
     pipe_through [:browser, :require_authenticated_admin, :admin]
 
-    live_session :require_authenticated_admin,
+    live_session :require_authenticated_admin, layout: {ECommerceWeb.Layouts, :admin},
       on_mount: [{ECommerceWeb.AdminAuth, :ensure_authenticated}] do
       live "/settings", Admin.SettingsLive, :edit
       live "/settings/confirm_email/:token", Admin.SettingsLive, :confirm_email
