@@ -1,47 +1,159 @@
 <.header>
-  <%!-- <div class="flex items-center product-breadcrumb">
-    <%= for category <- @product.categories do %>
-      <.link patch={~p"/categories/#{category.id}"}>
-        <%= category.title %>
-      </.link>
-      <span>/</span>
-    <% end %>
-    <span><%= @product.title %></span>
-  </div> --%>
   <% categories =
-    Enum.map(@product.categories, fn cat -> Map.put(cat, :url, "/categories/#{cat.id}") end) %>
+    Enum.map(@product.categories, &Map.put(&1, :url, "/categories/#{&1.id}")) %>
   <.breadcrumb pages={categories} current_page={@product.title} />
 </.header>
 
-<.list>
-  <:item title="Title"><%= @product.title %></:item>
-  <:item title="Description"><%= @product.description %></:item>
-  <:item title="Price"><%= @product.price %></:item>
-  <:item title="Stock"><%= @product.stock %></:item>
-  <:item title="Sold"><%= @product.sold %></:item>
-  <:item title="Slug"><%= @product.slug %></:item>
-  <:item title="Review"><%= @product.rating %></:item>
-</.list>
-<.button phx-click="add">
-  Add to cart
-</.button>
-<.back navigate={~p"/products"}>Về trang sản phẩm</.back>
+<section class="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
+  <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
+      <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
+        <img
+          class="w-full dark:hidden"
+          src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+          alt=""
+        />
+        <img
+          class="w-full hidden dark:block"
+          src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
+          alt=""
+        />
+      </div>
 
-<h3>Đăng đánh giá</h3>
-<.live_component
-  module={ECommerceWeb.Public.ProductLive.ReviewFormComponent}
-  id="review_form_component"
-  current_user={@current_user}
-  product={@product}
-/>
-<h3>Đánh giá</h3>
-<ul>
-  <%= for review <- @reviews do %>
-    <li id={"review-#{review.id}"}>
+      <div class="mt-6 sm:mt-8 lg:mt-0">
+        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+          <%= @product.title %>
+        </h1>
+        <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
+          <div class="flex items-center gap-2 mt-2 sm:mt-0">
+            <div class="flex items-center gap-1">
+              <%= for i <- 1..5 do %>
+                <%= if i <= round(@product.rating)  do %>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                  </svg>
+                <% else %>
+                  <svg
+                    class="w-4 h-4 text-gray-200 dark:text-gray-600"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                  </svg>
+                <% end %>
+              <% end %>
+            </div>
+            <p class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
+              (<%= @product.rating %>) |
+            </p>
+            <a
+              href="#product-ratings"
+              class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
+            >
+              <%= if @product.rating_count == 0 do %>
+                Chưa có lượt đánh giá
+              <% else %>
+                <%= @product.rating_count %> lượt đánh giá
+              <% end %>
+              |
+            </a>
+            <span>
+              <b><%= @product.sold %></b> Đã bán
+            </span>
+          </div>
+        </div>
+        <p
+          id="product-price"
+          phx-hook="CurrencyFormat"
+          class="text-2xl font-extrabold text-black-900 sm:text-3xl"
+        >
+          <%= @product.price %>
+        </p>
+        <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
+          <.button phx-click="add">
+            Thêm vào giỏ hàng
+          </.button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="product-content mt-8 m-b-8">
+  <section class="mt-8 m-b-8">
+    <h2>CHI TIẾT SẢN PHẨM</h2>
+    <div>
+      <div class="flex">
+        <label class="w-36">Danh mục</label>
+        <div class="flex items-center">
+          <% categories = @product.categories %>
+          <% first = List.first(categories) %>
+          <%= for category <- categories do %>
+            <svg :if={first.id != category.id}
+              class="w-3 h-3 text-gray-800 dark:text-white ml-1 mr-1"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m9 5 7 7-7 7"
+              />
+            </svg>
+
+            <.link
+              navigate={~p"/categories/#{category.id}"}
+              class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+            >
+              <%= category.title %>
+            </.link>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex">
+        <label class="w-36">Kho</label>
+        <p><%= @product.stock %></p>
+      </div>
+    </div>
+  </section>
+  <section class="mt-8 m-b-8">
+    <h2>MÔ TẢ SẢN PHẨM</h2>
+    <p>
+      <%= @product.description %>
+    </p>
+  </section>
+</div>
+<div class="review-product">
+  <h3>Đăng đánh giá</h3>
+  <.live_component
+    module={ECommerceWeb.Public.ProductLive.ReviewFormComponent}
+    id="review_form_component"
+    current_user={@current_user}
+    product={@product}
+  />
+</div>
+<div id="product-ratings">
+  <h3>ĐÁNH GIÁ SẢN PHẨM</h3>
+  <ul>
+    <li :for={review <- @reviews} id={"review-#{review.id}"}>
       <p>Email: <%= review.user.email %></p>
       <p>Điểm: <%= review.rating %></p>
       <p>Nội dung đánh giá:</p>
       <p><%= review.content %></p>
     </li>
-  <% end %>
-</ul>
+  </ul>
+</div>

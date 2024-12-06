@@ -9,11 +9,11 @@ defmodule ECommerceWeb.Admin.Product.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="p-4 sm:ml-64">
+    <div>
     <.header>Danh sách sản phẩm</.header>
       <.data_table
-        table_id="search-table"
-        id="products"
+        table_id="products-search-table"
+        id="products-table"
         rows={@products}
         searchable="true"
         sortable="true"

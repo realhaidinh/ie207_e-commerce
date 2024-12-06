@@ -46,7 +46,7 @@ defmodule ECommerce.Catalog do
       from p in Product,
         where: p.id == ^id,
         left_join: r in assoc(p, :reviews),
-        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+        select_merge: %{rating: coalesce(avg(r.rating), 0.0), rating_count: coalesce(count(r.rating), 0)},
         preload: [:categories]
     )
   end

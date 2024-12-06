@@ -10,9 +10,9 @@ defmodule ECommerceWeb.Admin.Order.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="p-4 sm:ml-64">
+    <div>
       <.data_table
-        table_id="search-table"
+        table_id="orders-search-table"
         id="orders-table"
         rows={@orders}
         searchable="true"

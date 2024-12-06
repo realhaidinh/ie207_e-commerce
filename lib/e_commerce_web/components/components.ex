@@ -90,41 +90,73 @@ defmodule ECommerceWeb.Components do
   end
 
   attr :pages, :list, required: true
-  attr :current_page, :string, required: true
+  attr :current_page, :string, default: nil
 
   def breadcrumb(assigns) do
     ~H"""
     <div>
       <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-          <li :for={page <- @pages}>
+          <li>
             <div class="flex items-center">
               <.link
-                navigate={page.url}
+                navigate="/"
                 class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
               >
-                <%= page.title %>
+                Trang chủ
               </.link>
+            </div>
+          </li>
 
+          <li :for={page <- @pages}>
+            <div class="flex items-center">
               <svg
-                class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
+                class="w-6 h-6 text-gray-800 dark:text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
                 fill="none"
-                viewBox="0 0 6 10"
+                viewBox="0 0 24 24"
               >
                 <path
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="m1 9 4-4-4-4"
+                  d="m9 5 7 7-7 7"
                 />
               </svg>
+
+              <.link
+                navigate={page.url}
+                class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
+              >
+                <%= page.title %>
+              </.link>
             </div>
           </li>
 
-          <li aria-current="page">
+          <svg
+            :if={@current_page}
+            class="w-6 h-6 text-gray-800 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m9 5 7 7-7 7"
+            />
+          </svg>
+
+          <li :if={@current_page} aria-current="page">
             <div class="flex items-center">
               <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
                 <%= @current_page %>
@@ -310,6 +342,7 @@ defmodule ECommerceWeb.Components do
           <div class="order-3 flex col-start-6 justify-center">
             <.button
               id="dropdownDelayButton"
+              phx-click={JS.navigate("/cart")}
               data-dropdown-toggle="dropdownDelay"
               data-dropdown-delay="300"
               data-dropdown-trigger="hover"
@@ -317,29 +350,32 @@ defmodule ECommerceWeb.Components do
               type="button"
             >
               Giỏ hàng
-
             </.button>
             <!-- Dropdown menu -->
             <div
               id="dropdownDelay"
-              class="grid grid-cols-1 justify-items-stretch w-full z-10 hidden bg-white divide-y divide-gray-100 shadow w-44 dark:bg-gray-700"
+              class="grid grid-cols-1 justify-items-stretch w-1/5 z-10 hidden bg-white divide-y divide-gray-100 shadow dark:bg-gray-700"
             >
-            <p>Sản phẩm mới thêm</p>
+              <p>Sản phẩm mới thêm</p>
+
               <ul
                 class="py-2 text-sm text-gray-700 dark:text-gray-200"
                 aria-labelledby="dropdownDelayButton"
               >
-              <%= for item <- @cart.cart_items do %>
-                <li>
-                  <div class="flex justify-between m-1.5">
-                    <p><%= item.product.title %></p>
-                    <p><%= item.price_when_carted %></p>
-                  </div>
+                <%= for item <- @cart.cart_items do %>
+                  <li>
+                    <div class="flex justify-between m-1.5">
+                      <p><%= item.product.title %></p>
 
-                </li>
+                      <p><%= item.price_when_carted %></p>
+                    </div>
+                  </li>
                 <% end %>
               </ul>
-              <.button class="justify-self-end w-2/3 m-1.5" phx-click={JS.patch("/cart")}>Xem giỏ hàng</.button>
+
+              <.button class="justify-self-end w-2/3 m-1.5" phx-click={JS.patch("/cart")}>
+                Xem giỏ hàng
+              </.button>
             </div>
           </div>
         </div>

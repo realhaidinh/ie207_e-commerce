@@ -10,16 +10,17 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
       <:subtitle>Manage your account email address and password settings</:subtitle>
     </.header>
 
-    <div class="space-y-12 divide-y">
-      <div>
+    <div class="space-y-12 divide-y ">
+      <div class>
         <.simple_form
           for={@email_form}
           id="email_form"
           phx-submit="update_email"
           phx-change="validate_email"
         >
-          <.input field={@email_form[:email]} type="email" label="Email" required />
+          <.input classes={["w-1/3"]} field={@email_form[:email]} type="email" label="Email" required />
           <.input
+            classes={["w-1/3"]}
             field={@email_form[:current_password]}
             name="current_password"
             id="current_password_for_email"
@@ -44,18 +45,27 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
           phx-trigger-action={@trigger_submit}
         >
           <input
+            class="w-1/3"
             name={@password_form[:email].name}
             type="hidden"
             id="hidden_user_email"
             value={@current_email}
           />
-          <.input field={@password_form[:password]} type="password" label="New password" required />
           <.input
+            classes={["w-1/3"]}
+            field={@password_form[:password]}
+            type="password"
+            label="New password"
+            required
+          />
+          <.input
+            classes={["w-1/3"]}
             field={@password_form[:password_confirmation]}
             type="password"
             label="Confirm new password"
           />
           <.input
+            classes={["w-1/3"]}
             field={@password_form[:current_password]}
             name="current_password"
             type="password"

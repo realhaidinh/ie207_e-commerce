@@ -19,16 +19,8 @@ defmodule ECommerceWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :admin do
-    plug :set_layout, :admin
-  end
-
-  pipeline :public do
-    plug :set_layout, :user
-  end
-
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :public]
+    pipe_through [:browser]
 
     get "/", PageController, :home
   end
@@ -58,7 +50,7 @@ defmodule ECommerceWeb.Router do
   ## Authentication routes
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated, :public]
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{ECommerceWeb.UserAuth, :redirect_if_user_is_authenticated}] do
@@ -72,24 +64,27 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :require_authenticated_user, :public]
+    pipe_through [:browser, :require_authenticated_user]
 
-    live_session :require_authenticated_user, layout: {ECommerceWeb.Layouts, :public},
+    live_session :require_authenticated_user,
+      layout: {ECommerceWeb.Layouts, :public},
       on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}] do
-      live "/users/settings", Public.UserSettingsLive, :edit
       live "/cart", Public.CartLive.Index, :index
-      live "/users/orders", Public.OrderLive.Index, :index
-      live "/users/orders/:id", Public.OrderLive.Show, :show
-      live "/users/settings/confirm_email/:token", Public.UserSettingsLive, :confirm_email
+      live "/users/orders", Public.OrderLive.Index, :order_index
+      live "/users/orders/:id", Public.OrderLive.Show, :order_show
+      live "/users/settings/confirm_email/:token", Public.UserSettingsLive, :user_confirm_email
+      live "/users/settings", Public.UserSettingsLive, :profile_edit
     end
   end
 
+
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :public]
+    pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete
 
-    live_session :current_user, layout: {ECommerceWeb.Layouts, :public},
+    live_session :current_user,
+      layout: {ECommerceWeb.Layouts, :public},
       on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}] do
       live "/products", Public.ProductLive.Index, :index
       live "/products/:id", Public.ProductLive.Show, :show
@@ -107,7 +102,8 @@ defmodule ECommerceWeb.Router do
   scope "/admin", ECommerceWeb do
     pipe_through [:browser, :redirect_if_admin_is_authenticated]
 
-    live_session :redirect_if_admin_is_authenticated, layout: {ECommerceWeb.Layouts, :admin},
+    live_session :redirect_if_admin_is_authenticated,
+      layout: {ECommerceWeb.Layouts, :admin},
       on_mount: [{ECommerceWeb.AdminAuth, :redirect_if_admin_is_authenticated}] do
       live "/log_in", Admin.LoginLive, :new
       live "/reset_password", Admin.ForgotPasswordLive, :new
@@ -118,9 +114,10 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser, :require_authenticated_admin, :admin]
+    pipe_through [:browser, :require_authenticated_admin]
 
-    live_session :require_authenticated_admin, layout: {ECommerceWeb.Layouts, :admin},
+    live_session :require_authenticated_admin,
+      layout: {ECommerceWeb.Layouts, :admin},
       on_mount: [{ECommerceWeb.AdminAuth, :ensure_authenticated}] do
       live "/settings", Admin.SettingsLive, :edit
       live "/settings/confirm_email/:token", Admin.SettingsLive, :confirm_email
@@ -147,7 +144,4 @@ defmodule ECommerceWeb.Router do
     end
   end
 
-  defp set_layout(conn, layout) do
-    assign(conn, :current_layout, layout)
-  end
 end

@@ -7,13 +7,8 @@ defmodule ECommerceWeb.Public.OrderLive.Index do
   end
 
   @impl true
-  def handle_params(params, _uri, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
-
-  def apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Listing orders")
+  def handle_params(_params, _uri, socket) do
+    {:noreply, assign(socket, :page_title, "Listing orders")}
   end
 
   def load_user_orders(socket) do

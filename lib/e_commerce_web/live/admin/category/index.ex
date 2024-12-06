@@ -5,12 +5,12 @@ defmodule ECommerceWeb.Admin.Category.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="p-4 sm:ml-64">
+    <div>
       <.link phx-click="open_new_category_modal" phx-target={@myself}>
         <.button>Tạo danh mục mới</.button>
       </.link>
       <.data_table
-        table_id="search-table"
+        table_id="categories-search-table"
         id="categories"
         rows={@categories}
         searchable="true"
