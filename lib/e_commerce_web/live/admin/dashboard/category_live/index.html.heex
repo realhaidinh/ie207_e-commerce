@@ -1,0 +1,45 @@
+<.link patch={~p"/admin/dashboard/catalog/category/new"}>
+  <.button class="m-8">Tạo danh mục mới</.button>
+</.link>
+
+<.data_table
+  table_id="categories-search-table"
+  id="categories"
+  rows={@categories}
+  searchable="true"
+  sortable="true"
+  row_click={fn category -> JS.patch(~p"/admin/dashboard/catalog/category/#{category.id}") end}
+>
+  <:col :let={category} label="Tên danh mục"><%= category.title %></:col>
+  
+  <:action :let={category}>
+    <div class="sr-only">
+      <.link patch={~p"/admin/dashboard/catalog/category/#{category.id}"}>Chi tiết</.link>
+    </div>
+     <.link patch={~p"/admin/dashboard/catalog/category/edit/#{category.id}"}>Sửa</.link>
+  </:action>
+  
+  <:action :let={category}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: category.id})}
+      data-confirm="Xác nhận xóa danh mục?"
+    >
+      Xóa
+    </.link>
+  </:action>
+</.data_table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="category-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/dashboard/catalog/category")}
+>
+  <.live_component
+    module={ECommerceWeb.Admin.Dashboard.CategoryLive.FormComponent}
+    id={@category.id || :new}
+    action={@live_action}
+    category={@category}
+    patch={~p"/admin/dashboard/catalog/category"}
+  />
+</.modal>

@@ -38,5 +38,4 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
   end
 
   defp page_title(:show), do: "Show Product"
-
 end

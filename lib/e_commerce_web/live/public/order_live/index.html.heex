@@ -1,8 +1,7 @@
 <div>
   <%= for order <- @orders do %>
     <h1>
-      Trạng thái đơn hàng: <%= order.status %>
-      Tổng tiền: <%= order.total_price %>
+      Trạng thái đơn hàng: <%= order.status %> Tổng tiền: <%= order.total_price %>
     </h1>
 
     <.table

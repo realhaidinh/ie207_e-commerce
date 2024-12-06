@@ -77,7 +77,6 @@ defmodule ECommerceWeb.Router do
     end
   end
 
-
   scope "/", ECommerceWeb do
     pipe_through [:browser]
 
@@ -121,14 +120,26 @@ defmodule ECommerceWeb.Router do
       on_mount: [{ECommerceWeb.AdminAuth, :ensure_authenticated}] do
       live "/settings", Admin.SettingsLive, :edit
       live "/settings/confirm_email/:token", Admin.SettingsLive, :confirm_email
-      live "/dashboard/catalog/products", Admin.DashboardLive.Index, :products
-      live "/dashboard/catalog/products/:id", Admin.DashboardLive.Index, :product
-      live "/dashboard/catalog/categories", Admin.DashboardLive.Index, :categories
-      live "/dashboard/catalog/categories/:id", Admin.DashboardLive.Index, :category
-      live "/dashboard/sales/orders", Admin.DashboardLive.Index, :orders
-      live "/dashboard/sales/orders/:id", Admin.DashboardLive.Index, :order
-      live "/dashboard/customers", Admin.DashboardLive.Index, :users
-      live "/dashboard/customers/:id", Admin.DashboardLive.Index, :user
+
+      live "/dashboard", Admin.Dashboard.Index, :index
+      live "/dashboard/sales/order", Admin.Dashboard.OrderLive.Index, :index
+      live "/dashboard/sales/order/:id", Admin.Dashboard.OrderLive.Show, :show
+
+      live "/dashboard/customer", Admin.Dashboard.UserLive.Index, :index
+      live "/dashboard/customer/:id", Admin.Dashboard.UserLive.Show, :show
+
+      live "/dashboard/catalog/category", Admin.Dashboard.CategoryLive.Index, :index
+      live "/dashboard/catalog/category/edit/:id", Admin.Dashboard.CategoryLive.Index, :edit
+      live "/dashboard/catalog/category/new", Admin.Dashboard.CategoryLive.Index, :new
+      live "/dashboard/catalog/category/:id", Admin.Dashboard.CategoryLive.Show, :show
+      live "/dashboard/catalog/category/:id/edit", Admin.Dashboard.CategoryLive.Show, :edit
+      live "/dashboard/catalog/category/:id/new", Admin.Dashboard.CategoryLive.Show, :new
+
+      live "/dashboard/catalog/product", Admin.Dashboard.ProductLive.Index, :index
+      live "/dashboard/catalog/product/new", Admin.Dashboard.ProductLive.Index, :new
+      live "/dashboard/catalog/product/edit/:id", Admin.Dashboard.ProductLive.Index, :edit
+      live "/dashboard/catalog/product/:id", Admin.Dashboard.ProductLive.Show, :show
+      live "/dashboard/catalog/product/:id/edit", Admin.Dashboard.ProductLive.Show, :edit
     end
   end
 
@@ -143,5 +154,4 @@ defmodule ECommerceWeb.Router do
       live "/confirm", Admin.ConfirmationInstructionsLive, :new
     end
   end
-
 end

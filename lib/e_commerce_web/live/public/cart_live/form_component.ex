@@ -26,7 +26,13 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
         <.inputs_for :let={item_form} field={f[:cart_items]}>
           <% item = item_form.data %>
           <% qty_attr = item_form[:quantity] %>
-          <label for={qty_attr.id} class="hover:cursor-pointer" phx-click={JS.navigate("/products/#{item.product.id}")}><%= item.product.title %></label>
+          <label
+            for={qty_attr.id}
+            class="hover:cursor-pointer"
+            phx-click={JS.navigate("/products/#{item.product.id}")}
+          >
+            <%= item.product.title %>
+          </label>
           <span id={"item-#{item.id}-price"} class="col-start-2" phx-hook="CurrencyFormat">
             <%= item.product.price %>
           </span>
@@ -52,7 +58,9 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
         </.inputs_for>
       </.simple_form>
       <b>Tổng thanh toán:</b>
-      <span id="total_price" phx-hook="CurrencyFormat"> <%= ShoppingCart.total_cart_price(@cart) %> </span>
+      <span id="total_price" phx-hook="CurrencyFormat">
+        <%= ShoppingCart.total_cart_price(@cart) %>
+      </span>
       <.link
         class="rounded-lg justify-self-center col-start-5 w-10 bg-zinc-900 text-sm font-semibold leading-6 text-white py-1 px-2"
         patch="/checkout"

@@ -28,11 +28,17 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 
 let Hooks = {}
 Hooks.DataTable = {
-  mounted() {
-    const dataTable = new DataTable(this.el, {
-      searchable: this.el.dataset.searchable === "true",
-      sortable: this.el.dataset.sortable === "true"
+  createDataTable(element) {
+    new DataTable(element, {
+      searchable: element.dataset.searchable === "true",
+      sortable: element.dataset.sortable === "true"
     })
+  },
+  mounted() {
+    this.createDataTable(this.el)
+  },
+  updated() {
+    this.createDataTable(this.el)
   }
 }
 Hooks.CurrencyFormat = {

@@ -197,6 +197,7 @@ defmodule ECommerceWeb.CoreComponents do
   attr :rest, :global,
     include: ~w(autocomplete name rel action enctype method novalidate target multipart),
     doc: "the arbitrary HTML attributes to apply to the form tag"
+
   attr :classes, :list, default: []
   slot :inner_block, required: true
   slot :actions, doc: "the slot for form actions, such as a submit button"
@@ -204,7 +205,7 @@ defmodule ECommerceWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class={[ "mt-10 space-y-8 bg-white" | @classes]}>
+      <div class={["mt-10 space-y-8 bg-white" | @classes]}>
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
@@ -290,6 +291,7 @@ defmodule ECommerceWeb.CoreComponents do
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
   attr :classes, :list, default: []
   attr :label_class, :string, default: ""
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
@@ -341,8 +343,8 @@ defmodule ECommerceWeb.CoreComponents do
         name={@name}
         class={[
           "mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
-        | @classes]
-        }
+          | @classes
+        ]}
         multiple={@multiple}
         {@rest}
       >

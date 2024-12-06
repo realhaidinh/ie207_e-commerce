@@ -1,0 +1,34 @@
+<.back navigate="/admin/dashboard/catalog/product/">Trở về danh sách sản phẩm</.back>
+
+<.list>
+  <:item title="Tên sản phẩm"><%= @product.title %></:item>
+
+  <:item title="Mô tả"><%= @product.description %></:item>
+
+  <:item title="Giá"><%= @product.price %></:item>
+
+  <:item title="Kho"><%= @product.stock %></:item>
+
+  <:item title="Đã bán"><%= @product.sold %></:item>
+
+  <:item title="Slug"><%= @product.slug %></:item>
+
+  <:item title="Đánh giá"><%= @product.rating %></:item>
+
+  <:item title="Số lượt đánh giá"><%= @product.rating_count %></:item>
+</.list>
+
+<.modal
+  :if={@live_action == :edit}
+  id="product-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/dashboard/catalog/product/#{@product.id}")}
+>
+  <.live_component
+    module={ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent}
+    id={@product.id}
+    action={@live_action}
+    patch={~p"/admin/dashboard/catalog/product/#{@product.id}"}
+    product={@product}
+  />
+</.modal>

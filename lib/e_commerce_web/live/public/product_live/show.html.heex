@@ -97,7 +97,8 @@
           <% categories = @product.categories %>
           <% first = List.first(categories) %>
           <%= for category <- categories do %>
-            <svg :if={first.id != category.id}
+            <svg
+              :if={first.id != category.id}
               class="w-3 h-3 text-gray-800 dark:text-white ml-1 mr-1"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"

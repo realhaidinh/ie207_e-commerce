@@ -1,12 +1,13 @@
-defmodule ECommerceWeb.Admin.Category.Form do
-  use ECommerceWeb, :live_component
+defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.FormComponent do
   alias ECommerce.Catalog
+  use ECommerceWeb, :live_component
+
   @impl true
   def render(assigns) do
     ~H"""
     <section class="bg-white dark:bg-gray-900">
       <.simple_form for={@form} id="category-form" phx-target={@myself} phx-submit="save">
-        <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:title]} type="text" label="Tên danh mục" />
         <:actions>
           <.button phx-disable-with="...">Lưu</.button>
         </:actions>
@@ -20,7 +21,9 @@ defmodule ECommerceWeb.Admin.Category.Form do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:form, to_form(Catalog.change_category(category)))}
+     |> assign_new(:form, fn ->
+       to_form(Catalog.change_category(category))
+     end)}
   end
 
   @impl true
@@ -30,9 +33,9 @@ defmodule ECommerceWeb.Admin.Category.Form do
 
   defp save_category(%{assigns: %{category: category}} = socket, :edit, category_params) do
     case Catalog.update_category(category, category_params) do
-      {:ok, _category} ->
-        notify_parent(:close_modal)
-        {:noreply, socket}
+      {:ok, category} ->
+        notify_parent({:saved, category})
+        {:noreply, push_patch(socket, to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
@@ -43,9 +46,9 @@ defmodule ECommerceWeb.Admin.Category.Form do
     chset = Catalog.change_category(category, category_params)
 
     case Catalog.insert_category(chset) do
-      {:ok, _category} ->
-        notify_parent(:close_modal)
-        {:noreply, socket}
+      {:ok, category} ->
+        notify_parent({:saved, category})
+        {:noreply, push_patch(socket, to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}

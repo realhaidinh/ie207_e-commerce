@@ -21,9 +21,9 @@ defmodule ECommerce.Catalog do
   def list_products do
     Repo.all(
       from p in Product,
-      left_join: r in assoc(p, :reviews),
-      select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
-      group_by: [p.id]
+        left_join: r in assoc(p, :reviews),
+        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+        group_by: [p.id]
     )
   end
 
@@ -46,7 +46,10 @@ defmodule ECommerce.Catalog do
       from p in Product,
         where: p.id == ^id,
         left_join: r in assoc(p, :reviews),
-        select_merge: %{rating: coalesce(avg(r.rating), 0.0), rating_count: coalesce(count(r.rating), 0)},
+        select_merge: %{
+          rating: coalesce(avg(r.rating), 0.0),
+          rating_count: coalesce(count(r.rating), 0)
+        },
         preload: [:categories]
     )
   end
@@ -113,9 +116,15 @@ defmodule ECommerce.Catalog do
 
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
-    category = get_category!(attrs["category_id"])
-    category_ids = Regex.split(~r/\//, category.path, trim: true)
-    categories = list_categories_by_id(category_ids)
+    category = get_category(attrs["category_id"])
+    attrs = Map.put(attrs, "slug", slugify(product.title))
+    parent_category_ids =
+      case category do
+        nil -> []
+        _ -> Regex.split(~r/\//, category.path, trim: true)
+      end
+
+    categories = [category | list_categories_by_id(parent_category_ids)]
 
     product
     |> Product.changeset(attrs)
@@ -154,6 +163,7 @@ defmodule ECommerce.Catalog do
 
   """
   def get_category!(id), do: Repo.get!(Category, id)
+  def get_category(id), do: Repo.get(Category, id)
 
   def list_root_categories() do
     Repo.all(
@@ -226,7 +236,12 @@ defmodule ECommerce.Catalog do
 
   """
   def delete_category(%Category{} = category) do
-    Repo.delete(category)
+    subpath = get_subcategory_path(category)
+
+    Repo.delete_all(
+      from c in Category,
+        where: c.id == ^category.id or c.path == ^subpath
+    )
   end
 
   @doc """
@@ -239,6 +254,7 @@ defmodule ECommerce.Catalog do
 
   """
   def change_category(%Category{} = category, attrs \\ %{}) do
+    attrs = Map.put(attrs, "slug", slugify(category.title))
     Category.changeset(category, attrs)
   end
 
@@ -355,5 +371,16 @@ defmodule ECommerce.Catalog do
   """
   def change_review(%Review{} = review, attrs \\ %{}) do
     Review.changeset(review, attrs)
+  end
+
+  def slugify(nil), do: nil
+
+  def slugify(text) do
+    text
+    |> String.downcase()
+    |> String.trim()
+    |> String.normalize(:nfkd)
+    |> String.replace(~r/[^a-z0-9\s-]/u, "")
+    |> String.replace(~r/[\s-]+/, "-", global: true)
   end
 end
