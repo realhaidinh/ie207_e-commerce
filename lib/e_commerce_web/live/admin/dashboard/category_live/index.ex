@@ -5,7 +5,7 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :page_title, "Quản lý danh mục")}
+    {:ok, socket |> assign(:page_title, "Quản lý danh mục") |> stream(:stream_init, [])}
   end
 
   @impl true
@@ -32,5 +32,16 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
     {_, _} = Catalog.delete_category(category)
 
     {:noreply, push_patch(socket, to: ~p"/admin/dashboard/catalog/category")}
+  end
+
+  def handle_event("show-subcategories", %{"id" => id}, socket) do
+    category = Catalog.get_category!(id)
+    socket =
+      if socket.assigns.streams[category.title] do
+        socket
+      else
+        stream(socket, category.title, Catalog.get_subcategories(category))
+      end
+    {:noreply, socket}
   end
 end

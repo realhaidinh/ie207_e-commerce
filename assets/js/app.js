@@ -33,6 +33,9 @@ Hooks.DataTable = {
       searchable: element.dataset.searchable === "true",
       sortable: element.dataset.sortable === "true"
     })
+    const tbody = element.querySelector('tbody')
+    tbody.setAttribute("id", element.dataset.tbodyId)
+    element.dataset.tbodyPhxUpdate && tbody.setAttribute("phx-update", element.dataset.tbodyPhxUpdate)
   },
   mounted() {
     this.createDataTable(this.el)

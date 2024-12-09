@@ -9,6 +9,6 @@ alias ECommerce.Orders
 
   @impl true
   def handle_params(_params, _uri, socket) do
-    {:noreply, assign(socket, :orders, Orders.list_orders())}
+    {:noreply, stream(socket, :orders, Orders.list_orders())}
   end
 end

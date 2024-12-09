@@ -13,12 +13,13 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
           <.input field={@form[:title]} type="text" label="Tên sản phẩm" />
           <.input field={@form[:description]} type="text" label="Mô tả sản phẩm" />
           <.input field={@form[:price]} type="text" label="Giá bán" />
-          <.input field={@form[:stock]} type="number" label="Kho" />
+          <.input field={@form[:stock]} type="number" label="Kho" min="0"/>
           <.input
             field={@form[:category_id]}
             type="select"
-            options={category_opts(@changeset)}
+            list="categories"
             label="Danh mục"
+            options={category_opts(@changeset)}
           />
           <:actions>
             <.button phx-disable-with="...">Lưu</.button>
@@ -68,8 +69,8 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
 
   def save_product(socket, :edit, product_params) do
     case Catalog.update_product(socket.assigns.product, product_params) do
-      {:ok, _product} ->
-        notify_parent(:saved)
+      {:ok, product} ->
+        notify_parent({:saved, product})
         {:noreply, push_patch(socket, to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -79,8 +80,8 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
 
   def save_product(socket, :new, product_params) do
     case Catalog.create_product(product_params) do
-      {:ok, _product} ->
-        notify_parent(:saved)
+      {:ok, product} ->
+        notify_parent({:saved, product})
         {:noreply, push_patch(socket, to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

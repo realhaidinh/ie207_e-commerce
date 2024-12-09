@@ -8,7 +8,7 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Quản lý sản phẩm")
-     |> assign(:products, Catalog.list_products())}
+     |> stream(:products, Catalog.list_products())}
   end
 
   @impl true
@@ -27,7 +27,14 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.Index do
   def apply_action(socket, _, _), do: assign(socket, :product, nil)
 
   @impl true
-  def handle_info(:saved, socket) do
-    {:noreply, assign(socket, :products, Catalog.list_products())}
+  def handle_info({:saved, product}, socket) do
+    {:noreply, stream_insert(socket, :products, product)}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    product = Catalog.get_product!(id)
+    {:ok, _} = Catalog.delete_product(product)
+    {:noreply, stream_delete(socket, :products, product)}
   end
 end

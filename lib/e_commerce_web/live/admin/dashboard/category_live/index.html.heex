@@ -11,14 +11,23 @@
   row_click={fn category -> JS.patch(~p"/admin/dashboard/catalog/category/#{category.id}") end}
 >
   <:col :let={category} label="Tên danh mục"><%= category.title %></:col>
-  
+  <:col :let={category} label="Danh mục con">
+    <div :if={@streams[category.title]} id={category.title} phx-update="stream">
+        <span :for={{dom_id, cat} <- @streams[category.title]} id={dom_id}>
+          <%= cat.title %>
+        </span>
+    </div>
+  </:col>
   <:action :let={category}>
     <div class="sr-only">
       <.link patch={~p"/admin/dashboard/catalog/category/#{category.id}"}>Chi tiết</.link>
     </div>
-     <.link patch={~p"/admin/dashboard/catalog/category/edit/#{category.id}"}>Sửa</.link>
+    <.link patch={~p"/admin/dashboard/catalog/category/edit/#{category.id}"}>Sửa</.link>
+    <.link phx-click={JS.push("show-subcategories", value: %{id: category.id})}>
+      Hiển thị danh mục con
+    </.link>
   </:action>
-  
+
   <:action :let={category}>
     <.link
       phx-click={JS.push("delete", value: %{id: category.id})}

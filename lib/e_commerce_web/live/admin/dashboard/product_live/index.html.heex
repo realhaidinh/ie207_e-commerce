@@ -4,28 +4,28 @@
 <.data_table
   table_id="products-search-table"
   id="products-table"
-  rows={@products}
+  rows={@streams.products}
   searchable="true"
   sortable="true"
-  row_click={fn product -> JS.patch(~p"/admin/dashboard/catalog/product/#{product}") end}
+  row_click={fn {_id, product} -> JS.patch(~p"/admin/dashboard/catalog/product/#{product}") end}
 >
-  <:col :let={product} label="Tên sản phẩm"><%= product.title %></:col>
+  <:col :let={{_id, product}} label="Tên sản phẩm"><%= product.title %></:col>
 
-  <:col :let={product} label="Giá"><%= product.price %></:col>
+  <:col :let={{_id, product}} label="Giá"><%= product.price %></:col>
 
-  <:col :let={product} label="Tồn kho"><%= product.stock %></:col>
+  <:col :let={{_id, product}} label="Tồn kho"><%= product.stock %></:col>
 
-  <:col :let={product} label="Đã bán"><%= product.sold %></:col>
+  <:col :let={{_id, product}} label="Đã bán"><%= product.sold %></:col>
 
-  <:col :let={product} label="Đánh giá"><%= product.rating %></:col>
-  <:action :let={product}>
+  <:col :let={{_id, product}} label="Đánh giá"><%= product.rating %></:col>
+  <:action :let={{_id, product}}>
     <div class="sr-only">
       <.link patch={~p"/admin/dashboard/catalog/product/#{product.id}"}>Chi tiết</.link>
     </div>
     <.link patch={~p"/admin/dashboard/catalog/product/edit/#{product.id}"}>Sửa</.link>
   </:action>
 
-  <:action :let={product}>
+  <:action :let={{_id, product}}>
     <.link
       phx-click={JS.push("delete", value: %{id: product.id})}
       data-confirm="Xác nhận xóa sản phẩm?"
