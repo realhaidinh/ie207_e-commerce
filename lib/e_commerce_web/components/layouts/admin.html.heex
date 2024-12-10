@@ -1,8 +1,8 @@
 <header class="sticky top-0 z-10">
   <.navbar current_user={@current_admin} role={:admin} />
 </header>
-<main class="sm:px-6 lg:px-8">
-  <div class="">
+<main>
+  <div>
     <.flash_group flash={@flash} />
     <aside
       :if={@current_admin}
