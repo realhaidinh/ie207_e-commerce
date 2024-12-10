@@ -8,13 +8,13 @@ defmodule ECommerceWeb.Public.UserRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Register for an account
+        Đăng ký tài khoản
         <:subtitle>
-          Already registered?
+          Đã có tài khoản?
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Log in
+            Đăng nhập
           </.link>
-          to your account now.
+          vào tài khoản của bạn.
         </:subtitle>
       </.header>
 
@@ -35,7 +35,7 @@ defmodule ECommerceWeb.Public.UserRegistrationLive do
         <.input field={@form[:password]} type="password" label="Password" required />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+          <.button phx-disable-with="..." class="w-full">Đăng ký tài khoản</.button>
         </:actions>
       </.simple_form>
     </div>

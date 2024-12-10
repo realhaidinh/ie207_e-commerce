@@ -1,9 +1,12 @@
 <.header>
-  Listing Products
+  Kết quả tìm kiếm cho từ khóa:
+  <span class="text-red-500">
+    <%= @page_title %>
+  </span>
 </.header>
 
 <ul class="grid grid-cols-4 gap-8">
-  <%= for product <- @products do %>
+  <%= for {_id, product} <- @streams.products do %>
     <li class="result-item">
       <.product_card product={product} />
     </li>

@@ -5,16 +5,16 @@ defmodule ECommerceWeb.Public.ProductLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :products, Catalog.list_products())}
+    {:ok, socket}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
+    products = Catalog.search_product(params)
 
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Listing Products")
+    {:noreply,
+     socket
+     |> assign(:page_title, Map.get(params, "keyword", ""))
+     |> stream(:products, products, reset: true)}
   end
 end

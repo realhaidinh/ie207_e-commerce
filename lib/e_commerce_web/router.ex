@@ -53,6 +53,7 @@ defmodule ECommerceWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
+      layout: {ECommerceWeb.Layouts, :public},
       on_mount: [{ECommerceWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/users/register", Public.UserRegistrationLive, :new
       live "/users/log_in", Public.UserLoginLive, :new

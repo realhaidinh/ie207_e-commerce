@@ -27,6 +27,17 @@ defmodule ECommerce.Catalog do
     )
   end
 
+  def search_product(opts) do
+    _page_no = Map.get(opts, "page", 1)
+    keyword ="%" <> Map.get(opts, "keyword", "") <> "%"
+
+    Repo.all(
+      from p in Product,
+        where: like(p.title, ^keyword),
+        limit: 5
+    )
+  end
+
   @doc """
   Gets a single product.
 
@@ -118,6 +129,7 @@ defmodule ECommerce.Catalog do
   def change_product(%Product{} = product, attrs \\ %{}) do
     category = get_category(attrs["category_id"])
     attrs = Map.put(attrs, "slug", slugify(product.title))
+
     parent_category_ids =
       case category do
         nil -> []

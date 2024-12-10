@@ -174,245 +174,188 @@ defmodule ECommerceWeb.Components do
   attr :current_user, :any, required: true
   attr :cart, :any
   attr :role, :atom, required: true
+
   def navbar(assigns) do
     ~H"""
-    <div>
-      <nav class="bg-white border-gray-200 dark:bg-gray-900">
-      <%= if @role == :user do %>
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <%= if @current_user do %>
+    <div class="border border-b border-gray-200 bg-gray-50 dark:border-gray-600 lg:py-4 dark:bg-gray-700">
+      <nav>
+        <%= if @role == :user do %>
+          <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+              <%= if @current_user do %>
+                <button
+                  type="button"
+                  class="block text-sm  text-black-500 truncate dark:text-gray-400"
+                  id="user-menu-button"
+                  aria-expanded="false"
+                  data-dropdown-toggle="user-dropdown"
+                  data-dropdown-placement="bottom"
+                >
+                  <%= @current_user.email %>
+                </button>
+                <!-- Dropdown menu -->
+                <div
+                  class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                  id="user-dropdown"
+                >
+                  <ul class="py-2" aria-labelledby="user-menu-button">
+                    <li>
+                      <.link
+                        href="/users/settings"
+                        class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                      >
+                        Thông tin tài khoản
+                      </.link>
+                    </li>
+
+                    <li>
+                      <.link
+                        href="/users/orders"
+                        class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                      >
+                        Đơn mua
+                      </.link>
+                    </li>
+
+                    <li>
+                      <.link
+                        href="/users/log_out"
+                        method="delete"
+                        class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                      >
+                        Đăng xuất
+                      </.link>
+                    </li>
+                  </ul>
+                </div>
+              <% else %>
+                <div class="flex items-center space-x-6 rtl:space-x-reverse">
+                  <.link
+                    href="/users/log_in"
+                    class="text-sm font-medium text-gray-900 md:my-0 dark:text-white"
+                  >
+                    Đăng nhập
+                  </.link>
+
+                  <.link
+                    href="/users/register"
+                    class="text-sm font-medium text-gray-900 md:my-0 dark:text-white"
+                  >
+                    Đăng ký
+                  </.link>
+                </div>
+              <% end %>
+
               <button
+                data-collapse-toggle="navbar"
                 type="button"
-                class="block text-sm  text-black-500 truncate dark:text-gray-400"
-                id="user-menu-button"
+                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                aria-controls="navbar"
                 aria-expanded="false"
-                data-dropdown-toggle="user-dropdown"
-                data-dropdown-placement="bottom"
               >
-                <%= @current_user.email %>
-              </button>
-              <!-- Dropdown menu -->
-              <div
-                class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
-                id="user-dropdown"
-              >
-                <ul class="py-2" aria-labelledby="user-menu-button">
-                  <li>
-                    <.link
-                      href="/users/settings"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >
-                      Thông tin tài khoản
-                    </.link>
-                  </li>
-
-                  <li>
-                    <.link
-                      href="/users/orders"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >
-                      Đơn mua
-                    </.link>
-                  </li>
-
-                  <li>
-                    <.link
-                      href="/users/log_out"
-                      method="delete"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >
-                      Đăng xuất
-                    </.link>
-                  </li>
-                </ul>
-              </div>
-            <% else %>
-              <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                <.link
-                  href="/users/log_in"
-                  class="text-sm  text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Đăng nhập
-                </.link>
-
-                <.link
-                  href="/users/register"
-                  class="text-sm  text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Đăng ký
-                </.link>
-              </div>
-            <% end %>
-
-            <button
-              data-collapse-toggle="navbar"
-              type="button"
-              class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-              aria-controls="navbar"
-              aria-expanded="false"
-            >
-              <span class="sr-only">Open main menu</span>
-              <svg
-                class="w-5 h-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 17 14"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M1 1h15M1 7h15M1 13h15"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div id="navbar" class="justify-between hidden w-full md:flex md:w-auto md:order-1">
-            <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <.link
-                  navigate="/"
-                  class="block py-2 px-3 text-black bg-white-700 rounded md:bg-transparent md:text-black-700 md:p-0 md:dark:text-blue-500"
-                  aria-current="page"
-                >
-                  Trang chủ
-                </.link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="max-w-screen-xl grid grid-cols-6 flex justify-between flex-wrap items-center mx-auto p-4">
-          <div class="flex basis-1/3 col-start-2 col-end-6 md:order-2 mr-2.5">
-            <button
-              type="button"
-              data-collapse-toggle="navbar"
-              aria-controls="navbar"
-              aria-expanded="false"
-              class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1"
-            >
-              <svg
-                class="w-5 h-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-               <span class="sr-only">Search</span>
-            </button>
-
-            <div class="relative hidden md:block w-full">
-              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <span class="sr-only">Open main menu</span>
                 <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  class="w-5 h-5"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
-                  viewBox="0 0 20 20"
+                  viewBox="0 0 17 14"
                 >
                   <path
                     stroke="currentColor"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    d="M1 1h15M1 7h15M1 13h15"
                   />
                 </svg>
-                 <span class="sr-only">Search icon</span>
-              </div>
-
-              <input
-                type="text"
-                id="search-navbar"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search..."
-              />
+              </button>
             </div>
-          </div>
 
-          <div class="order-3 flex col-start-6 justify-center">
-            <.button
-              id="dropdownDelayButton"
-              phx-click={JS.navigate("/cart")}
-              data-dropdown-toggle="dropdownDelay"
-              data-dropdown-delay="300"
-              data-dropdown-trigger="hover"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              type="button"
-            >
-              Giỏ hàng
-            </.button>
-            <!-- Dropdown menu -->
-            <div
-              id="dropdownDelay"
-              class="grid grid-cols-1 justify-items-stretch w-1/5 z-10 hidden bg-white divide-y divide-gray-100 shadow dark:bg-gray-700"
-            >
-              <p>Sản phẩm mới thêm</p>
-
-              <ul
-                class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownDelayButton"
+            <div id="navbar" class="justify-between hidden w-full md:flex md:w-auto md:order-1">
+              <.link
+                class="text-sm font-medium text-gray-900 md:my-0 dark:text-white"
+                navigate="/"
+                aria-current="page"
               >
-                <%= for item <- @cart.cart_items do %>
-                  <li>
-                    <div class="flex justify-between m-1.5">
-                      <p><%= item.product.title %></p>
-
-                      <p><%= item.price_when_carted %></p>
-                    </div>
-                  </li>
-                <% end %>
-              </ul>
-
-              <.button class="justify-self-end w-2/3 m-1.5" phx-click={JS.patch("/cart")}>
-                Xem giỏ hàng
-              </.button>
+                Trang chủ
+              </.link>
             </div>
           </div>
-        </div>
-        <% else %>
-        <div class="max-w-screen-xl flex flex-wrap flex-row-reverse items-center justify-between mx-auto p-4">
-          <div class="flex items-center md:order-2 space-x-3 md:space-x-0">
-          <%= if @current_user do %>
 
+          <div class="max-w-screen-xl grid grid-cols-6 justify-between items-center mx-auto">
+            <.live_component module={ECommerceWeb.SearchFormComponent} id="search-bar" />
 
-            <.link
-                navigate="/admin/settings"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            >
-              Thông tin tài khoản <%= @current_user.email %>
-            </.link>
-            <.link
-                href="/admin/log_out"
-                method="delete"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            >
-              Đăng xuất
-            </.link>
-          <% else %>
-          <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                <.link
-                  href="/admin/log_in"
-                  class="text-sm  text-blue-600 dark:text-blue-500 hover:underline"
+            <div class="order-3 flex col-start-6 justify-center">
+              <.button
+                id="dropdownDelayButton"
+                phx-click={JS.navigate("/cart")}
+                data-dropdown-toggle="dropdownDelay"
+                data-dropdown-delay="300"
+                data-dropdown-trigger="hover"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                type="button"
+              >
+                Giỏ hàng
+              </.button>
+              <!-- Dropdown menu -->
+              <div
+                :if={@cart}
+                id="dropdownDelay"
+                class="grid grid-cols-1 justify-items-stretch w-1/5 z-10 hidden bg-white divide-y divide-gray-100 shadow dark:bg-gray-700"
+              >
+                <p>Sản phẩm mới thêm</p>
+
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropdownDelayButton"
                 >
-                  Đăng nhập
-                </.link>
+                  <%= for item <- @cart.cart_items do %>
+                    <li>
+                      <div class="flex justify-between m-1.5">
+                        <p><%= item.product.title %></p>
+
+                        <p><%= item.price_when_carted %></p>
+                      </div>
+                    </li>
+                  <% end %>
+                </ul>
+
+                <.button class="justify-self-end w-2/3 m-1.5" phx-click={JS.patch("/cart")}>
+                  Xem giỏ hàng
+                </.button>
               </div>
-          <% end %>
+            </div>
           </div>
-        </div>
+        <% else %>
+          <div class="max-w-screen-xl flex flex-wrap flex-row-reverse items-center justify-between mx-auto p-4">
+            <div class="flex items-center md:order-2 space-x-3 md:space-x-0">
+              <%= if @current_user do %>
+                <.link
+                  navigate="/admin/settings"
+                  class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
+                  Thông tin tài khoản <%= @current_user.email %>
+                </.link>
+                <.link
+                  href="/admin/log_out"
+                  method="delete"
+                  class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
+                  Đăng xuất
+                </.link>
+              <% else %>
+                <div class="flex items-center space-x-6 rtl:space-x-reverse">
+                  <.link
+                    href="/admin/log_in"
+                    class="text-sm font-medium text-gray-900 md:my-0 dark:text-white"
+                  >
+                    Đăng nhập
+                  </.link>
+                </div>
+              <% end %>
+            </div>
+          </div>
         <% end %>
       </nav>
     </div>
