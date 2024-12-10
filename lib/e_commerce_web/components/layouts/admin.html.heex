@@ -1,13 +1,13 @@
-<header class="sticky top-0 z-99">
+<header class="sticky top-0 z-10">
   <.navbar current_user={@current_admin} role={:admin} />
 </header>
-<main class="sm:px-6 lg:px-8 z-1">
+<main class="sm:px-6 lg:px-8">
   <div class="">
     <.flash_group flash={@flash} />
     <aside
       :if={@current_admin}
       id="sidebar-multi-level-sidebar"
-      class="fixed left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+      class="fixed left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 border border-b border-gray-200 bg-gray-50 dark:border-gray-600 lg:py-4 dark:bg-gray-700"
       aria-label="Sidebar"
     >
       <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">

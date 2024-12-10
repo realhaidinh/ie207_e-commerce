@@ -11,14 +11,17 @@ defmodule ECommerceWeb.Router do
     plug :put_root_layout, html: {ECommerceWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_admin
-    plug :fetch_current_user
-  end
 
+  end
   pipeline :api do
     plug :accepts, ["json"]
   end
-
+  pipeline :user do
+    plug :fetch_current_user
+  end
+  pipeline :admin do
+    plug :fetch_current_admin
+  end
   scope "/", ECommerceWeb do
     pipe_through [:browser]
 
@@ -50,7 +53,7 @@ defmodule ECommerceWeb.Router do
   ## Authentication routes
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :user, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
       layout: {ECommerceWeb.Layouts, :public},
@@ -65,7 +68,7 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :user, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       layout: {ECommerceWeb.Layouts, :public},
@@ -79,7 +82,7 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/", ECommerceWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :user]
 
     delete "/users/log_out", UserSessionController, :delete
 
@@ -100,7 +103,7 @@ defmodule ECommerceWeb.Router do
   ## Authentication routes
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser, :redirect_if_admin_is_authenticated]
+    pipe_through [:browser, :admin, :redirect_if_admin_is_authenticated]
 
     live_session :redirect_if_admin_is_authenticated,
       layout: {ECommerceWeb.Layouts, :admin},
@@ -114,7 +117,7 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser, :require_authenticated_admin]
+    pipe_through [:browser, :admin, :require_authenticated_admin]
 
     live_session :require_authenticated_admin,
       layout: {ECommerceWeb.Layouts, :admin},
@@ -145,7 +148,7 @@ defmodule ECommerceWeb.Router do
   end
 
   scope "/admin", ECommerceWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :admin]
 
     delete "/log_out", AdminSessionController, :delete
 
