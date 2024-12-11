@@ -13,7 +13,7 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
           <.input field={@form[:title]} type="text" label="Tên sản phẩm" />
           <.input field={@form[:description]} type="text" label="Mô tả sản phẩm" />
           <.input field={@form[:price]} type="text" label="Giá bán" />
-          <.input field={@form[:stock]} type="number" label="Kho" min="0"/>
+          <.input field={@form[:stock]} type="number" label="Kho" min="0" />
           <.input
             field={@form[:category_id]}
             type="select"
@@ -56,12 +56,14 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
   end
 
   defp get_product_main_category_id(%Product{categories: %Ecto.Association.NotLoaded{}}), do: -1
+
   defp get_product_main_category_id(%Product{categories: categories}) do
     case Enum.max_by(categories, & &1.level, fn -> -1 end) do
       %Category{id: id} -> id
       _ -> -1
     end
   end
+
   @impl true
   def handle_event("save", %{"product" => product_params}, socket) do
     save_product(socket, socket.assigns.action, product_params)

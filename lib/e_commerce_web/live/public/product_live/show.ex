@@ -11,10 +11,12 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    product = Catalog.get_product!(id)
+
     {:noreply,
      socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:product, Catalog.get_product!(id))
+     |> assign(:page_title, product.title)
+     |> assign(:product, product)
      |> assign(:reviews, Catalog.list_reviews_by_product(id))}
   end
 
@@ -23,9 +25,8 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
     socket =
       if socket.assigns.current_user do
         case ShoppingCart.add_item_to_cart(socket.assigns.cart, socket.assigns.product.id) do
-          {:ok, cart} ->
-            assign(socket, :cart, cart)
-            |> put_flash(:info, "Item added to your cart")
+          {:ok, _cart} ->
+            put_flash(socket, :info, "Sản phẩm đã được thêm vào giỏ hàng")
 
           {:error, _changeset} ->
             put_flash(socket, :error, "There was an error adding the item to your cart")
@@ -36,6 +37,4 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
 
     {:noreply, socket}
   end
-
-  defp page_title(:show), do: "Show Product"
 end

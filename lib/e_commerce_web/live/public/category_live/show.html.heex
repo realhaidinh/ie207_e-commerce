@@ -1,30 +1,23 @@
-<.header>
-  <%= @category.title %>
-  <:subtitle>This is a category record from your database.</:subtitle>
-</.header>
-<.back navigate={~p"/categories"}>Back to categories</.back>
-<div class="category-information">
-  <.list>
-    <:item title="Id"><%= @category.id %></:item>
-    <:item title="Title"><%= @category.title %></:item>
-    <:item title="Path"><%= @category.path %></:item>
-    <:item title="Level"><%= @category.level %></:item>
-  </.list>
-</div>
-<div class="subcategories-table">
-  <h1>Subcategories</h1>
-  <.table
-    id="subcategories"
-    rows={@subcategories}
-    row_click={fn category -> JS.navigate(~p"/categories/#{category.id}") end}
-  >
-    <:col :let={category} label="Title"><%= category.title %></:col>
-    <:col :let={category} label="Path"><%= category.path %></:col>
-    <:col :let={category} label="Level"><%= category.level %></:col>
-    <:action :let={category}>
-      <div class="sr-only">
-        <.link navigate={~p"/categories/#{category.id}"}>Show</.link>
+<.breadcrumb pages={@parents} current_page={@category.title} />
+<div class="content flex flex-row ">
+  <div class="category-tree basis-1/4">
+    <h1 class="mb-2 text-lg font-semibold">
+      Khám phá theo danh mục
+    </h1>
+    <div class="tree-items flex flex-col">
+      <div class="only:block hidden text- font-semibold">
+        <%= @category.title %>
       </div>
-    </:action>
-  </.table>
+      <.link
+        :for={category <- @subcategories}
+        patch={~p"/categories/#{category.id}"}
+        class="mb-1 hover:underline"
+      >
+        <%= category.title %>
+      </.link>
+    </div>
+  </div>
+  <div class="grid grid-cols-4 gap-8 basis-3/4" id="catalog-products" phx-update="stream">
+    <.product_card :for={{dom_id, product} <- @streams.products} id={dom_id} product={product} />
+  </div>
 </div>

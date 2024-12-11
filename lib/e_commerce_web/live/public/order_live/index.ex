@@ -8,11 +8,17 @@ defmodule ECommerceWeb.Public.OrderLive.Index do
 
   @impl true
   def handle_params(_params, _uri, socket) do
-    {:noreply, assign(socket, :page_title, "Listing orders")}
+    {:noreply, assign(socket, :page_title, "Đơn hàng của tôi")}
   end
 
   def load_user_orders(socket) do
     orders = Orders.list_user_orders(socket.assigns.current_user.id)
     assign(socket, :orders, orders)
+  end
+
+  def format_date(date = %DateTime{}) do
+    [date.day, date.month, date.year]
+    |> Enum.map(&to_string/1)
+    |> Enum.join("/")
   end
 end

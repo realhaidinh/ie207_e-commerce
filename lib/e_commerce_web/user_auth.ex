@@ -5,7 +5,6 @@ defmodule ECommerceWeb.UserAuth do
   import Phoenix.Controller
 
   alias ECommerce.Accounts
-  alias ECommerce.ShoppingCart
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
@@ -146,17 +145,20 @@ defmodule ECommerceWeb.UserAuth do
       end
   """
   def on_mount(:mount_current_user, _params, session, socket) do
-    {:cont,
-     socket
-     |> mount_current_user(session)
-     |> mount_current_cart}
+    {
+      :cont,
+      socket
+      |> mount_current_user(session)
+      #  |> mount_current_cart
+    }
   end
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
     socket =
       socket
       |> mount_current_user(session)
-      |> mount_current_cart
+
+    # |> mount_current_cart
 
     if socket.assigns.current_user do
       {:cont, socket}
@@ -174,7 +176,8 @@ defmodule ECommerceWeb.UserAuth do
     socket =
       socket
       |> mount_current_user(session)
-      |> mount_current_cart()
+
+    # |> mount_current_cart()
 
     if socket.assigns.current_user do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
@@ -191,19 +194,19 @@ defmodule ECommerceWeb.UserAuth do
     end)
   end
 
-  defp mount_current_cart(socket) do
-    Phoenix.Component.assign_new(socket, :cart, fn %{current_user: current_user} ->
-      if current_user do
-        user_id = current_user.id
+  # defp mount_current_cart(socket) do
+  #   Phoenix.Component.assign_new(socket, :cart, fn %{current_user: current_user} ->
+  #     if current_user do
+  #       user_id = current_user.id
 
-        if cart = ShoppingCart.get_cart_by_user_id(user_id) do
-          cart
-        else
-          ShoppingCart.create_cart(user_id) |> elem(1)
-        end
-      end
-    end)
-  end
+  #       if cart = ShoppingCart.get_cart_by_user_id(user_id) do
+  #         cart
+  #       else
+  #         ShoppingCart.create_cart(user_id) |> elem(1)
+  #       end
+  #     end
+  #   end)
+  # end
 
   @doc """
   Used for routes that require the user to not be authenticated.

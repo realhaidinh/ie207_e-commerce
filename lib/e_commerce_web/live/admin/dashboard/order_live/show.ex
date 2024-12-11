@@ -1,5 +1,5 @@
 defmodule ECommerceWeb.Admin.Dashboard.OrderLive.Show do
-alias ECommerce.Orders
+  alias ECommerce.Orders
   use ECommerceWeb, :live_view
 
   @impl true
@@ -11,5 +11,4 @@ alias ECommerce.Orders
   def handle_params(%{"id" => id}, _uri, socket) do
     {:noreply, assign(socket, :order, Orders.get_order!(id))}
   end
-
 end

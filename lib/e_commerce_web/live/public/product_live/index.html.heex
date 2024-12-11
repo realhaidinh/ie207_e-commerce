@@ -1,14 +1,5 @@
-<.header>
-  Kết quả tìm kiếm cho từ khóa:
-  <span class="text-red-500">
-    <%= @page_title %>
-  </span>
-</.header>
+<.breadcrumb pages={[]} current_page={"Kết quả tìm kiếm '#{@page_title}' "} />
 
-<ul class="grid grid-cols-4 gap-8">
-  <%= for {_id, product} <- @streams.products do %>
-    <li class="result-item">
-      <.product_card product={product} />
-    </li>
-  <% end %>
-</ul>
+<div class="grid grid-cols-4 gap-8" id="catalog-products" phx-update="stream">
+  <.product_card :for={{dom_id, product} <- @streams.products} id={dom_id} product={product} />
+</div>

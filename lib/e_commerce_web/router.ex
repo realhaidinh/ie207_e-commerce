@@ -11,21 +11,18 @@ defmodule ECommerceWeb.Router do
     plug :put_root_layout, html: {ECommerceWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-
   end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
+
   pipeline :user do
     plug :fetch_current_user
   end
+
   pipeline :admin do
     plug :fetch_current_admin
-  end
-  scope "/", ECommerceWeb do
-    pipe_through [:browser]
-
-    get "/", PageController, :home
   end
 
   # Other scopes may use custom stacks.
@@ -72,7 +69,7 @@ defmodule ECommerceWeb.Router do
 
     live_session :require_authenticated_user,
       layout: {ECommerceWeb.Layouts, :public},
-      on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}, ECommerceWeb.Cart] do
       live "/cart", Public.CartLive.Index, :index
       live "/users/orders", Public.OrderLive.Index, :order_index
       live "/users/orders/:id", Public.OrderLive.Show, :order_show
@@ -88,7 +85,7 @@ defmodule ECommerceWeb.Router do
 
     live_session :current_user,
       layout: {ECommerceWeb.Layouts, :public},
-      on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}] do
+      on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}, ECommerceWeb.Cart] do
       live "/products", Public.ProductLive.Index, :index
       live "/products/:id", Public.ProductLive.Show, :show
       live "/categories", Public.CategoryLive.Index, :index
@@ -97,6 +94,7 @@ defmodule ECommerceWeb.Router do
       live "/checkout/success/:order_id", Public.CheckoutLive.Success, :success
       live "/users/confirm/:token", Public.UserConfirmationLive, :edit
       live "/users/confirm", Public.UserConfirmationInstructionsLive, :new
+      live "/", Public.HomeLive
     end
   end
 

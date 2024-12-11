@@ -36,12 +36,14 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
 
   def handle_event("show-subcategories", %{"id" => id}, socket) do
     category = Catalog.get_category!(id)
+
     socket =
       if socket.assigns.streams[category.title] do
         socket
       else
         stream(socket, category.title, Catalog.get_subcategories(category))
       end
+
     {:noreply, socket}
   end
 end

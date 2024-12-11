@@ -15,6 +15,6 @@ defmodule ECommerceWeb.Public.CategoryLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Categories")
+    |> assign(:page_title, "Tất cả danh mục")
   end
 end

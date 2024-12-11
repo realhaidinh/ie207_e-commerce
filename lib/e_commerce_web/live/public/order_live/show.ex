@@ -12,7 +12,7 @@ defmodule ECommerceWeb.Public.OrderLive.Show do
 
     {:noreply,
      socket
-     |> assign(:page_title, "Show Order")
+     |> assign(:page_title, "Đơn hàng #{order.id}")
      |> assign(:order, order)}
   end
 end

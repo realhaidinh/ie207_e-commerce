@@ -96,7 +96,7 @@ defmodule ECommerceWeb.Components do
 
   def breadcrumb(assigns) do
     ~H"""
-    <div>
+    <div class="m-4">
       <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
           <li>
@@ -286,7 +286,7 @@ defmodule ECommerceWeb.Components do
           <div class="max-w-screen-xl grid grid-cols-6 justify-between items-center mx-auto">
             <.live_component module={ECommerceWeb.SearchFormComponent} id="search-bar" />
 
-            <div class="order-3 flex col-start-6 justify-center">
+            <div :if={@current_user} class="order-3 flex col-start-6 justify-center">
               <.button
                 id="dropdownDelayButton"
                 phx-click={JS.navigate("/cart")}
@@ -300,7 +300,6 @@ defmodule ECommerceWeb.Components do
               </.button>
               <!-- Dropdown menu -->
               <div
-                :if={@cart}
                 id="dropdownDelay"
                 class="grid grid-cols-1 justify-items-stretch w-1/5 z-10 hidden bg-white divide-y divide-gray-100 shadow dark:bg-gray-700"
               >
@@ -363,10 +362,12 @@ defmodule ECommerceWeb.Components do
   end
 
   attr :product, :any, required: true
+  attr :id, :string
 
   def product_card(assigns) do
     ~H"""
     <div
+      id={@id}
       phx-click={JS.navigate("/products/#{@product.id}")}
       class="hover:cursor-pointer w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
     >

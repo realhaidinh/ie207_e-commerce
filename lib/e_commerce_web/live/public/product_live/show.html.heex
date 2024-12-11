@@ -1,10 +1,7 @@
-<.header>
-  <% categories =
-    Enum.map(@product.categories, &Map.put(&1, :url, "/categories/#{&1.id}")) %>
-  <.breadcrumb pages={categories} current_page={@product.title} />
-</.header>
-
-<section class="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
+<% categories =
+  Enum.map(@product.categories, &Map.put(&1, :url, "/categories/#{&1.id}")) %>
+<.breadcrumb pages={categories} current_page={@product.title} />
+<section class="pb-8 bg-white md:pb-16 dark:bg-gray-900 antialiased">
   <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
     <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
       <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
@@ -138,7 +135,7 @@
     </p>
   </section>
 </div>
-<div class="review-product">
+<div :if={@current_user} class="review-product">
   <h3>Đăng đánh giá</h3>
   <.live_component
     module={ECommerceWeb.Public.ProductLive.ReviewFormComponent}

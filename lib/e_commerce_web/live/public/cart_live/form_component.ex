@@ -17,7 +17,7 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
       </div>
       <.simple_form
         :let={f}
-        for={@changeset}
+        for={ShoppingCart.change_cart(@cart)}
         classes={["grid grid-cols-5 justify-items-center"]}
         phx-target={@myself}
         phx-change="update"
@@ -43,7 +43,6 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
             value={Phoenix.HTML.Form.normalize_value("number", qty_attr.value)}
             class="mt-2 block rounded-lg w-1/5 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
           />
-
           <span class="col-start-4" id={"item-#{item.id}-total-price"} phx-hook="CurrencyFormat">
             <%= ShoppingCart.total_item_price(item) %>
           </span>
@@ -84,16 +83,10 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
   defp update_cart(socket, cart_params) do
     case ShoppingCart.update_cart(socket.assigns.cart, cart_params) do
       {:ok, _cart} ->
-        # notify_parent({:updated, cart})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Cập nhật giỏ hàng thành công")}
+        {:noreply, put_flash(socket, :info, "Cập nhật giỏ hàng thành công")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
-
-  # defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

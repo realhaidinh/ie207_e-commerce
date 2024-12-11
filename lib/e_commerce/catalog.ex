@@ -27,13 +27,28 @@ defmodule ECommerce.Catalog do
     )
   end
 
+  def list_products_by_category(id) do
+    Repo.all(
+      from p in Product,
+        left_join: r in assoc(p, :reviews),
+        left_join: c in "product_categories",
+        on: c.product_id == p.id,
+        where: c.category_id == ^id,
+        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+        group_by: [p.id]
+    )
+  end
+
   def search_product(opts) do
     _page_no = Map.get(opts, "page", 1)
-    keyword ="%" <> Map.get(opts, "keyword", "") <> "%"
+    keyword = "%" <> Map.get(opts, "keyword", "") <> "%"
 
     Repo.all(
       from p in Product,
         where: like(p.title, ^keyword),
+        left_join: r in assoc(p, :reviews),
+        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
+        group_by: [p.id],
         limit: 5
     )
   end
@@ -136,7 +151,7 @@ defmodule ECommerce.Catalog do
         _ -> Regex.split(~r/\//, category.path, trim: true)
       end
 
-    categories = [category | list_categories_by_id(parent_category_ids)]
+    categories = [category | list_categories_by_ids(parent_category_ids)]
 
     product
     |> Product.changeset(attrs)
@@ -156,7 +171,7 @@ defmodule ECommerce.Catalog do
     Repo.all(Category)
   end
 
-  def list_categories_by_id(category_ids) do
+  def list_categories_by_ids(category_ids) do
     Repo.all(from c in Category, where: c.id in ^category_ids)
   end
 

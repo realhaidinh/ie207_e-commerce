@@ -1,5 +1,5 @@
 defmodule ECommerceWeb.Admin.Dashboard.OrderLive.Index do
-alias ECommerce.Orders
+  alias ECommerce.Orders
   use ECommerceWeb, :live_view
 
   @impl true

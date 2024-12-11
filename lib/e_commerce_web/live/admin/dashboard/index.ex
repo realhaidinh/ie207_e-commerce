@@ -9,8 +9,7 @@ defmodule ECommerceWeb.Admin.Dashboard.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
-    </div>
+    <div></div>
     """
   end
 end
