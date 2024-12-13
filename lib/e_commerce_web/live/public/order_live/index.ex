@@ -3,7 +3,7 @@ defmodule ECommerceWeb.Public.OrderLive.Index do
   alias ECommerce.Orders
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, load_user_orders(socket)}
+    {:ok, load_user_orders(socket), layout: {ECommerceWeb.Layouts, :public_profile}}
   end
 
   @impl true

@@ -1,4 +1,4 @@
-defmodule ECommerceWeb.Cart do
+defmodule ECommerceWeb.Public.Cart do
   alias ECommerce.ShoppingCart
   import Phoenix.LiveView
   use Phoenix.Component

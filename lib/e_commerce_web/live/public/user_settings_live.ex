@@ -6,8 +6,8 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
   def render(assigns) do
     ~H"""
     <.header class="text-center">
-      Account Settings
-      <:subtitle>Manage your account email address and password settings</:subtitle>
+      Cài đặt tài khoản
+      <:subtitle>Thay đổi email hoặc mật khẩu</:subtitle>
     </.header>
 
     <div class="space-y-12 divide-y ">
@@ -25,12 +25,12 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
             name="current_password"
             id="current_password_for_email"
             type="password"
-            label="Current password"
+            label="Mật khẩu hiện tại"
             value={@email_form_current_password}
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <.button phx-disable-with="...">Đổi Email</.button>
           </:actions>
         </.simple_form>
       </div>
@@ -55,27 +55,27 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
             classes={["w-1/3"]}
             field={@password_form[:password]}
             type="password"
-            label="New password"
+            label="Mật khẩu mới"
             required
           />
           <.input
             classes={["w-1/3"]}
             field={@password_form[:password_confirmation]}
             type="password"
-            label="Confirm new password"
+            label="Xác nhận mật khẩu"
           />
           <.input
             classes={["w-1/3"]}
             field={@password_form[:current_password]}
             name="current_password"
             type="password"
-            label="Current password"
+            label="Mật khẩu hiện tại"
             id="current_password_for_password"
             value={@current_password}
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <.button phx-disable-with="...">Đổi mật khẩu</.button>
           </:actions>
         </.simple_form>
       </div>
@@ -87,7 +87,7 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
     socket =
       case Accounts.update_user_email(socket.assigns.current_user, token) do
         :ok ->
-          put_flash(socket, :info, "Email changed successfully.")
+          put_flash(socket, :info, "Đổi Email thành công.")
 
         :error ->
           put_flash(socket, :error, "Email change link is invalid or it has expired.")
@@ -110,7 +110,7 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
 
-    {:ok, socket}
+    {:ok, socket, layout: {ECommerceWeb.Layouts, :public_profile}}
   end
 
   def handle_event("validate_email", params, socket) do
@@ -137,7 +137,7 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
           &url(~p"/users/settings/confirm_email/#{&1}")
         )
 
-        info = "A link to confirm your email change has been sent to the new address."
+        info = "Đường link xác nhận email đã được gửi đến địa chỉ email của bạn."
         {:noreply, socket |> put_flash(:info, info) |> assign(email_form_current_password: nil)}
 
       {:error, changeset} ->

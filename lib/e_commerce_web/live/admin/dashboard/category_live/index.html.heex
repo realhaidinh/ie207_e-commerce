@@ -12,8 +12,8 @@
 >
   <:col :let={category} label="Tên danh mục"><%= category.title %></:col>
   <:col :let={category} label="Danh mục con">
-    <div :if={@streams[category.title]} id={category.title} phx-update="stream">
-      <span :for={{dom_id, cat} <- @streams[category.title]} id={dom_id}>
+    <div :if={Map.get(@streams, category.title)} id={category.title} phx-update="stream">
+      <span :for={{dom_id, cat} <- Map.get(@streams, category.title)} id={dom_id}>
         <%= cat.title %>
       </span>
     </div>

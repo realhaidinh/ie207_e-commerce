@@ -1,4 +1,4 @@
-defmodule ECommerceWeb.SearchFormComponent do
+defmodule ECommerceWeb.Public.SearchComponent do
   alias ECommerce.Catalog
   use ECommerceWeb, :live_component
   @impl true
@@ -11,9 +11,9 @@ defmodule ECommerceWeb.SearchFormComponent do
         phx-throttle="500"
         phx-submit={JS.navigate("/products?keyword=#{@keyword}")}
       >
-        <div class="flex border-2 w-5/6 rounded-md">
+        <div class="flex border-2 w-5/6 rounded-md bg-white">
           <input
-            class="focus:ring-0 border-0 rounded-lg flex-auto w-3/4"
+            class="focus:ring-0 border-0 bg-transparent flex-auto w-3/4"
             name="keyword"
             type="text"
             placeholder="Tìm kiếm sản phẩm"
@@ -21,7 +21,10 @@ defmodule ECommerceWeb.SearchFormComponent do
             phx-focus={JS.show(to: "#search-popover", transition: "fade-out")}
             phx-blur={JS.hide(to: "#search-popover", transition: "fade-out")}
           />
-          <button class="hover:bg-blue-200 p-2" type="submit">
+          <button
+            class="hover:bg-blue-300 p-2 flex text-blue-700 before:[block]"
+            type="submit"
+          >
             Tìm kiếm
           </button>
         </div>

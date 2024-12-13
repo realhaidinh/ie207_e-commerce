@@ -8,6 +8,8 @@ defmodule ECommerce.Catalog.Category do
     field :title, :string
     field :slug, :string
 
+    field :product_count, :integer, virtual: true
+
     timestamps(type: :utc_datetime)
   end
 

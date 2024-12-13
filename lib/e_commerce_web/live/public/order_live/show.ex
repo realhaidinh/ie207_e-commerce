@@ -3,7 +3,7 @@ defmodule ECommerceWeb.Public.OrderLive.Show do
   alias ECommerce.Orders
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket, layout: {ECommerceWeb.Layouts, :public_profile}}
   end
 
   @impl true

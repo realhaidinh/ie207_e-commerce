@@ -1,18 +1,19 @@
-<.header>
-  Listing Categories
-</.header>
+<.breadcrumb current_page="Tất cả danh mục" />
+<div class="bg-slate-50 p-2">
 
-<.table
-  id="categories"
-  rows={@categories}
-  row_click={fn category -> JS.navigate(~p"/categories/#{category.id}") end}
->
-  <:col :let={category} label="Title"><%= category.title %></:col>
-  <:col :let={category} label="Path"><%= category.path %></:col>
-  <:col :let={category} label="Level"><%= category.level %></:col>
-  <:action :let={category}>
-    <div class="sr-only">
-      <.link navigate={~p"/categories/#{category.id}"}>Show</.link>
+  <div
+    :for={{dom_id, {category, childs}} <- @streams.categories}
+    id="categories"
+    class="flex flex-row flex-wrap my-8 "
+    phx-update="stream"
+  >
+    <.link id={dom_id} class="w-full font-semibold" navigate={~p"/categories/#{category.id}"}>
+      <%= category.title %>
+    </.link>
+    <div :for={child <- childs} class="w-1/4">
+      <.link id={"category-#{child.id}"} navigate={~p"/categories/#{child.id}"}>
+        <%= child.title %>
+      </.link>
     </div>
-  </:action>
-</.table>
+  </div>
+</div>

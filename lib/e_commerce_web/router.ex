@@ -54,7 +54,10 @@ defmodule ECommerceWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       layout: {ECommerceWeb.Layouts, :public},
-      on_mount: [{ECommerceWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [
+        {ECommerceWeb.UserAuth, :redirect_if_user_is_authenticated},
+        ECommerceWeb.Public.Cart
+      ] do
       live "/users/register", Public.UserRegistrationLive, :new
       live "/users/log_in", Public.UserLoginLive, :new
       live "/users/reset_password", Public.UserForgotPasswordLive, :new
@@ -69,7 +72,7 @@ defmodule ECommerceWeb.Router do
 
     live_session :require_authenticated_user,
       layout: {ECommerceWeb.Layouts, :public},
-      on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}, ECommerceWeb.Cart] do
+      on_mount: [{ECommerceWeb.UserAuth, :ensure_authenticated}, ECommerceWeb.Public.Cart] do
       live "/cart", Public.CartLive.Index, :index
       live "/users/orders", Public.OrderLive.Index, :order_index
       live "/users/orders/:id", Public.OrderLive.Show, :order_show
@@ -85,7 +88,7 @@ defmodule ECommerceWeb.Router do
 
     live_session :current_user,
       layout: {ECommerceWeb.Layouts, :public},
-      on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}, ECommerceWeb.Cart] do
+      on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}, ECommerceWeb.Public.Cart] do
       live "/products", Public.ProductLive.Index, :index
       live "/products/:id", Public.ProductLive.Show, :show
       live "/categories", Public.CategoryLive.Index, :index

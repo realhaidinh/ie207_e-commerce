@@ -7,9 +7,9 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
-      <div class="grid grid-cols-5 mt-8">
-        <span class="justify-self-center col-start-1">Sản phẩm</span>
+    <div class="mt-8 p-2">
+      <div class="grid grid-cols-5 border-b-2 py-2">
+        <span class="justify-self-center">Sản phẩm</span>
         <span class="justify-self-center">Đơn giá</span>
         <span class="justify-self-center">Số lượng</span>
         <span class="justify-self-center">Số tiền</span>
@@ -18,22 +18,22 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
       <.simple_form
         :let={f}
         for={ShoppingCart.change_cart(@cart)}
-        classes={["grid grid-cols-5 justify-items-center"]}
+        classes={["grid grid-cols-5 justify-items-center gap-y-8"]}
         phx-target={@myself}
         phx-change="update"
         phx-throttle="200"
       >
         <.inputs_for :let={item_form} field={f[:cart_items]}>
-          <% item = item_form.data %>
+        <% item = item_form.data %>
           <% qty_attr = item_form[:quantity] %>
           <label
             for={qty_attr.id}
-            class="hover:cursor-pointer"
+            class="hover:cursor-pointer self-center"
             phx-click={JS.navigate("/products/#{item.product.id}")}
           >
             <%= item.product.title %>
           </label>
-          <span id={"item-#{item.id}-price"} class="col-start-2" phx-hook="CurrencyFormat">
+          <span id={"item-#{item.id}-price"} class="col-start-2 self-center" phx-hook="CurrencyFormat">
             <%= item.product.price %>
           </span>
           <input
@@ -41,13 +41,13 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
             name={qty_attr.name}
             id={qty_attr.id}
             value={Phoenix.HTML.Form.normalize_value("number", qty_attr.value)}
-            class="mt-2 block rounded-lg w-1/5 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
+            class="block self-center rounded-lg w-1/5 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
           />
-          <span class="col-start-4" id={"item-#{item.id}-total-price"} phx-hook="CurrencyFormat">
+          <span class="col-start-4 self-center" id={"item-#{item.id}-total-price"} phx-hook="CurrencyFormat">
             <%= ShoppingCart.total_item_price(item) %>
           </span>
           <.link
-            class="rounded-lg justify-self-center col-start-5 w-10 bg-zinc-900 text-sm font-semibold leading-6 text-white py-1 px-2"
+            class="rounded-lg p-2 col-start-5 w-10 bg-zinc-900 text-sm font-semibold leading-6 text-white"
             phx-click="remove"
             phx-value-product_id={item.product.id}
             data-confirm="Bạn có chắc chắn bỏ sản phẩm này"
@@ -56,16 +56,21 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
           </.link>
         </.inputs_for>
       </.simple_form>
-      <b>Tổng thanh toán:</b>
-      <span id="total_price" phx-hook="CurrencyFormat">
-        <%= ShoppingCart.total_cart_price(@cart) %>
-      </span>
-      <.link
-        class="rounded-lg justify-self-center col-start-5 w-10 bg-zinc-900 text-sm font-semibold leading-6 text-white py-1 px-2"
-        patch="/checkout"
-      >
-        Mua hàng
-      </.link>
+      <div class="mt-8 flex justify-between">
+        <div class="flex self-center">
+          <span>Tổng thanh toán (<%= length(@cart.cart_items) %> sản phẩm ):&nbsp; </span>
+          <span id="total_price" phx-hook="CurrencyFormat">
+            <%= ShoppingCart.total_cart_price(@cart) %>
+          </span>
+        </div>
+        <button
+          class="rounded-md bg-black text-white p-2"
+          id="checkout-button"
+          phx-click={JS.navigate(~p"/checkout")}
+        >
+          Mua hàng
+        </button>
+      </div>
     </div>
     """
   end

@@ -91,7 +91,7 @@ defmodule ECommerceWeb.Components do
     """
   end
 
-  attr :pages, :list, required: true
+  attr :pages, :list, required: false, default: []
   attr :current_page, :string, default: nil
 
   def breadcrumb(assigns) do
@@ -177,7 +177,7 @@ defmodule ECommerceWeb.Components do
 
   def navbar(assigns) do
     ~H"""
-    <div class="border border-b border-gray-200 bg-gray-50 dark:border-gray-600 lg:py-4 dark:bg-gray-700">
+    <div class="border border-b border-gray-200 bg-gray-200 dark:border-gray-600 lg:py-4 dark:bg-gray-700">
       <nav>
         <%= if @role == :user do %>
           <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -284,7 +284,7 @@ defmodule ECommerceWeb.Components do
           </div>
 
           <div class="max-w-screen-xl grid grid-cols-6 justify-between items-center mx-auto">
-            <.live_component module={ECommerceWeb.SearchFormComponent} id="search-bar" />
+            <.live_component module={ECommerceWeb.Public.SearchComponent} id="search-bar" />
 
             <div :if={@current_user} class="order-3 flex col-start-6 justify-center">
               <.button

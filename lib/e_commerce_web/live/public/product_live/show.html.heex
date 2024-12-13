@@ -1,6 +1,4 @@
-<% categories =
-  Enum.map(@product.categories, &Map.put(&1, :url, "/categories/#{&1.id}")) %>
-<.breadcrumb pages={categories} current_page={@product.title} />
+<.breadcrumb pages={get_category_urls(@product.categories)} current_page={@product.title} />
 <section class="pb-8 bg-white md:pb-16 dark:bg-gray-900 antialiased">
   <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
     <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">

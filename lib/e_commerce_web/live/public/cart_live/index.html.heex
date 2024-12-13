@@ -1,13 +1,9 @@
-<div>
-  <%= if @cart.cart_items == [] do %>
+<div class="mt-8 bg-slate-50">
+  <%= if Enum.empty?(@cart.cart_items) do %>
     <.header>
       <:subtitle>Giỏ hàng trống</:subtitle>
     </.header>
   <% else %>
-    <.header>
-      Số sản phẩm <%= length(@cart.cart_items) %>
-    </.header>
-
     <.live_component
       module={ECommerceWeb.Public.CartLive.FormComponent}
       id={@cart.id}
@@ -16,6 +12,4 @@
       patch={~p"/cart"}
     />
   <% end %>
-
-  <.back navigate={~p"/products"}>Back to products</.back>
 </div>
