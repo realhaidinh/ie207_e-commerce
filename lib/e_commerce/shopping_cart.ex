@@ -62,22 +62,26 @@ defmodule ECommerce.ShoppingCart do
   def add_item_to_cart(%Cart{} = cart, product_id) do
     product = Catalog.get_product!(product_id)
 
-    result =
-      %CartItem{quantity: 1, price_when_carted: product.price}
-      |> CartItem.changeset(%{})
-      |> Ecto.Changeset.put_assoc(:cart, cart)
-      |> Ecto.Changeset.put_assoc(:product, product)
-      |> Repo.insert(
-        on_conflict: [inc: [quantity: 1]],
-        conflict_target: [:cart_id, :product_id]
-      )
+    if product.stock > 0 do
+      result =
+        %CartItem{quantity: 1, price_when_carted: product.price}
+        |> CartItem.changeset(%{})
+        |> Ecto.Changeset.put_assoc(:cart, cart)
+        |> Ecto.Changeset.put_assoc(:product, product)
+        |> Repo.insert(
+          on_conflict: [inc: [quantity: 1]],
+          conflict_target: [:cart_id, :product_id]
+        )
 
-    case result do
-      {:ok, _} ->
-        {:ok, reload_cart(cart)}
+      case result do
+        {:ok, _} ->
+          {:ok, reload_cart(cart)}
 
-      {:error, changeset} ->
-        {:error, changeset}
+        {:error, changeset} ->
+          {:error, changeset}
+      end
+    else
+      {:error, nil}
     end
   end
 

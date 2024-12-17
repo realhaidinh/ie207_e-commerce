@@ -91,7 +91,7 @@ defmodule ECommerceWeb.Components do
     """
   end
 
-  attr :pages, :list, required: false, default: []
+  attr :prev_pages, :list, required: false, default: []
   attr :current_page, :string, default: nil
 
   def breadcrumb(assigns) do
@@ -110,7 +110,7 @@ defmodule ECommerceWeb.Components do
             </div>
           </li>
 
-          <li :for={page <- @pages}>
+          <li :for={page <- @prev_pages}>
             <div class="flex items-center">
               <svg
                 class="w-6 h-6 text-gray-800 dark:text-white"

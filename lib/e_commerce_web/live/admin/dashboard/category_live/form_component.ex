@@ -34,7 +34,7 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.FormComponent do
   defp save_category(%{assigns: %{category: category}} = socket, :edit, category_params) do
     case Catalog.update_category(category, category_params) do
       {:ok, category} ->
-        notify_parent({:saved, category})
+        notify_parent({:updated, category})
         {:noreply, push_patch(socket, to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -47,7 +47,7 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.FormComponent do
 
     case Catalog.insert_category(chset) do
       {:ok, category} ->
-        notify_parent({:saved, category})
+        notify_parent({:created, category})
         {:noreply, push_patch(socket, to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

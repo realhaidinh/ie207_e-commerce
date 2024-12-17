@@ -5,29 +5,31 @@ defmodule ECommerceWeb.Public.CategoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    categories =
+      Catalog.list_categories()
+      |> Enum.reduce([], fn
+        %{path: "/"} = category, acc ->
+          [Map.put(category, :subcategories, []) | acc]
+
+        %{path: path} = category, acc ->
+          pid = Enum.find_index(acc, &String.starts_with?(path, "/#{&1.id}"))
+
+          List.update_at(
+            acc,
+            pid,
+            &Map.update!(&1, :subcategories, fn sub -> [category | sub] end)
+          )
+      end)
+      |> Enum.sort_by(& &1.title)
+
     {:ok,
      socket
      |> assign(:page_title, "Tất cả danh mục")
-     |> stream_configure(:categories, dom_id: fn {cat, _} -> "category-#{cat.id}" end)}
+     |> stream(:categories, categories, reset: true)}
   end
 
   @impl true
   def handle_params(_params, _url, socket) do
-    categories =
-      Catalog.list_categories()
-      |> Enum.reduce(%{}, fn
-        %{path: "/"} = category, acc ->
-          Map.put(acc, category, [])
-
-        %{path: path} = category, acc ->
-          parent =
-            acc
-            |> Enum.find(fn {key, _} -> String.starts_with?(path, "/#{key.id}") end)
-            |> elem(0)
-
-          Map.update!(acc, parent, &[category | &1])
-      end)
-
-    {:noreply, stream(socket, :categories, categories, reset: true)}
+    {:noreply, socket}
   end
 end

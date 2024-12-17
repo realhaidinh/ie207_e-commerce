@@ -5,12 +5,14 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(:page_title, "Quản lý danh mục") |> stream(:stream_init, [])}
+    {:ok,
+     socket
+     |> assign(:page_title, "Quản lý danh mục")
+     |> stream(:categories, Catalog.list_root_categories())}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    socket = assign(socket, :categories, Catalog.list_root_categories())
     {:noreply, apply_action(socket, params, socket.assigns.live_action)}
   end
 
@@ -31,19 +33,26 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
     category = Catalog.get_category!(id)
     {_, _} = Catalog.delete_category(category)
 
-    {:noreply, push_patch(socket, to: ~p"/admin/dashboard/catalog/category")}
+    {:noreply, stream_delete(socket, :categories, category)}
   end
 
   def handle_event("show-subcategories", %{"id" => id}, socket) do
-    category = Catalog.get_category!(id)
-
+    category = Catalog.get_category_with_product_count(id)
     socket =
-      if socket.assigns.streams[category.title] do
+      if Map.get(socket.assigns.streams, category.title) do
         socket
       else
-        stream(socket, category.title, Catalog.get_subcategories(category))
+        category = Map.put(category, :subcategories, Catalog.get_subcategories(category))
+        socket
+        |> stream_insert(:categories, category)
+        |> stream(category.title, [])
       end
-
     {:noreply, socket}
   end
+
+  @impl true
+  def handle_info({_, category}, socket) do
+    {:noreply, stream_insert(socket, :categories, category)}
+  end
+
 end

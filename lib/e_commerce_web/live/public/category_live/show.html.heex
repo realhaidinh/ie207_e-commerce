@@ -1,17 +1,17 @@
-<.breadcrumb pages={@parents} current_page={@category.title} />
-<div class="content flex flex-row ">
-  <div class="category-tree basis-1/4">
+<.breadcrumb prev_pages={@parents} current_page={@category.title} />
+<div class="content flex flex-row justify-between">
+  <div class="category-tree basis-1/5 bg-slate-50 p-2">
     <h1 class="mb-2 text-lg font-semibold">
       Khám phá theo danh mục
     </h1>
     <div class="tree-items flex flex-col">
-      <div class="only:block hidden text- font-semibold">
+      <div class="font-semibold mb-2">
         <%= @category.title %>
       </div>
       <.link
         :for={category <- @subcategories}
         patch={~p"/categories/#{category.id}"}
-        class="mb-1 hover:underline"
+        class="mb-2 hover:underline pl-2"
       >
         <%= category.title %>
       </.link>

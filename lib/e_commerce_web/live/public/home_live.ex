@@ -13,7 +13,7 @@ defmodule ECommerceWeb.Public.HomeLive do
             :for={{dom_id, category} <- @streams.categories}
             id={dom_id}
             navigate={~p"/categories/#{category.id}"}
-            class="mb-2"
+            class="mb-2 hover:underline"
           >
             <%= category.title %>
           </.link>

@@ -1,4 +1,4 @@
-<.breadcrumb pages={[]} current_page={"Kết quả tìm kiếm '#{@page_title}' "} />
+<.breadcrumb current_page={"Kết quả tìm kiếm '#{@page_title}' "} />
 
 <div class="grid grid-cols-4 gap-8" id="catalog-products" phx-update="stream">
   <.product_card :for={{dom_id, product} <- @streams.products} id={dom_id} product={product} />

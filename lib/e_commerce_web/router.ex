@@ -134,7 +134,6 @@ defmodule ECommerceWeb.Router do
       live "/dashboard/customer/:id", Admin.Dashboard.UserLive.Show, :show
 
       live "/dashboard/catalog/category", Admin.Dashboard.CategoryLive.Index, :index
-      live "/dashboard/catalog/category/edit/:id", Admin.Dashboard.CategoryLive.Index, :edit
       live "/dashboard/catalog/category/new", Admin.Dashboard.CategoryLive.Index, :new
       live "/dashboard/catalog/category/:id", Admin.Dashboard.CategoryLive.Show, :show
       live "/dashboard/catalog/category/:id/edit", Admin.Dashboard.CategoryLive.Show, :edit

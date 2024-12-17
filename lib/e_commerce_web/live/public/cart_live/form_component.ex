@@ -22,9 +22,10 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
         phx-target={@myself}
         phx-change="update"
         phx-throttle="200"
+        autocomplete="off"
       >
         <.inputs_for :let={item_form} field={f[:cart_items]}>
-        <% item = item_form.data %>
+          <% item = item_form.data %>
           <% qty_attr = item_form[:quantity] %>
           <label
             for={qty_attr.id}
@@ -41,9 +42,16 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
             name={qty_attr.name}
             id={qty_attr.id}
             value={Phoenix.HTML.Form.normalize_value("number", qty_attr.value)}
-            class="block self-center rounded-lg w-1/5 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
+            min="0"
+            autocomplete="off"
+            max={item.product.stock}
+            class="block self-center rounded-lg w-1/4 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
           />
-          <span class="col-start-4 self-center" id={"item-#{item.id}-total-price"} phx-hook="CurrencyFormat">
+          <span
+            class="col-start-4 self-center"
+            id={"item-#{item.id}-total-price"}
+            phx-hook="CurrencyFormat"
+          >
             <%= ShoppingCart.total_item_price(item) %>
           </span>
           <.link
@@ -58,7 +66,7 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
       </.simple_form>
       <div class="mt-8 flex justify-between">
         <div class="flex self-center">
-          <span>Tổng thanh toán (<%= length(@cart.cart_items) %> sản phẩm ):&nbsp; </span>
+          <span>Tổng thanh toán (<%= length(@cart.cart_items) %> sản phẩm ):&nbsp;</span>
           <span id="total_price" phx-hook="CurrencyFormat">
             <%= ShoppingCart.total_cart_price(@cart) %>
           </span>

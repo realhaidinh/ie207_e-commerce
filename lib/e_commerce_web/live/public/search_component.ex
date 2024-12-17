@@ -34,7 +34,7 @@ defmodule ECommerceWeb.Public.SearchComponent do
         id="search-popover"
         role="tooltip"
         title="search-popover"
-        class="hidden absolute top-[calc(100%-1px)] left-0 bg-white w-[calc(73.5%-0.5rem)] rounded ml-1"
+        class="hidden absolute top-[calc(100%-1px)] left-0 bg-white w-[calc(73.5%-0.5rem)] ml-1"
       >
         <div id="product_preview" class="px-3 py-2 flex flex-col">
           <.link

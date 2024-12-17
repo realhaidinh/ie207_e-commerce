@@ -38,7 +38,7 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
     {:noreply, socket}
   end
 
-  defp get_category_urls(categories) do
+  defp get_category_pages(categories) do
     Enum.map(categories, &Map.put(&1, :url, "/categories/#{&1.id}"))
   end
 end

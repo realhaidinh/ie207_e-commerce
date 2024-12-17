@@ -192,10 +192,25 @@ defmodule ECommerce.Catalog do
   def get_category!(id), do: Repo.get!(Category, id)
   def get_category(id), do: Repo.get(Category, id)
 
+  def get_category_with_product_count(id) do
+    Repo.one(
+      from c in Category,
+        where: c.id == ^id,
+        left_join: pc in "product_categories",
+        on: pc.category_id == c.id,
+        select_merge: %{product_count: coalesce(count(pc.category_id), 0)},
+        group_by: [c.id]
+    )
+  end
+
   def list_root_categories() do
     Repo.all(
       from c in Category,
-        where: c.level == 0
+        where: c.level == 0,
+        left_join: pc in "product_categories",
+        on: pc.category_id == c.id,
+        select_merge: %{product_count: coalesce(count(pc.category_id), 0)},
+        group_by: [c.id]
     )
   end
 
@@ -208,7 +223,11 @@ defmodule ECommerce.Catalog do
 
     Repo.all(
       from c in Category,
-        where: c.path == ^subpath
+        where: c.path == ^subpath,
+        left_join: pc in "product_categories",
+        on: pc.category_id == c.id,
+        select_merge: %{product_count: coalesce(count(pc.category_id), 0)},
+        group_by: [c.id]
     )
   end
 
@@ -263,11 +282,11 @@ defmodule ECommerce.Catalog do
 
   """
   def delete_category(%Category{} = category) do
-    subpath = get_subcategory_path(category)
+    subpath = get_subcategory_path(category) <> "%"
 
     Repo.delete_all(
       from c in Category,
-        where: c.id == ^category.id or c.path == ^subpath
+        where: c.id == ^category.id or like(c.path, ^subpath)
     )
   end
 

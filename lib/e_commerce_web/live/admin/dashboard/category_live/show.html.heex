@@ -8,43 +8,67 @@
 
 <div class="category-information">
   <.list>
-    <:item title="Mã danh mục"><%= @category.id %></:item>
-    
     <:item title="Tên danh mục"><%= @category.title %></:item>
+    <:item title="Số sản phẩm"><%= @category.product_count %></:item>
   </.list>
 </div>
 
-<div class="subcategories-table">
+<div class="my-8">
   <h1>Danh mục con</h1>
-  
-  <.data_table
-    table_id="subcategories-search-table"
-    id="subcategories"
-    rows={@subcategories}
-    searchable="true"
-    sortable="true"
-    row_click={fn category -> JS.patch(~p"/admin/dashboard/catalog/category/#{category.id}") end}
-  >
-    <:col :let={category} label="Mã danh mục"><%= category.id %></:col>
-    
-    <:col :let={category} label="Tên danh mục"><%= category.title %></:col>
-    
-    <:action :let={category}>
-      <div class="sr-only">
-        <.link patch={~p"/admin/dashboard/catalog/category/#{category.id}"}>Chi tiết</.link>
+  <div class="grid grid-cols-6 bg-gray-300 p-4">
+    <span class="col-span-2">Tên danh mục</span>
+    <span>Sản phẩm</span>
+    <span class="col-start-5 col-span-2 justify-self-center">Thao tác</span>
+  </div>
+  <div id="subcategories" phx-update="stream">
+    <div
+      :for={{id, category} <- @streams.categories}
+      id={id}
+      class="grid grid-cols-3 border border-b-0 border-gray-200 hover:bg-gray-200"
+    >
+      <span class="px-4 py-2"><%= category.title %></span>
+      <span class="px-4 py-2"><%= category.product_count %></span>
+      <div class="flex flex-row justify-between">
+        <.link
+          class="px-4 py-2 text-blue-500"
+          patch={~p"/admin/dashboard/catalog/category/#{category}"}
+        >
+          Chi tiết
+        </.link>
+        <.link
+          class="px-4 py-2 text-blue-500"
+          phx-click={
+            JS.push("show-subcategories", value: %{id: category.id})
+            |> JS.toggle_class("hidden", to: "#sub_categories_#{category.id}")
+          }
+        >
+          Hiển thị danh mục con
+        </.link>
+        <.link
+          class="px-4 py-2 text-blue-500"
+          phx-click={JS.push("delete", value: %{id: category.id})}
+          data-confirm="Xác nhận xóa danh mục?"
+        >
+          Xóa
+        </.link>
       </div>
-       <.link patch={~p"/admin/dashboard/catalog/category/#{category.id}/edit"}>Sửa</.link>
-    </:action>
-    
-    <:action :let={category}>
-      <.link
-        phx-click={JS.push("delete", value: %{id: category.id})}
-        data-confirm="Xác nhận xóa danh mục?"
-      >
-        Xóa
-      </.link>
-    </:action>
-  </.data_table>
+      <div id={"sub_categories_#{category.id}"} class="flex flex-col col-span-3 w-full hidden">
+        <span
+          :for={cat <- Map.get(category, :subcategories, [])}
+          class="grid grid-cols-3 border border-b-0 border-gray-200 bg-white hover:bg-gray-200"
+        >
+          <span class="px-8 py-2 "><%= cat.title %></span>
+          <span class="px-4 py-2"><%= cat.product_count %></span>
+          <.link
+            navigate={~p"/admin/dashboard/catalog/category/#{cat}"}
+            class="justify-self-center px-4 py-2 text-blue-500"
+          >
+            Chi tiết
+          </.link>
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <.modal
