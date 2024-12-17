@@ -9,6 +9,6 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _uri, socket) do
-    {:noreply, assign(socket, :product, Catalog.get_product!(id))}
+    {:noreply, assign(socket, :product, Catalog.get_product(id, [:categories, :reviews, :cover]))}
   end
 end

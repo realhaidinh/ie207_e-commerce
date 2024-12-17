@@ -18,6 +18,13 @@
   <:item title="Số lượt đánh giá"><%= @product.rating_count %></:item>
 </.list>
 
+
+
+
+<img src={@product.cover} alt="Hình ảnh sản phẩm">
+        
+
+
 <.modal
   :if={@live_action == :edit}
   id="product-modal"

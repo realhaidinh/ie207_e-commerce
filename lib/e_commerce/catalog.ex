@@ -4,10 +4,8 @@ defmodule ECommerce.Catalog do
   """
 
   import Ecto.Query, warn: false
-  alias ECommerce.Catalog.Review
   alias ECommerce.Repo
-  alias ECommerce.Catalog.Category
-  alias ECommerce.Catalog.Product
+  alias ECommerce.Catalog.{Category, ProductImage, Product, Review}
 
   @doc """
   Returns the list of products.
@@ -80,6 +78,38 @@ defmodule ECommerce.Catalog do
     )
   end
 
+  def get_product(id, opts) do
+    query =
+      from(p in Product,
+        where: p.id == ^id
+      )
+
+    Enum.reduce(opts, query, fn opt, acc -> preload_assoc(acc, opt) end)
+    |> Repo.one()
+  end
+
+  defp preload_assoc(query, :categories), do: query |> preload(:categories)
+  defp preload_assoc(query, :images), do: query |> preload(:images)
+
+  defp preload_assoc(query, :cover) do
+    from(p in query,
+      left_join: i in assoc(p, :images),
+      select_merge: %{cover: i.url},
+      limit: 1
+    )
+  end
+
+  defp preload_assoc(query, :reviews) do
+    from(p in query,
+      left_join: r in assoc(p, :reviews),
+      select_merge: %{
+        rating: coalesce(avg(r.rating), 0.0),
+        rating_count: coalesce(count(r.rating), 0)
+      },
+      group_by: [p.id]
+    )
+  end
+
   @doc """
   Creates a product.
 
@@ -142,20 +172,32 @@ defmodule ECommerce.Catalog do
 
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
-    category = get_category(attrs["category_id"])
     attrs = Map.put(attrs, "slug", slugify(product.title))
-
-    parent_category_ids =
-      case category do
-        nil -> []
-        _ -> Regex.split(~r/\//, category.path, trim: true)
-      end
-
-    categories = [category | list_categories_by_ids(parent_category_ids)]
+    images = build_product_images(attrs)
+    categories = build_product_categories(attrs)
 
     product
     |> Product.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:categories, categories)
+    |> Ecto.Changeset.put_assoc(:images, images)
+  end
+
+  defp build_product_images(attrs) do
+    attrs
+    |> Map.get("uploaded_files", [])
+    |> Enum.map(&%ProductImage{url: &1})
+  end
+
+  defp build_product_categories(attrs) do
+    category = get_category(attrs["category_id"])
+
+    parent_category_ids =
+      case category do
+        nil -> []
+        _ -> String.split(category.path, ~r/\//, trim: true)
+      end
+
+    [category | list_categories_by_ids(parent_category_ids)]
   end
 
   @doc """

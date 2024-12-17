@@ -9,7 +9,13 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
     ~H"""
     <div>
       <section class="bg-white dark:bg-gray-900">
-        <.simple_form for={@form} id="product-form" phx-target={@myself} phx-submit="save">
+        <.simple_form
+          for={@form}
+          id="product-form"
+          phx-target={@myself}
+          phx-submit="save"
+          phx-change="change"
+        >
           <.input field={@form[:title]} type="text" label="Tên sản phẩm" />
           <.input field={@form[:description]} type="text" label="Mô tả sản phẩm" />
           <.input field={@form[:price]} type="text" label="Giá bán" />
@@ -21,6 +27,23 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
             label="Danh mục"
             options={category_opts(@changeset)}
           />
+          <div phx-drop-target={@uploads.uploaded_files.ref}>
+            <label for={@uploads.uploaded_files.ref}>Ảnh sản phẩm</label>
+            <.live_file_input upload={@uploads.uploaded_files} />
+          </div>
+          <%= for entry <- @uploads.uploaded_files.entries do %>
+            <.live_img_preview entry={entry} width="75" />
+            <div class="py-5"><%= entry.progress %>%</div>
+            <button
+              type="button"
+              phx-click="cancel-upload"
+              phx-target={@myself}
+              phx-value-ref={entry.ref}
+              aria-label="cancel"
+            >
+              &times;
+            </button>
+          <% end %>
           <:actions>
             <.button phx-disable-with="...">Lưu</.button>
           </:actions>
@@ -37,6 +60,8 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:uploaded_files, [])
+     |> allow_upload(:uploaded_files, accept: ~w(.jpg .jpeg .png .webp), max_entries: 5)
      |> assign_new(:changeset, fn ->
        Catalog.change_product(product, attrs)
      end)
@@ -66,7 +91,24 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
 
   @impl true
   def handle_event("save", %{"product" => product_params}, socket) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :uploaded_files, fn %{path: path}, entry ->
+        dest = get_dest_path(path) <> Path.extname(entry.client_name)
+        File.cp!(path, dest)
+        {:ok, "/uploads/products/#{Path.basename(dest)}"}
+      end)
+    product_params = Map.put(product_params, "uploaded_files", uploaded_files)
+
     save_product(socket, socket.assigns.action, product_params)
+  end
+
+  def handle_event("change", %{"product" => product_params} , socket) do
+    changeset = Catalog.change_product(socket.assigns.product, product_params)
+    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+  end
+
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :uploaded_files, ref)}
   end
 
   def save_product(socket, :edit, product_params) do
@@ -92,4 +134,9 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), msg)
+
+  defp get_dest_path(path) do
+    Path.join(Application.app_dir(:e_commerce, "priv/static/uploads/products"), Path.basename(path))
+  end
+
 end
