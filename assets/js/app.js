@@ -46,7 +46,7 @@ Hooks.DataTable = {
 }
 Hooks.CurrencyFormat = {
   formatCurrency(value) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value)
 
   },
   mounted() {
@@ -56,7 +56,22 @@ Hooks.CurrencyFormat = {
     this.el.innerText = this.formatCurrency(this.el.innerText);
   }
 }
-
+Hooks.ImageGallery = {
+  mounted() {
+    const featureImage = this.el.querySelector("#feature-image")
+    const modalImage = document.querySelector("#detail-image img")
+    const updateFeatureImage = (newImage) => {
+      featureImage.src = newImage.src
+      modalImage.src = newImage.src
+    }
+    const galleryItems = this.el.querySelectorAll(".gallery-item")
+    galleryItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        updateFeatureImage(item)
+      })
+    })
+  }
+}
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },

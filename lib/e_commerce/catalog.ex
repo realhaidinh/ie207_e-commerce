@@ -17,39 +17,64 @@ defmodule ECommerce.Catalog do
 
   """
   def list_products do
-    Repo.all(
-      from p in Product,
-        left_join: r in assoc(p, :reviews),
-        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
-        group_by: [p.id]
-    )
+    query = from p in Product
+    query
+    |> product_preload(:cover)
+    |> product_preload(:rating)
+    |> Repo.all()
   end
 
-  def list_products_by_category(id) do
-    Repo.all(
-      from p in Product,
-        left_join: r in assoc(p, :reviews),
-        left_join: c in "product_categories",
-        on: c.product_id == p.id,
-        where: c.category_id == ^id,
-        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
-        group_by: [p.id]
-    )
+  defp get_page_no(nil), do: 1
+  defp get_page_no(""), do: 1
+
+  defp get_page_no(page_no) do
+    String.to_integer(page_no)
   end
 
   def search_product(opts) do
-    _page_no = Map.get(opts, "page", 1)
-    keyword = "%" <> Map.get(opts, "keyword", "") <> "%"
+    page_no = get_page_no(Map.get(opts, "page"))
+    limit = Map.get(opts, "limit", 5)
+    offset = (page_no - 1) * limit
 
-    Repo.all(
+    query =
       from p in Product,
-        where: like(p.title, ^keyword),
-        left_join: r in assoc(p, :reviews),
-        select_merge: %{rating: coalesce(avg(r.rating), 0.0)},
-        group_by: [p.id],
-        limit: 5
-    )
+        limit: ^limit,
+        offset: ^offset,
+        where: ^filter_product_order_by(Map.get(opts, "order_by"))
+
+    query
+    |> filter_product_where(opts)
+    |> product_preload(:rating)
+    |> product_preload(:cover)
+    |> Repo.all()
   end
+
+  defp filter_product_where(query, %{"keyword" => keyword}) do
+    keyword = keyword <> "%"
+
+    from p in query,
+      where: fragment("text_like(?, ?)", ^keyword, p.title)
+  end
+
+  defp filter_product_where(query, %{"category_id" => category_id}) do
+    from p in query,
+      left_join: c in "product_categories",
+      on: c.product_id == p.id,
+      where: c.category_id == ^category_id
+  end
+
+  defp filter_product_where(query, _) do
+    from(p in query)
+  end
+
+  defp filter_product_order_by("price_desc"),
+    do: [desc: dynamic([p], p.price)]
+
+  defp filter_product_order_by("price"),
+    do: [asc: dynamic([p], p.price)]
+
+  defp filter_product_order_by(_),
+    do: []
 
   @doc """
   Gets a single product.
@@ -78,28 +103,30 @@ defmodule ECommerce.Catalog do
     )
   end
 
-  def get_product(id, opts) do
+  def get_product!(id, opts) do
     query =
       from(p in Product,
         where: p.id == ^id
       )
 
-    Enum.reduce(opts, query, fn opt, acc -> preload_assoc(acc, opt) end)
-    |> Repo.one()
+    opts
+    |> Enum.reduce(query, fn opt, acc -> product_preload(acc, opt) end)
+    |> Repo.one!()
   end
 
-  defp preload_assoc(query, :categories), do: query |> preload(:categories)
-  defp preload_assoc(query, :images), do: query |> preload(:images)
+  defp product_preload(query, :categories), do: query |> preload(:categories)
 
-  defp preload_assoc(query, :cover) do
-    from(p in query,
-      left_join: i in assoc(p, :images),
-      select_merge: %{cover: i.url},
-      limit: 1
-    )
+  defp product_preload(query, opts) when opts == :images or opts == :cover do
+    images_query =
+      case opts do
+        :cover -> from i in ProductImage, limit: 1
+        _ -> from(i in ProductImage)
+      end
+
+    preload(query, images: ^images_query)
   end
 
-  defp preload_assoc(query, :reviews) do
+  defp product_preload(query, :rating) do
     from(p in query,
       left_join: r in assoc(p, :reviews),
       select_merge: %{
@@ -173,31 +200,30 @@ defmodule ECommerce.Catalog do
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
     attrs = Map.put(attrs, "slug", slugify(product.title))
-    images = build_product_images(attrs)
-    categories = build_product_categories(attrs)
 
     product
     |> Product.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:categories, categories)
-    |> Ecto.Changeset.put_assoc(:images, images)
+    |> build_product_images_assoc(Map.get(attrs, "uploaded_files", []))
+    |> build_product_categories_assoc(Map.get(attrs, "category_id"))
   end
 
-  defp build_product_images(attrs) do
-    attrs
-    |> Map.get("uploaded_files", [])
-    |> Enum.map(&%ProductImage{url: &1})
+  defp build_product_images_assoc(product_chset, uploaded_files) do
+    images = Enum.map(uploaded_files, &%ProductImage{url: &1})
+    Ecto.Changeset.put_assoc(product_chset, :images, images)
   end
 
-  defp build_product_categories(attrs) do
-    category = get_category(attrs["category_id"])
+  defp build_product_categories_assoc(product_chset, category_id) do
+    categories =
+      case get_category(category_id) do
+        nil ->
+          []
 
-    parent_category_ids =
-      case category do
-        nil -> []
-        _ -> String.split(category.path, ~r/\//, trim: true)
+        category ->
+          parent_category_ids = String.split(category.path, ~r/\//, trim: true)
+          [category | list_categories_by_ids(parent_category_ids)]
       end
 
-    [category | list_categories_by_ids(parent_category_ids)]
+    Ecto.Changeset.put_assoc(product_chset, :categories, categories)
   end
 
   @doc """

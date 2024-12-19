@@ -28,7 +28,10 @@ defmodule ECommerceWeb.Public.HomeLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket = stream(socket, :categories, Catalog.list_root_categories())
+    socket =
+      socket
+      |> stream(:categories, Catalog.list_root_categories())
+      |> assign(:page_title, "ECommerce")
     {:ok, socket}
   end
 end

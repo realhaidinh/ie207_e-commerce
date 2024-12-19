@@ -1,41 +1,56 @@
+<div class="flex justify-between">
 <.back navigate="/admin/dashboard/catalog/product/">Trở về danh sách sản phẩm</.back>
-
-<.list>
-  <:item title="Tên sản phẩm"><%= @product.title %></:item>
-
-  <:item title="Mô tả"><%= @product.description %></:item>
-
-  <:item title="Giá"><%= @product.price %></:item>
-
-  <:item title="Kho"><%= @product.stock %></:item>
-
-  <:item title="Đã bán"><%= @product.sold %></:item>
-
-  <:item title="Slug"><%= @product.slug %></:item>
-
-  <:item title="Đánh giá"><%= @product.rating %></:item>
-
-  <:item title="Số lượt đánh giá"><%= @product.rating_count %></:item>
-</.list>
-
-
-
-
-<img src={@product.cover} alt="Hình ảnh sản phẩm">
-        
-
+<.link class="mt-16" patch={~p"/admin/dashboard/catalog/product/#{@product}/edit"}>
+  <.button>Chỉnh sửa sản phẩm</.button>
+</.link>
+</div>
+<div class="flex">
+  <.image_gallery product={@product} />
+  <div class="basis-4/5">
+    <dl class="divide-y divide-zinc-100">
+      <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <dt class="w-1/4">Tên sản phẩm</dt>
+        <dd><%= @product.title %></dd>
+      </div>
+      <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <dt  class="w-1/4" >Giá</dt>
+        <dd id="product-price" phx-hook="CurrencyFormat"><%= @product.price %></dd>
+      </div>
+      <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <dt class="w-1/4">Kho</dt>
+        <dd><%= @product.stock %></dd>
+      </div>
+      <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <dt class="w-1/4">Đã bán</dt>
+        <dd><%= @product.sold %></dd>
+      </div>
+      <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <dt class="w-1/4">Đánh giá</dt>
+        <dd><%= @product.rating %></dd>
+      </div>
+      <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <dt class="w-1/4">Số lượt đánh giá</dt>
+        <dd><%= @product.rating_count %></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+<div class="flex flex-col">
+  <span>Mô tả sản phẩm</span>
+  <span><%= @product.description %></span>
+</div>
 
 <.modal
   :if={@live_action == :edit}
   id="product-modal"
   show
-  on_cancel={JS.patch(~p"/admin/dashboard/catalog/product/#{@product.id}")}
+  on_cancel={JS.patch(~p"/admin/dashboard/catalog/product/#{@product}")}
 >
   <.live_component
     module={ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent}
     id={@product.id}
     action={@live_action}
-    patch={~p"/admin/dashboard/catalog/product/#{@product.id}"}
+    patch={~p"/admin/dashboard/catalog/product/#{@product}"}
     product={@product}
   />
 </.modal>

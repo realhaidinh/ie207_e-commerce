@@ -313,8 +313,13 @@ defmodule ECommerceWeb.Components do
                     <li>
                       <div class="flex justify-between m-1.5">
                         <p><%= item.product.title %></p>
-
-                        <p><%= item.price_when_carted %></p>
+                        <p
+                          id={"item-#{item.id}-price"}
+                          phx-hook="CurrencyFormat"
+                          class="text-orange-500"
+                        >
+                          <%= item.price_when_carted %>
+                        </p>
                       </div>
                     </li>
                   <% end %>
@@ -373,14 +378,29 @@ defmodule ECommerceWeb.Components do
     >
       <img
         class="p-8 rounded-t-lg"
-        src="https://flowbite.com/docs/images/products/apple-watch.png"
-        alt="product image"
+        src={Map.get(List.first(@product.images, %{}), :url, "")}
+        alt={@product.title}
       />
-      <div class="px-5 pb-5">
-        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-          <%= @product.title %>
-        </h5>
-
+      <div class="px-2 pb-2">
+        <div class="flex flex-col flex-1">
+          <p
+            style="display: -webkit-box;
+                  -webkit-line-clamp: 2;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                  text-overflow: ellipsis;"
+            class="text-lg min-h-14 font-semibold tracking-tight text-gray-900 dark:text-white"
+          >
+            <%= @product.title %>
+          </p>
+          <p
+            id={"product-#{@product.id}-price"}
+            phx-hook="CurrencyFormat"
+            class="text-xl font-semibold text-orange-500"
+          >
+            <%= @product.price %>
+          </p>
+        </div>
         <div class="flex items-center mt-2.5 mb-5">
           <div class="flex items-center space-x-1 rtl:space-x-reverse">
             <svg
@@ -393,16 +413,51 @@ defmodule ECommerceWeb.Components do
               <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
             </svg>
           </div>
-
-          <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">
+          <span class="text-sm">
             <%= @product.rating %>
           </span>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <span class="text-3xl font-bold text-gray-900 dark:text-white"><%= @product.price %></span>
+          <span class="ml-1 text-sm">
+            Đã bán <%= @product.sold %>
+          </span>
         </div>
       </div>
+    </div>
+    """
+  end
+  attr :product, :any, required: true
+  def image_gallery(assigns) do
+    ~H"""
+    <div>
+      <div
+        :if={@product.images != []}
+        class="container p-6"
+        id="product-image-gallery"
+        phx-hook="ImageGallery"
+      >
+        <div class="mb-8 hover:cursor-pointer" phx-click={show_modal("detail-image")}>
+          <img
+            id="feature-image"
+            src={Map.get(List.first(@product.images, %{}), :url, "")}
+            alt={@product.title}
+            class="object-cover shadow-lg"
+          />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div
+            :for={{image, index} <- Enum.with_index(@product.images)}
+            class="relative hover:cursor-pointer"
+          >
+            <img
+              src={image.url}
+              alt={"product-img-#{index}"}
+              class="object-cover shadow-lg gallery-item"
+            />
+          </div>
+        </div>
+      </div>
+      <.modal id="detail-image">
+        <img src={Map.get(List.first(@product.images, %{}), :url, "")} alt={@product.title} loading="lazy" />
+      </.modal>
     </div>
     """
   end

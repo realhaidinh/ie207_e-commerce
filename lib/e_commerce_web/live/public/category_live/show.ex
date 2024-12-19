@@ -17,7 +17,7 @@ defmodule ECommerceWeb.Public.CategoryLive.Show do
       Catalog.list_categories_by_ids(parent_ids)
       |> Enum.map(fn cat -> Map.put(cat, :url, "/categories/#{cat.id}") end)
 
-    products = Catalog.list_products_by_category(id)
+    products = Catalog.search_product(%{"category_id" => id, "limit" => 20})
 
     {:noreply,
      socket

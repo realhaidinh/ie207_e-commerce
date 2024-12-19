@@ -121,7 +121,7 @@ defmodule ECommerceWeb.Router do
     pipe_through [:browser, :admin, :require_authenticated_admin]
 
     live_session :require_authenticated_admin,
-      layout: {ECommerceWeb.Layouts, :admin},
+      layout: {ECommerceWeb.Layouts, :admin_dashboard},
       on_mount: [{ECommerceWeb.AdminAuth, :ensure_authenticated}] do
       live "/settings", Admin.SettingsLive, :edit
       live "/settings/confirm_email/:token", Admin.SettingsLive, :confirm_email

@@ -17,7 +17,7 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.Index do
   end
 
   def apply_action(socket, %{"id" => id}, :edit) do
-    assign(socket, :product, Catalog.get_product(id, [:images, :categories]))
+    assign(socket, :product, Catalog.get_product!(id, [:images, :categories]))
   end
 
   def apply_action(socket, _, :new) do

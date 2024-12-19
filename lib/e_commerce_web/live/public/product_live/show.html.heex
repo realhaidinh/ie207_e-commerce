@@ -1,22 +1,10 @@
 <.breadcrumb prev_pages={get_category_pages(@product.categories)} current_page={@product.title} />
-<section class="pb-8 bg-white md:pb-16 dark:bg-gray-900 antialiased">
-  <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+<section class="pb-8 bg-slate-50 md:pb-16 dark:bg-gray-900 antialiased">
+  <div class="max-w-screen-xl p-4 mx-auto 2xl:px-0">
     <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-      <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
-        <img
-          class="w-full dark:hidden"
-          src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
-          alt=""
-        />
-        <img
-          class="w-full hidden dark:block"
-          src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
-          alt=""
-        />
-      </div>
-
+      <.image_gallery product={@product} />
       <div class="mt-6 sm:mt-8 lg:mt-0">
-        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+        <h1 id="product-title" class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
           <%= @product.title %>
         </h1>
         <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
@@ -46,11 +34,11 @@
                 <% end %>
               <% end %>
             </div>
-            <p class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
+            <p id="product-rating" class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
               (<%= @product.rating %>) |
             </p>
             <a
-              href="#product-ratings"
+              href="#product-reviews"
               class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
             >
               <%= if @product.rating_count == 0 do %>
@@ -61,28 +49,32 @@
               |
             </a>
             <span>
-              <b><%= @product.sold %></b> Đã bán
+              <b id="product-sold"><%= @product.sold %></b> Đã bán
             </span>
           </div>
         </div>
         <p
           id="product-price"
           phx-hook="CurrencyFormat"
-          class="text-2xl font-extrabold text-black-900 sm:text-3xl"
+          class="text-xl font-semibold text-orange-500 sm:text-2xl"
         >
           <%= @product.price %>
         </p>
-        <div :if={@product.stock > 0} class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-          <.button phx-click="add">
+        <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
+          <button
+            phx-click="add"
+            disabled={@product.stock == 0}
+            class="rounded-lg py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 bg-zinc-900 hover:bg-zinc-700 disabled:bg-zinc-600 disabled:hover:cursor-not-allowed"
+          >
             Thêm vào giỏ hàng
-          </.button>
+          </button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="product-content mt-8 m-b-8">
+<div id="product-content" class=" mt-8 m-b-8 bg-slate-50 p-4">
   <section class="mt-8 m-b-8">
     <h2>CHI TIẾT SẢN PHẨM</h2>
     <div>
@@ -112,7 +104,7 @@
             </svg>
 
             <.link
-              navigate={~p"/categories/#{category.id}"}
+              navigate={~p"/categories/#{category}"}
               class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
             >
               <%= category.title %>
@@ -122,13 +114,13 @@
       </div>
       <div class="flex">
         <label class="w-36">Kho</label>
-        <p><%= @product.stock %></p>
+        <p id= "product-stock"><%= @product.stock %></p>
       </div>
     </div>
   </section>
   <section class="mt-8 m-b-8">
     <h2>MÔ TẢ SẢN PHẨM</h2>
-    <p>
+    <p id="product-description">
       <%= @product.description %>
     </p>
   </section>
@@ -142,7 +134,7 @@
     product={@product}
   />
 </div>
-<div id="product-ratings">
+<div id="product-reviews">
   <h3>ĐÁNH GIÁ SẢN PHẨM</h3>
   <ul>
     <li :for={review <- @reviews} id={"review-#{review.id}"}>
