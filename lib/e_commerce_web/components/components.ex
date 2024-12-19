@@ -374,14 +374,14 @@ defmodule ECommerceWeb.Components do
     <div
       id={@id}
       phx-click={JS.navigate("/products/#{@product.id}")}
-      class="hover:cursor-pointer w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      class="flex h-full flex-col hover:cursor-pointer w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
     >
       <img
-        class="p-8 rounded-t-lg"
+        class="h-[57.5%] p-2 items-center"
         src={Map.get(List.first(@product.images, %{}), :url, "")}
         alt={@product.title}
       />
-      <div class="px-2 pb-2">
+      <div class="px-2 pb-2 flex flex-col h-[42.5%]">
         <div class="flex flex-col flex-1">
           <p
             style="display: -webkit-box;
@@ -401,8 +401,8 @@ defmodule ECommerceWeb.Components do
             <%= @product.price %>
           </p>
         </div>
-        <div class="flex items-center mt-2.5 mb-5">
-          <div class="flex items-center space-x-1 rtl:space-x-reverse">
+        <div class="flex">
+          <div class="space-x-1 rtl:space-x-reverse">
             <svg
               class="w-4 h-4 text-yellow-300"
               aria-hidden="true"
@@ -424,39 +424,87 @@ defmodule ECommerceWeb.Components do
     </div>
     """
   end
-  attr :product, :any, required: true
+
+  attr :images, :list, required: true
+  attr :title, :string, required: false, default: ""
   def image_gallery(assigns) do
     ~H"""
-    <div>
-      <div
-        :if={@product.images != []}
-        class="container p-6"
-        id="product-image-gallery"
-        phx-hook="ImageGallery"
-      >
-        <div class="mb-8 hover:cursor-pointer" phx-click={show_modal("detail-image")}>
-          <img
-            id="feature-image"
-            src={Map.get(List.first(@product.images, %{}), :url, "")}
-            alt={@product.title}
-            class="object-cover shadow-lg"
-          />
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div
-            :for={{image, index} <- Enum.with_index(@product.images)}
-            class="relative hover:cursor-pointer"
-          >
+    <div id="product-image-gallery" phx-hook="ImageGallery">
+      <div id="default-carousel" class="relative w-full" data-carousel="static">
+        <div class="relative h-56 overflow-hidden rounded-lg md:h-96 z-0">
+          <div :for={image <- @images} class="hidden duration-700 ease-in-out" data-carousel-item>
             <img
               src={image.url}
-              alt={"product-img-#{index}"}
-              class="object-cover shadow-lg gallery-item"
+              class="hover:cursor-pointer gallery-item absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+              alt={@title}
+              phx-click={show_modal("modal-image")}
             />
           </div>
         </div>
+        <!-- Slider indicators -->
+        <div class="bg-slate-500 w-full justify-center absolute z-10 flex -translate-x-1/2 left-1/2 space-x-3 rtl:space-x-reverse">
+          <button
+            :for={{_, id} <- Enum.with_index(@images)}
+            type="button"
+            class="w-3 h-3 rounded-full"
+            aria-current="true"
+            aria-label={"Ảnh #{id}"}
+            data-carousel-slide-to={id}
+          >
+          </button>
+        </div>
+        <!-- Slider controls -->
+        <button
+          type="button"
+          class="absolute top-0 start-0 z-30 flex items-center justify-center h-full  px-4 cursor-pointer group focus:outline-none"
+          data-carousel-prev
+        >
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/30 hover:bg-gray-800 group-focus:outline-none">
+            <svg
+              class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 1 1 5l4 4"
+              />
+            </svg>
+            <span class="sr-only">Previous</span>
+          </span>
+        </button>
+        <button
+          type="button"
+          class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+          data-carousel-next
+        >
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/30 hover:bg-gray-800  group-focus:outline-none">
+            <svg
+              class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+            <span class="sr-only">Next</span>
+          </span>
+        </button>
       </div>
-      <.modal id="detail-image">
-        <img src={Map.get(List.first(@product.images, %{}), :url, "")} alt={@product.title} loading="lazy" />
+      <.modal id="modal-image">
+        <img id="image-modal" class="self-center" src="" alt={@title} loading="lazy" />
       </.modal>
     </div>
     """

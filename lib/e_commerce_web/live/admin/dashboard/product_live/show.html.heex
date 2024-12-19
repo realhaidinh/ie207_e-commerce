@@ -5,8 +5,10 @@
 </.link>
 </div>
 <div class="flex">
-  <.image_gallery product={@product} />
-  <div class="basis-4/5">
+<div class="basis-2/5">
+  <.image_gallery images={@product.images} />
+</div>
+  <div class="basis-3/5">
     <dl class="divide-y divide-zinc-100">
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Tên sản phẩm</dt>

@@ -17,7 +17,8 @@ defmodule ECommerce.Catalog do
 
   """
   def list_products do
-    query = from p in Product
+    query = from(p in Product)
+
     query
     |> product_preload(:cover)
     |> product_preload(:rating)
@@ -119,8 +120,22 @@ defmodule ECommerce.Catalog do
   defp product_preload(query, opts) when opts == :images or opts == :cover do
     images_query =
       case opts do
-        :cover -> from i in ProductImage, limit: 1
-        _ -> from(i in ProductImage)
+        :cover ->
+          cover_query =
+            from i in ProductImage,
+              select: %{
+                id: i.id,
+                url: i.url,
+                row_number: over(row_number(), :images_partition)
+              },
+              windows: [images_partition: [partition_by: :id, order_by: :inserted_at]]
+
+          from i0 in ProductImage,
+            join: i1 in subquery(cover_query),
+            on: i0.id == i1.id and i1.row_number == 1
+
+        _ ->
+          from(i in ProductImage)
       end
 
     preload(query, images: ^images_query)
@@ -272,14 +287,11 @@ defmodule ECommerce.Catalog do
   end
 
   def list_root_categories() do
-    Repo.all(
-      from c in Category,
-        where: c.level == 0,
-        left_join: pc in "product_categories",
-        on: pc.category_id == c.id,
-        select_merge: %{product_count: coalesce(count(pc.category_id), 0)},
-        group_by: [c.id]
+    from(c in Category,
+      where: c.level == 0
     )
+    |> category_preload(:product_count)
+    |> Repo.all()
   end
 
   def get_subcategory_path(%Category{} = category) do
@@ -289,14 +301,19 @@ defmodule ECommerce.Catalog do
   def get_subcategories(%Category{} = category) do
     subpath = get_subcategory_path(category)
 
-    Repo.all(
-      from c in Category,
-        where: c.path == ^subpath,
-        left_join: pc in "product_categories",
-        on: pc.category_id == c.id,
-        select_merge: %{product_count: coalesce(count(pc.category_id), 0)},
-        group_by: [c.id]
+    from(c in Category,
+      where: c.path == ^subpath
     )
+    |> category_preload(:product_count)
+    |> Repo.all()
+  end
+
+  defp category_preload(query, :product_count) do
+    from c in query,
+      left_join: pc in "product_categories",
+      on: pc.category_id == c.id,
+      select_merge: %{product_count: coalesce(count(pc.category_id), 0)},
+      group_by: [c.id]
   end
 
   @doc """

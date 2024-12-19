@@ -2,7 +2,7 @@
 <section class="pb-8 bg-slate-50 md:pb-16 dark:bg-gray-900 antialiased">
   <div class="max-w-screen-xl p-4 mx-auto 2xl:px-0">
     <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-      <.image_gallery product={@product} />
+      <.image_gallery images={@product.images} />
       <div class="mt-6 sm:mt-8 lg:mt-0">
         <h1 id="product-title" class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
           <%= @product.title %>

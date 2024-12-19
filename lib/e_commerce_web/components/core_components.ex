@@ -79,7 +79,7 @@ defmodule ECommerceWeb.CoreComponents do
                 </button>
               </div>
 
-              <div id={"#{@id}-content"}>
+              <div id={"#{@id}-content"} class="flex justify-center">
                 <%= render_slot(@inner_block) %>
               </div>
             </.focus_wrap>

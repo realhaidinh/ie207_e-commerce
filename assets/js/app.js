@@ -58,16 +58,14 @@ Hooks.CurrencyFormat = {
 }
 Hooks.ImageGallery = {
   mounted() {
-    const featureImage = this.el.querySelector("#feature-image")
-    const modalImage = document.querySelector("#detail-image img")
-    const updateFeatureImage = (newImage) => {
-      featureImage.src = newImage.src
+    const modalImage = document.getElementById("image-modal")
+    const updateModalImage = (newImage) => {
       modalImage.src = newImage.src
     }
     const galleryItems = this.el.querySelectorAll(".gallery-item")
     galleryItems.forEach((item) => {
       item.addEventListener("click", () => {
-        updateFeatureImage(item)
+        updateModalImage(item)
       })
     })
   }
