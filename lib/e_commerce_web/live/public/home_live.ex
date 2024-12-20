@@ -7,7 +7,12 @@ defmodule ECommerceWeb.Public.HomeLive do
     ~H"""
     <div class="flex pt-6 justify-between">
       <div class="overflow-y-auto bg-slate-50 p-8 basis-1/5">
-        <span class="font-semibold hover:underline hover:cursor-pointer" phx-click={JS.navigate(~p"/categories")}>DANH MỤC</span>
+        <span
+          class="font-semibold hover:underline hover:cursor-pointer"
+          phx-click={JS.navigate(~p"/categories")}
+        >
+          DANH MỤC
+        </span>
         <div class="flex flex-col flex-wrap mt-8">
           <.link
             :for={{dom_id, category} <- @streams.categories}
@@ -15,7 +20,7 @@ defmodule ECommerceWeb.Public.HomeLive do
             navigate={~p"/categories/#{category.id}"}
             class="mb-2 hover:underline"
           >
-            <%= category.title %>
+            {category.title}
           </.link>
         </div>
       </div>
@@ -32,6 +37,7 @@ defmodule ECommerceWeb.Public.HomeLive do
       socket
       |> stream(:categories, Catalog.list_root_categories())
       |> assign(:page_title, "ECommerce")
+
     {:ok, socket}
   end
 end

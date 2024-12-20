@@ -1,30 +1,29 @@
 <div class="p-8 flex flex-col">
-
-  <span>Mã đơn hàng: <%= @order.id %></span>
+  <span>Mã đơn hàng: {@order.id}</span>
   <.table
     id="order-products"
     rows={@order.line_items}
     row_click={fn item -> JS.navigate(~p"/products/#{item.product.id}") end}
   >
-    <:col :let={item} label="Sản phẩm"><%= item.product.title %></:col>
+    <:col :let={item} label="Sản phẩm">{item.product.title}</:col>
 
-    <:col :let={item} label="Đơn giá"><%= item.price %></:col>
+    <:col :let={item} label="Đơn giá">{item.price}</:col>
 
-    <:col :let={item} label="Số lượng"><%= item.quantity %></:col>
+    <:col :let={item} label="Số lượng">{item.quantity}</:col>
 
-    <:col :let={item} label="Thành tiền"><%= item.price * item.quantity %></:col>
+    <:col :let={item} label="Thành tiền">{item.price * item.quantity}</:col>
   </.table>
 
   <div class="self-end">
-    Tổng tiền 
+    Tổng tiền
     <span id="order-total-price" phx-hook="CurrencyFormat">
-      <%= @order.total_price %>
+      {@order.total_price}
     </span>
   </div>
-  <span class="self-end">Trạng thái đơn hàng: <%= @order.status %></span>
+  <span class="self-end">Trạng thái đơn hàng: {@order.status}</span>
   <div class="buyer-information">
-    <p>Họ tên người nhận: <%= @order.buyer_name %></p>
-    <p>Địa chỉ nhận hàng: <%= @order.buyer_address %></p>
-    <p>Số điện thoại nhận hàng: <%= @order.buyer_phone %></p>
+    <p>Họ tên người nhận: {@order.buyer_name}</p>
+    <p>Địa chỉ nhận hàng: {@order.buyer_address}</p>
+    <p>Số điện thoại nhận hàng: {@order.buyer_phone}</p>
   </div>
 </div>

@@ -1,6 +1,7 @@
 <header class="sticky top-0 z-10">
   <.navbar current_user={@current_admin} role={:admin} />
 </header>
+
 <main>
   <div>
     <.flash_group flash={@flash} />
@@ -19,6 +20,7 @@
               <span class="flex-1 ms-3 whitespace-nowrap">Quản lý sản phẩm</span>
             </.link>
           </li>
+          
           <li>
             <.link
               patch={~p"/admin/dashboard/catalog/category"}
@@ -27,7 +29,7 @@
               <span class="flex-1 ms-3 whitespace-nowrap">Quản lý danh mục</span>
             </.link>
           </li>
-
+          
           <li>
             <.link
               patch={~p"/admin/dashboard/customer"}
@@ -36,7 +38,7 @@
               <span class="flex-1 ms-3 whitespace-nowrap">Quản lý khách hàng</span>
             </.link>
           </li>
-
+          
           <li>
             <.link
               patch={~p"/admin/dashboard/sales/order"}
@@ -48,9 +50,9 @@
         </ul>
       </div>
     </aside>
-
+    
     <div class="p-4 sm:ml-64">
-      <%= @inner_content %>
+      {@inner_content}
     </div>
   </div>
 </main>

@@ -12,6 +12,7 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     product = Catalog.get_product!(id, [:rating, :categories, :images])
+
     {:noreply,
      socket
      |> assign(:page_title, product.title)
@@ -40,5 +41,4 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
   defp get_category_pages(categories) do
     Enum.map(categories, &Map.put(&1, :url, "/categories/#{&1.id}"))
   end
-
 end

@@ -22,6 +22,7 @@ defmodule ECommerce.ShoppingCart.CartItem do
       else
         attrs
       end
+
     cart_item
     |> cast(attrs, [:price_when_carted, :quantity])
     |> validate_required([:price_when_carted, :quantity])

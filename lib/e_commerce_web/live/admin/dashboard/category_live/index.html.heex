@@ -12,19 +12,22 @@
     id={id}
     class="grid grid-cols-3 border border-b-0 border-gray-200 hover:bg-gray-200"
   >
-    <span class="px-4 py-2"><%= category.title %></span>
-    <span class="px-4 py-2"><%= category.product_count %></span>
+    <span class="px-4 py-2">{category.title}</span>
+    <span class="px-4 py-2">{category.product_count}</span>
     <div class="flex flex-row justify-between">
-      <.link class="px-4 py-2 text-blue-500" patch={~p"/admin/dashboard/catalog/category/#{category.id}"}>
+      <.link
+        class="px-4 py-2 text-blue-500"
+        patch={~p"/admin/dashboard/catalog/category/#{category.id}"}
+      >
         Chi tiết
       </.link>
       <.link
         class="px-4 py-2 text-blue-500"
         phx-click={
-          JS.push("show-subcategories", value: %{id: category.id}) 
+          JS.push("show-subcategories", value: %{id: category.id})
           |> JS.toggle_class(
-            "hidden flex flex-col", 
-            transition: {"ease-in duration-200", "opacity-0", "opacity-100"}, 
+            "hidden flex flex-col",
+            transition: {"ease-in duration-200", "opacity-0", "opacity-100"},
             to: "#sub_categories_#{category.id}"
           )
         }
@@ -44,9 +47,14 @@
         :for={cat <- Map.get(category, :subcategories, [])}
         class="grid grid-cols-3 border border-b-0 border-gray-200 bg-white hover:bg-gray-200"
       >
-        <span class="px-8 py-2 "><%= cat.title %></span>
-        <span class="px-4 py-2"><%= cat.product_count %></span>
-        <.link navigate={~p"/admin/dashboard/catalog/category/#{cat}"} class="justify-self-center px-4 py-2 text-blue-500">Chi tiết</.link>
+        <span class="px-8 py-2 ">{cat.title}</span>
+        <span class="px-4 py-2">{cat.product_count}</span>
+        <.link
+          navigate={~p"/admin/dashboard/catalog/category/#{cat}"}
+          class="justify-self-center px-4 py-2 text-blue-500"
+        >
+          Chi tiết
+        </.link>
       </span>
     </div>
   </div>

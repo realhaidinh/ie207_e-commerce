@@ -4,8 +4,11 @@
     <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
       <.image_gallery images={@product.images} title={@product.title} />
       <div class="mt-6 sm:mt-8 lg:mt-0">
-        <h1 id="product-title" class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-          <%= @product.title %>
+        <h1
+          id="product-title"
+          class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+        >
+          {@product.title}
         </h1>
         <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
           <div class="flex items-center gap-2 mt-2 sm:mt-0">
@@ -34,8 +37,11 @@
                 <% end %>
               <% end %>
             </div>
-            <p id="product-rating" class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
-              (<%= @product.rating %>) |
+            <p
+              id="product-rating"
+              class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400"
+            >
+              ({@product.rating}) |
             </p>
             <a
               href="#product-reviews"
@@ -44,12 +50,12 @@
               <%= if @product.rating_count == 0 do %>
                 Chưa có lượt đánh giá
               <% else %>
-                <%= @product.rating_count %> lượt đánh giá
+                {@product.rating_count} lượt đánh giá
               <% end %>
               |
             </a>
             <span>
-              <b id="product-sold"><%= @product.sold %></b> Đã bán
+              <b id="product-sold">{@product.sold}</b> Đã bán
             </span>
           </div>
         </div>
@@ -58,7 +64,7 @@
           phx-hook="CurrencyFormat"
           class="text-xl font-semibold text-orange-500 sm:text-2xl"
         >
-          <%= @product.price %>
+          {@product.price}
         </p>
         <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
           <button
@@ -107,21 +113,21 @@
               navigate={~p"/categories/#{category}"}
               class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
             >
-              <%= category.title %>
+              {category.title}
             </.link>
           <% end %>
         </div>
       </div>
       <div class="flex">
         <label class="w-36">Kho</label>
-        <p id= "product-stock"><%= @product.stock %></p>
+        <p id="product-stock">{@product.stock}</p>
       </div>
     </div>
   </section>
   <section class="mt-8 m-b-8">
     <h2>MÔ TẢ SẢN PHẨM</h2>
     <p id="product-description">
-      <%= @product.description %>
+      {@product.description}
     </p>
   </section>
 </div>
@@ -138,10 +144,10 @@
   <h3>ĐÁNH GIÁ SẢN PHẨM</h3>
   <ul>
     <li :for={review <- @reviews} id={"review-#{review.id}"}>
-      <p>Email: <%= review.user.email %></p>
-      <p>Điểm: <%= review.rating %></p>
+      <p>Email: {review.user.email}</p>
+      <p>Điểm: {review.rating}</p>
       <p>Nội dung đánh giá:</p>
-      <p><%= review.content %></p>
+      <p>{review.content}</p>
     </li>
   </ul>
 </div>

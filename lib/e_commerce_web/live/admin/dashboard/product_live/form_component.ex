@@ -33,7 +33,7 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
           </div>
           <%= for entry <- @uploads.uploaded_files.entries do %>
             <.live_img_preview entry={entry} width="75" />
-            <div class="py-5"><%= entry.progress %>%</div>
+            <div class="py-5">{entry.progress}%</div>
             <button
               type="button"
               phx-click="cancel-upload"
@@ -97,12 +97,13 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
         File.cp!(path, dest)
         {:ok, "/uploads/products/#{Path.basename(dest)}"}
       end)
+
     product_params = Map.put(product_params, "uploaded_files", uploaded_files)
 
     save_product(socket, socket.assigns.action, product_params)
   end
 
-  def handle_event("change", %{"product" => product_params} , socket) do
+  def handle_event("change", %{"product" => product_params}, socket) do
     changeset = Catalog.change_product(socket.assigns.product, product_params)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
@@ -136,7 +137,9 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
   defp notify_parent(msg), do: send(self(), msg)
 
   defp get_dest_path(path) do
-    Path.join(Application.app_dir(:e_commerce, "priv/static/uploads/products"), Path.basename(path))
+    Path.join(
+      Application.app_dir(:e_commerce, "priv/static/uploads/products"),
+      Path.basename(path)
+    )
   end
-
 end

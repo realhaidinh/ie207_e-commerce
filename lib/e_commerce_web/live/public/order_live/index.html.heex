@@ -15,7 +15,7 @@
             <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Order ID:</dt>
             <dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
               <.link navigate={~p"/users/orders/#{order.id}"} class="hover:underline">
-                <%= order.id %>
+                {order.id}
               </.link>
             </dd>
           </dl>
@@ -23,7 +23,7 @@
           <dl class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
             <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Date:</dt>
             <dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
-              <%= format_date(order.inserted_at) %>
+              {format_date(order.inserted_at)}
             </dd>
           </dl>
 
@@ -31,7 +31,7 @@
             <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Thành tiền:</dt>
             <dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
               <span id={"order-#{order.id}-price"} phx-hook="CurrencyFormat">
-                <%= order.total_price %>
+                {order.total_price}
               </span>
             </dd>
           </dl>
@@ -39,7 +39,7 @@
           <dl class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
             <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Trạng thái:</dt>
             <dd class="me-2 mt-1.5 inline-flex items-center rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
-              <%= order.status %>
+              {order.status}
             </dd>
           </dl>
 

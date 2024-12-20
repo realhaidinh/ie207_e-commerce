@@ -7,7 +7,7 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
     ~H"""
     <div>
       <.header>
-        Đã đặt thành công đơn hàng <%= @order.id %>
+        Đã đặt thành công đơn hàng {@order.id}
       </.header>
 
       <.table
@@ -15,22 +15,22 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
         rows={@order.line_items}
         row_click={fn item -> JS.navigate(~p"/products/#{item.product.id}") end}
       >
-        <:col :let={item} label="Sản phẩm"><%= item.product.title %></:col>
+        <:col :let={item} label="Sản phẩm">{item.product.title}</:col>
 
-        <:col :let={item} label="Đơn giá"><%= item.price %></:col>
+        <:col :let={item} label="Đơn giá">{item.price}</:col>
 
-        <:col :let={item} label="Số lượng"><%= item.quantity %></:col>
+        <:col :let={item} label="Số lượng">{item.quantity}</:col>
 
-        <:col :let={item} label="Thành tiền"><%= item.price * item.quantity %></:col>
+        <:col :let={item} label="Thành tiền">{item.price * item.quantity}</:col>
       </.table>
 
-      <h1>Tổng tiền <%= @order.total_price %></h1>
+      <h1>Tổng tiền {@order.total_price}</h1>
 
-      <p>Họ tên người nhận: <%= @order.buyer_name %></p>
+      <p>Họ tên người nhận: {@order.buyer_name}</p>
 
-      <p>Địa chỉ nhận hàng: <%= @order.buyer_address %></p>
+      <p>Địa chỉ nhận hàng: {@order.buyer_address}</p>
 
-      <p>Số điện thoại nhận hàng: <%= @order.buyer_phone %></p>
+      <p>Số điện thoại nhận hàng: {@order.buyer_phone}</p>
     </div>
     """
   end

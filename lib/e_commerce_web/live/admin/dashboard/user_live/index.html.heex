@@ -6,7 +6,7 @@
   sortable="true"
   row_click={fn user -> JS.patch(~p"/admin/dashboard/customer/#{user.id}") end}
 >
-  <:col :let={user} label="Mã khách hàng"><%= user.id %></:col>
-  
-  <:col :let={user} label="Email của khách hàng"><%= user.email %></:col>
+  <:col :let={user} label="Mã khách hàng">{user.id}</:col>
+
+  <:col :let={user} label="Email của khách hàng">{user.email}</:col>
 </.data_table>

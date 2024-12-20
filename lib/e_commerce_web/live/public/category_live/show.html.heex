@@ -6,14 +6,14 @@
     </h1>
     <div class="tree-items flex flex-col">
       <div class="font-semibold mb-2">
-        <%= @category.title %>
+        {@category.title}
       </div>
       <.link
         :for={category <- @subcategories}
         patch={~p"/categories/#{category.id}"}
         class="mb-2 hover:underline pl-2"
       >
-        <%= category.title %>
+        {category.title}
       </.link>
     </div>
   </div>

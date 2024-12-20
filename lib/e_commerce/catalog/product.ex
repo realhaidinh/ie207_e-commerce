@@ -18,12 +18,9 @@ defmodule ECommerce.Catalog.Product do
       on_replace: :delete,
       preload_order: [asc: :level]
 
-    has_many :reviews, Review,
-      preload_order: [desc: :inserted_at]
+    has_many :reviews, Review, preload_order: [desc: :inserted_at]
 
-    has_many :images, ECommerce.Catalog.ProductImage,
-      on_replace: :delete
-
+    has_many :images, ECommerce.Catalog.ProductImage, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

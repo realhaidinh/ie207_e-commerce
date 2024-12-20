@@ -38,15 +38,18 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
 
   def handle_event("show-subcategories", %{"id" => id}, socket) do
     category = Catalog.get_category_with_product_count(id)
+
     socket =
       if Map.get(socket.assigns.streams, category.title) do
         socket
       else
         category = Map.put(category, :subcategories, Catalog.get_subcategories(category))
+
         socket
         |> stream_insert(:categories, category)
         |> stream(category.title, [])
       end
+
     {:noreply, socket}
   end
 
@@ -54,5 +57,4 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Index do
   def handle_info({_, category}, socket) do
     {:noreply, stream_insert(socket, :categories, category)}
   end
-
 end

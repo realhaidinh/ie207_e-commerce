@@ -51,14 +51,18 @@ defmodule ECommerce.Catalog do
     |> filter_product_where(params)
     |> Repo.all()
   end
+
   def search_product(keyword) do
     pattern = keyword <> "%"
+
     query =
       from p in Product,
         where: fragment("text_like(?, ?)", ^pattern, p.title),
         limit: 5
+
     Repo.all(query)
   end
+
   defp filter_product_where(query, %{"category_id" => category_id}) do
     from p in query,
       left_join: c in "product_categories",

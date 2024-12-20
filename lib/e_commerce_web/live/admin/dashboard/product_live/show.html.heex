@@ -12,35 +12,35 @@
     <dl class="divide-y divide-zinc-100">
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Tên sản phẩm</dt>
-        <dd><%= @product.title %></dd>
+        <dd>{@product.title}</dd>
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Giá</dt>
-        <dd id="product-price" phx-hook="CurrencyFormat"><%= @product.price %></dd>
+        <dd id="product-price" phx-hook="CurrencyFormat">{@product.price}</dd>
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Kho</dt>
-        <dd><%= @product.stock %></dd>
+        <dd>{@product.stock}</dd>
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Đã bán</dt>
-        <dd><%= @product.sold %></dd>
+        <dd>{@product.sold}</dd>
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Đánh giá</dt>
-        <dd><%= @product.rating %></dd>
+        <dd>{@product.rating}</dd>
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Số lượt đánh giá</dt>
-        <dd><%= @product.rating_count %></dd>
+        <dd>{@product.rating_count}</dd>
       </div>
     </dl>
   </div>
 </div>
 <div class="flex flex-col p-4">
   <span>Mô tả sản phẩm</span>
-  <span><%= @product.description %></span>
-  <div class ="flex">
+  <span>{@product.description}</span>
+  <div class="flex">
     <label class="w-36">Danh mục</label>
     <div class="flex items-center">
       <% categories = @product.categories %>
@@ -69,7 +69,7 @@
           navigate={~p"/admin/dashboard/catalog/category/#{category}"}
           class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
         >
-          <%= category.title %>
+          {category.title}
         </.link>
       <% end %>
     </div>

@@ -32,10 +32,10 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
             class="hover:cursor-pointer self-center"
             phx-click={JS.navigate("/products/#{item.product.id}")}
           >
-            <%= item.product.title %>
+            {item.product.title}
           </label>
           <span id={"item-#{item.id}-price"} class="col-start-2 self-center" phx-hook="CurrencyFormat">
-            <%= item.product.price %>
+            {item.product.price}
           </span>
           <input
             type="number"
@@ -52,7 +52,7 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
             id={"item-#{item.id}-total-price"}
             phx-hook="CurrencyFormat"
           >
-            <%= ShoppingCart.total_item_price(item) %>
+            {ShoppingCart.total_item_price(item)}
           </span>
           <.link
             class="rounded-lg p-2 col-start-5 w-10 bg-zinc-900 text-sm font-semibold leading-6 text-white"
@@ -66,9 +66,9 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
       </.simple_form>
       <div class="mt-8 flex justify-between">
         <div class="flex self-center">
-          <span>Tổng thanh toán (<%= length(@cart.cart_items) %> sản phẩm ):&nbsp;</span>
+          <span>Tổng thanh toán ({length(@cart.cart_items)} sản phẩm ):&nbsp;</span>
           <span id="total_price" phx-hook="CurrencyFormat">
-            <%= ShoppingCart.total_cart_price(@cart) %>
+            {ShoppingCart.total_cart_price(@cart)}
           </span>
         </div>
         <button

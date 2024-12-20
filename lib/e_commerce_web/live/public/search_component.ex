@@ -41,7 +41,7 @@ defmodule ECommerceWeb.Public.SearchComponent do
             class="hover:bg-gray-200"
           >
             <span class="pl-1">
-              <%= product.title %>
+              {product.title}
             </span>
           </.link>
         </div>

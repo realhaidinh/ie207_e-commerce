@@ -43,11 +43,11 @@ defmodule ECommerceWeb.Components do
         <thead class="text-sm text-left leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">
-              <span class="flex items-center"><%= col[:label] %></span>
+              <span class="flex items-center">{col[:label]}</span>
             </th>
 
             <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only"><%= gettext("Actions") %></span>
+              <span class="sr-only">{gettext("Actions")}</span>
             </th>
           </tr>
         </thead>
@@ -70,7 +70,7 @@ defmodule ECommerceWeb.Components do
               <div class="block py-4 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
                 <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
-                  <%= render_slot(col, @row_item.(row)) %>
+                  {render_slot(col, @row_item.(row))}
                 </span>
               </div>
             </td>
@@ -82,7 +82,7 @@ defmodule ECommerceWeb.Components do
                   :for={action <- @action}
                   class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
                 >
-                  <%= render_slot(action, @row_item.(row)) %>
+                  {render_slot(action, @row_item.(row))}
                 </span>
               </div>
             </td>
@@ -136,7 +136,7 @@ defmodule ECommerceWeb.Components do
                 navigate={page.url}
                 class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
               >
-                <%= page.title %>
+                {page.title}
               </.link>
             </div>
           </li>
@@ -163,7 +163,7 @@ defmodule ECommerceWeb.Components do
           <li :if={@current_page} aria-current="page">
             <div class="flex items-center">
               <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
-                <%= @current_page %>
+                {@current_page}
               </span>
             </div>
           </li>
@@ -193,7 +193,7 @@ defmodule ECommerceWeb.Components do
                   data-dropdown-toggle="user-dropdown"
                   data-dropdown-placement="bottom"
                 >
-                  <%= @current_user.email %>
+                  {@current_user.email}
                 </button>
                 <!-- Dropdown menu -->
                 <div
@@ -314,13 +314,13 @@ defmodule ECommerceWeb.Components do
                   <%= for item <- @cart.cart_items do %>
                     <li>
                       <div class="flex justify-between m-1.5">
-                        <p><%= item.product.title %></p>
+                        <p>{item.product.title}</p>
                         <p
                           id={"item-#{item.id}-price"}
                           phx-hook="CurrencyFormat"
                           class="text-orange-500"
                         >
-                          <%= item.price_when_carted %>
+                          {item.price_when_carted}
                         </p>
                       </div>
                     </li>
@@ -341,7 +341,7 @@ defmodule ECommerceWeb.Components do
                   navigate="/admin/settings"
                   class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
-                  Thông tin tài khoản <%= @current_user.email %>
+                  Thông tin tài khoản {@current_user.email}
                 </.link>
                 <.link
                   href="/admin/log_out"
@@ -393,14 +393,14 @@ defmodule ECommerceWeb.Components do
                   text-overflow: ellipsis;"
             class="text-lg min-h-14 font-semibold tracking-tight text-gray-900 dark:text-white"
           >
-            <%= @product.title %>
+            {@product.title}
           </p>
           <p
             id={"product-#{@product.id}-price"}
             phx-hook="CurrencyFormat"
             class="text-xl font-semibold text-orange-500"
           >
-            <%= @product.price %>
+            {@product.price}
           </p>
         </div>
         <div class="flex">
@@ -416,10 +416,10 @@ defmodule ECommerceWeb.Components do
             </svg>
           </div>
           <span class="text-sm">
-            <%= @product.rating %>
+            {@product.rating}
           </span>
           <span class="ml-1 text-sm">
-            Đã bán <%= @product.sold %>
+            Đã bán {@product.sold}
           </span>
         </div>
       </div>
