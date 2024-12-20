@@ -21,10 +21,7 @@ defmodule ECommerceWeb.Public.SearchComponent do
             phx-focus={JS.show(to: "#search-popover", transition: "fade-out")}
             phx-blur={JS.hide(to: "#search-popover", transition: "fade-out")}
           />
-          <button
-            class="hover:bg-blue-300 p-2 flex text-blue-700 before:[block]"
-            type="submit"
-          >
+          <button class="hover:bg-blue-300 p-2 flex text-blue-700 before:[block]" type="submit">
             Tìm kiếm
           </button>
         </div>
@@ -63,9 +60,11 @@ defmodule ECommerceWeb.Public.SearchComponent do
   end
 
   @impl true
-  def handle_event("update", %{"keyword" => keyword} = opts, socket) do
+  def handle_event("update", %{"keyword" => keyword}, socket) do
     products =
-      if keyword == "", do: [], else: Catalog.search_product(opts)
+      if keyword == "",
+        do: [],
+        else: Catalog.search_product(keyword)
 
     {:noreply,
      socket

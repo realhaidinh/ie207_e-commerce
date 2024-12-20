@@ -24,7 +24,6 @@ defmodule ECommerce.Catalog.Product do
     has_many :images, ECommerce.Catalog.ProductImage,
       on_replace: :delete
 
-    field :cover, :string, virtual: true
 
     timestamps(type: :utc_datetime)
   end

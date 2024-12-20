@@ -61,7 +61,7 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:uploaded_files, [])
-     |> allow_upload(:uploaded_files, accept: ~w(.jpg .jpeg .png .webp), max_entries: 5)
+     |> allow_upload(:uploaded_files, accept: ~w(.jpg .jpeg .png .webp), max_entries: 10)
      |> assign_new(:changeset, fn ->
        Catalog.change_product(product, attrs)
      end)

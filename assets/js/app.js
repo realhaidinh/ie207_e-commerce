@@ -56,20 +56,7 @@ Hooks.CurrencyFormat = {
     this.el.innerText = this.formatCurrency(this.el.innerText);
   }
 }
-Hooks.ImageGallery = {
-  mounted() {
-    const modalImage = document.getElementById("image-modal")
-    const updateModalImage = (newImage) => {
-      modalImage.src = newImage.src
-    }
-    const galleryItems = this.el.querySelectorAll(".gallery-item")
-    galleryItems.forEach((item) => {
-      item.addEventListener("click", () => {
-        updateModalImage(item)
-      })
-    })
-  }
-}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },

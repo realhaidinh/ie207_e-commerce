@@ -32,31 +32,33 @@ defmodule ECommerce.Catalog do
     String.to_integer(page_no)
   end
 
-  def search_product(opts) do
-    page_no = get_page_no(Map.get(opts, "page"))
-    limit = Map.get(opts, "limit", 5)
+  def search_product(params = %{}) do
+    page_no = get_page_no(Map.get(params, "page"))
+    limit = Map.get(params, "limit", 20)
     offset = (page_no - 1) * limit
+    pattern = Map.get(params, "keyword", "") <> "%"
 
     query =
       from p in Product,
         limit: ^limit,
         offset: ^offset,
-        where: ^filter_product_order_by(Map.get(opts, "order_by"))
+        order_by: ^filter_product_order_by(Map.get(params, "order_by")),
+        where: fragment("text_like(?, ?)", ^pattern, p.title)
 
     query
-    |> filter_product_where(opts)
     |> product_preload(:rating)
     |> product_preload(:cover)
+    |> filter_product_where(params)
     |> Repo.all()
   end
-
-  defp filter_product_where(query, %{"keyword" => keyword}) do
-    keyword = keyword <> "%"
-
-    from p in query,
-      where: fragment("text_like(?, ?)", ^keyword, p.title)
+  def search_product(keyword) do
+    pattern = keyword <> "%"
+    query =
+      from p in Product,
+        where: fragment("text_like(?, ?)", ^pattern, p.title),
+        limit: 5
+    Repo.all(query)
   end
-
   defp filter_product_where(query, %{"category_id" => category_id}) do
     from p in query,
       left_join: c in "product_categories",
@@ -104,14 +106,14 @@ defmodule ECommerce.Catalog do
     )
   end
 
-  def get_product!(id, opts) do
+  def get_product!(id, params) do
     query =
       from(p in Product,
         where: p.id == ^id
       )
 
-    opts
-    |> Enum.reduce(query, fn opt, acc -> product_preload(acc, opt) end)
+    params
+    |> Enum.reduce(query, fn param, acc -> product_preload(acc, param) end)
     |> Repo.one!()
   end
 

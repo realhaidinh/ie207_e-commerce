@@ -1,4 +1,5 @@
 defmodule ECommerceWeb.Public.CategoryLive.Show do
+  alias ECommerce.Catalog.Category
   use ECommerceWeb, :live_view
 
   alias ECommerce.Catalog
@@ -9,22 +10,26 @@ defmodule ECommerceWeb.Public.CategoryLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"category_id" => id} = params, _, socket) do
     category = Catalog.get_category!(id)
+    products = Catalog.search_product(params)
+
+    {:noreply,
+     socket
+     |> assign(:page_title, category.title)
+     |> assign(:category, category)
+     |> assign_parents_category(category)
+     |> assign(:subcategories, Catalog.get_subcategories(category))
+     |> stream(:products, products, reset: true)}
+  end
+
+  defp assign_parents_category(socket, %Category{} = category) do
     parent_ids = String.split(category.path, "/", trim: true)
 
     parents =
       Catalog.list_categories_by_ids(parent_ids)
       |> Enum.map(fn cat -> Map.put(cat, :url, "/categories/#{cat.id}") end)
 
-    products = Catalog.search_product(%{"category_id" => id, "limit" => 20})
-
-    {:noreply,
-     socket
-     |> assign(:page_title, category.title)
-     |> assign(:category, category)
-     |> assign(:parents, parents)
-     |> assign(:subcategories, Catalog.get_subcategories(category))
-     |> stream(:products, products, reset: true)}
+    assign(socket, :parents, parents)
   end
 end

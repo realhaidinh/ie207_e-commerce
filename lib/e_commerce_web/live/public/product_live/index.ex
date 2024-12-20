@@ -10,7 +10,6 @@ defmodule ECommerceWeb.Public.ProductLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    params = Map.put(params, "limit", 20)
     products = Catalog.search_product(params)
 
     {:noreply,

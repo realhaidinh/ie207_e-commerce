@@ -1,6 +1,8 @@
 defmodule ECommerceWeb.Components do
   use Phoenix.Component
   use Gettext, backend: ECommerceWeb.Gettext
+  alias ECommerce.ShoppingCart.Cart
+  alias ECommerce.Catalog.Product
   alias Phoenix.LiveView.JS
   import ECommerceWeb.CoreComponents
 
@@ -172,7 +174,7 @@ defmodule ECommerceWeb.Components do
   end
 
   attr :current_user, :any, required: true
-  attr :cart, :any
+  attr :cart, Cart
   attr :role, :atom, required: true
 
   def navbar(assigns) do
@@ -366,7 +368,7 @@ defmodule ECommerceWeb.Components do
     """
   end
 
-  attr :product, :any, required: true
+  attr :product, Product, required: true
   attr :id, :string
 
   def product_card(assigns) do
@@ -378,7 +380,7 @@ defmodule ECommerceWeb.Components do
     >
       <img
         class="h-[57.5%] p-2 items-center"
-        src={Map.get(List.first(@product.images, %{}), :url, "")}
+        src={@product.images |> List.first(%{}) |> Map.get(:url, "")}
         alt={@product.title}
       />
       <div class="px-2 pb-2 flex flex-col h-[42.5%]">
@@ -427,9 +429,10 @@ defmodule ECommerceWeb.Components do
 
   attr :images, :list, required: true
   attr :title, :string, required: false, default: ""
+
   def image_gallery(assigns) do
     ~H"""
-    <div id="product-image-gallery" phx-hook="ImageGallery">
+    <div id="product-image-gallery">
       <div id="default-carousel" class="relative w-full" data-carousel="static">
         <div class="relative h-56 overflow-hidden rounded-lg md:h-96 z-0">
           <div :for={image <- @images} class="hidden duration-700 ease-in-out" data-carousel-item>
@@ -437,18 +440,19 @@ defmodule ECommerceWeb.Components do
               src={image.url}
               class="hover:cursor-pointer gallery-item absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt={@title}
-              phx-click={show_modal("modal-image")}
+              phx-click={
+                show_modal("modal-image") |> JS.set_attribute({"src", image.url}, to: "#image-modal")
+              }
             />
           </div>
         </div>
-        <!-- Slider indicators -->
         <div class="bg-slate-500 w-full justify-center absolute z-10 flex -translate-x-1/2 left-1/2 space-x-3 rtl:space-x-reverse">
           <button
             :for={{_, id} <- Enum.with_index(@images)}
             type="button"
             class="w-3 h-3 rounded-full"
             aria-current="true"
-            aria-label={"Ảnh #{id}"}
+            aria-label={"Ảnh #{@title}-#{id}"}
             data-carousel-slide-to={id}
           >
           </button>
