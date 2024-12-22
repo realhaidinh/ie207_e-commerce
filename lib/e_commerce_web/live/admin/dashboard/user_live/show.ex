@@ -13,6 +13,6 @@ defmodule ECommerceWeb.Admin.Dashboard.UserLive.Show do
     {:noreply,
      socket
      |> assign(:user, Accounts.get_user!(id))
-     |> assign(:orders, Orders.list_user_orders(id))}
+     |> stream(:orders, Orders.list_user_orders(id))}
   end
 end

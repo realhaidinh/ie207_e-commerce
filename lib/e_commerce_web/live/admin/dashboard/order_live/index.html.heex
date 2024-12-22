@@ -10,7 +10,9 @@
 
   <:col :let={{_id, order}} label="Mã khách hàng">{order.user_id}</:col>
 
-  <:col :let={{_id, order}} label="Tổng tiền">{order.total_price}</:col>
+  <:col :let={{_id, order}} label="Tổng tiền">
+    {ECommerce.Utils.FormatUtil.money_to_vnd(order.total_price)}
+  </:col>
 
   <:col :let={{_id, order}} label="Trạng thái">{order.status}</:col>
 </.data_table>

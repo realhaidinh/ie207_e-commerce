@@ -93,7 +93,7 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
   def handle_event("save", %{"product" => product_params}, socket) do
     uploaded_files =
       consume_uploaded_entries(socket, :uploaded_files, fn %{path: path}, entry ->
-        dest = get_dest_path(path) <> Path.extname(entry.client_name)
+        dest = get_dest_path(entry.client_name)
         File.cp!(path, dest)
         {:ok, "/uploads/products/#{Path.basename(dest)}"}
       end)
@@ -136,10 +136,9 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent do
 
   defp notify_parent(msg), do: send(self(), msg)
 
+  @product_images_dir Application.app_dir(:e_commerce, "priv/static/uploads/products")
+
   defp get_dest_path(path) do
-    Path.join(
-      Application.app_dir(:e_commerce, "priv/static/uploads/products"),
-      Path.basename(path)
-    )
+    Path.join(@product_images_dir, Path.basename(path))
   end
 end

@@ -12,4 +12,9 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.Show do
     {:noreply,
      assign(socket, :product, Catalog.get_product!(id, [:categories, :rating, :images]))}
   end
+
+  @impl true
+  def handle_info({:saved, product}, socket) do
+    {:noreply, assign(socket, :product, product)}
+  end
 end

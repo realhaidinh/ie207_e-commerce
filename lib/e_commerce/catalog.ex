@@ -6,6 +6,7 @@ defmodule ECommerce.Catalog do
   import Ecto.Query, warn: false
   alias ECommerce.Repo
   alias ECommerce.Catalog.{Category, ProductImage, Product, Review}
+  import ECommerce.Utils.FormatUtil
 
   @doc """
   Returns the list of products.
@@ -240,7 +241,7 @@ defmodule ECommerce.Catalog do
           []
 
         category ->
-          parent_category_ids = String.split(category.path, ~r/\//, trim: true)
+          parent_category_ids = String.split(category.path, "/", trim: true)
           [category | list_categories_by_ids(parent_category_ids)]
       end
 
@@ -508,16 +509,5 @@ defmodule ECommerce.Catalog do
   """
   def change_review(%Review{} = review, attrs \\ %{}) do
     Review.changeset(review, attrs)
-  end
-
-  def slugify(nil), do: nil
-
-  def slugify(text) do
-    text
-    |> String.downcase()
-    |> String.trim()
-    |> String.normalize(:nfkd)
-    |> String.replace(~r/[^a-z0-9\s-]/u, "")
-    |> String.replace(~r/[\s-]+/, "-", global: true)
   end
 end

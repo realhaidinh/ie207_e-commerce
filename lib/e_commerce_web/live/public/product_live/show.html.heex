@@ -59,12 +59,8 @@
             </span>
           </div>
         </div>
-        <p
-          id="product-price"
-          phx-hook="CurrencyFormat"
-          class="text-xl font-semibold text-orange-500 sm:text-2xl"
-        >
-          {@product.price}
+        <p class="text-xl font-semibold text-orange-500 sm:text-2xl">
+          {ECommerce.Utils.FormatUtil.money_to_vnd(@product.price)}
         </p>
         <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
           <button

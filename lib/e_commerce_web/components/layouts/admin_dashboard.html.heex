@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-10">
+<header class="sticky top-0 z-50">
   <.navbar current_user={@current_admin} role={:admin} />
 </header>
 
@@ -12,7 +12,10 @@
     >
       <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
-          <li>
+          <li
+            data-selected={if @page_title == "Quản lý sản phẩm", do: "true"}
+            class="data-[selected=true]:bg-gray-100"
+          >
             <.link
               patch={~p"/admin/dashboard/catalog/product"}
               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -20,8 +23,11 @@
               <span class="flex-1 ms-3 whitespace-nowrap">Quản lý sản phẩm</span>
             </.link>
           </li>
-          
-          <li>
+
+          <li
+            data-selected={if @page_title == "Quản lý danh mục", do: "true"}
+            class="data-[selected=true]:bg-gray-100"
+          >
             <.link
               patch={~p"/admin/dashboard/catalog/category"}
               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -29,8 +35,11 @@
               <span class="flex-1 ms-3 whitespace-nowrap">Quản lý danh mục</span>
             </.link>
           </li>
-          
-          <li>
+
+          <li
+            data-selected={if @page_title == "Quản lý khách hàng", do: "true"}
+            class="data-[selected=true]:bg-gray-100"
+          >
             <.link
               patch={~p"/admin/dashboard/customer"}
               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -38,8 +47,11 @@
               <span class="flex-1 ms-3 whitespace-nowrap">Quản lý khách hàng</span>
             </.link>
           </li>
-          
-          <li>
+
+          <li
+            data-selected={if @page_title == "Quản lý đơn hàng", do: "true"}
+            class="data-[selected=true]:bg-gray-100"
+          >
             <.link
               patch={~p"/admin/dashboard/sales/order"}
               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -50,7 +62,7 @@
         </ul>
       </div>
     </aside>
-    
+
     <div class="p-4 sm:ml-64">
       {@inner_content}
     </div>

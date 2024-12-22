@@ -44,18 +44,6 @@ Hooks.DataTable = {
     this.createDataTable(this.el)
   }
 }
-Hooks.CurrencyFormat = {
-  formatCurrency(value) {
-    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value)
-
-  },
-  mounted() {
-    this.el.innerText = this.formatCurrency(this.el.innerText);
-  },
-  updated() {
-    this.el.innerText = this.formatCurrency(this.el.innerText);
-  }
-}
 
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,

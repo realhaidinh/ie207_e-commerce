@@ -34,8 +34,8 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
           >
             {item.product.title}
           </label>
-          <span id={"item-#{item.id}-price"} class="col-start-2 self-center" phx-hook="CurrencyFormat">
-            {item.product.price}
+          <span class="col-start-2 self-center">
+            {ECommerce.Utils.FormatUtil.money_to_vnd(item.product.price)}
           </span>
           <input
             type="number"
@@ -43,16 +43,12 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
             id={qty_attr.id}
             value={Phoenix.HTML.Form.normalize_value("number", qty_attr.value)}
             min="0"
-            autocomplete="off"
             max={item.product.stock}
-            class="block self-center rounded-lg w-1/4 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
+            autocomplete="off"
+            class="block self-center rounded-lg w-1/3 text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6"
           />
-          <span
-            class="col-start-4 self-center"
-            id={"item-#{item.id}-total-price"}
-            phx-hook="CurrencyFormat"
-          >
-            {ShoppingCart.total_item_price(item)}
+          <span class="col-start-4 self-center">
+            {ShoppingCart.total_item_price(item) |> ECommerce.Utils.FormatUtil.money_to_vnd()}
           </span>
           <.link
             class="rounded-lg p-2 col-start-5 w-10 bg-zinc-900 text-sm font-semibold leading-6 text-white"
@@ -67,8 +63,8 @@ defmodule ECommerceWeb.Public.CartLive.FormComponent do
       <div class="mt-8 flex justify-between">
         <div class="flex self-center">
           <span>Tổng thanh toán ({length(@cart.cart_items)} sản phẩm ):&nbsp;</span>
-          <span id="total_price" phx-hook="CurrencyFormat">
-            {ShoppingCart.total_cart_price(@cart)}
+          <span>
+            {ShoppingCart.total_cart_price(@cart) |> ECommerce.Utils.FormatUtil.money_to_vnd()}
           </span>
         </div>
         <button

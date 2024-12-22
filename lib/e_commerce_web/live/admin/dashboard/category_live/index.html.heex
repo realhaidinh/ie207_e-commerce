@@ -12,15 +12,7 @@
     id={id}
     class="grid grid-cols-3 border border-b-0 border-gray-200 hover:bg-gray-200"
   >
-    <span class="px-4 py-2">{category.title}</span>
-    <span class="px-4 py-2">{category.product_count}</span>
-    <div class="flex flex-row justify-between">
-      <.link
-        class="px-4 py-2 text-blue-500"
-        patch={~p"/admin/dashboard/catalog/category/#{category.id}"}
-      >
-        Chi tiết
-      </.link>
+    <div class="flex">
       <.link
         class="px-4 py-2 text-blue-500"
         phx-click={
@@ -30,10 +22,35 @@
             transition: {"ease-in duration-200", "opacity-0", "opacity-100"},
             to: "#sub_categories_#{category.id}"
           )
+          |> JS.toggle_class(
+            "-rotate-90",
+            to: "#chevron-#{category.id}"
+          )
         }
       >
-        Hiển thị danh mục con
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6 -rotate-90"
+          id={"chevron-#{category.id}"}
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
       </.link>
+      <span class="px-4 py-2">{category.title}</span>
+    </div>
+    <span class="px-4 py-2">{category.product_count}</span>
+    <div class="flex flex-row justify-center">
+      <.link
+        class="px-4 py-2 text-blue-500"
+        patch={~p"/admin/dashboard/catalog/category/#{category.id}"}
+      >
+        Chi tiết
+      </.link>
+
       <.link
         class="px-4 py-2 text-blue-500"
         phx-click={JS.push("delete", value: %{id: category.id})}
@@ -47,7 +64,7 @@
         :for={cat <- Map.get(category, :subcategories, [])}
         class="grid grid-cols-3 border border-b-0 border-gray-200 bg-white hover:bg-gray-200"
       >
-        <span class="px-8 py-2 ">{cat.title}</span>
+        <span class="pl-20 py-2 ">{cat.title}</span>
         <span class="px-4 py-2">{cat.product_count}</span>
         <.link
           navigate={~p"/admin/dashboard/catalog/category/#{cat}"}

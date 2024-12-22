@@ -93,6 +93,7 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
           put_flash(socket, :error, "Email change link is invalid or it has expired.")
       end
 
+    socket = assign_page_title(socket)
     {:ok, push_navigate(socket, to: ~p"/users/settings")}
   end
 
@@ -103,6 +104,7 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
 
     socket =
       socket
+      |> assign_page_title()
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
       |> assign(:current_email, user.email)
@@ -112,6 +114,8 @@ defmodule ECommerceWeb.Public.UserSettingsLive do
 
     {:ok, socket, layout: {ECommerceWeb.Layouts, :public_profile}}
   end
+
+  defp assign_page_title(socket), do: assign(socket, :page_title, "Tài khoản")
 
   def handle_event("validate_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params

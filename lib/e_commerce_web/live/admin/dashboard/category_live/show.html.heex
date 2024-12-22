@@ -46,7 +46,7 @@
           class="px-4 py-2 text-blue-500"
           phx-click={
             JS.push("show-subcategories", value: %{id: category.id})
-            |> JS.toggle_class("hidden", to: "#sub_categories_#{category.id}")
+            |> JS.toggle_class("hidden flex", to: "#sub_categories_#{category.id}")
           }
         >
           Hiển thị danh mục con
@@ -59,7 +59,7 @@
           Xóa
         </.link>
       </div>
-      <div id={"sub_categories_#{category.id}"} class="flex flex-col col-span-3 w-full hidden">
+      <div id={"sub_categories_#{category.id}"} class="flex-col col-span-3 w-full hidden">
         <span
           :for={cat <- Map.get(category, :subcategories, [])}
           class="grid grid-cols-3 border border-b-0 border-gray-200 bg-white hover:bg-gray-200"

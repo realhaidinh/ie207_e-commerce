@@ -120,9 +120,7 @@ defmodule ECommerce.ShoppingCart do
   end
 
   def total_cart_price(%Cart{} = cart) do
-    Enum.reduce(cart.cart_items, 0, fn item, acc ->
-      acc + total_item_price(item)
-    end)
+    Enum.sum_by(cart.cart_items, &total_item_price(&1))
   end
 
   def prune_cart_items(%Cart{} = cart) do

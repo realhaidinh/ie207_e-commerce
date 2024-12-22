@@ -16,7 +16,7 @@
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Giá</dt>
-        <dd id="product-price" phx-hook="CurrencyFormat">{@product.price}</dd>
+        <dd>{ECommerce.Utils.FormatUtil.money_to_vnd(@product.price)}</dd>
       </div>
       <div class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
         <dt class="w-1/4">Kho</dt>

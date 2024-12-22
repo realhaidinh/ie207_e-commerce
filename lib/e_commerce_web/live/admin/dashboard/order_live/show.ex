@@ -4,7 +4,7 @@ defmodule ECommerceWeb.Admin.Dashboard.OrderLive.Show do
 
   @impl true
   def mount(_, _session, socket) do
-    {:ok, assign(socket, :page_title, "Quản lý hóa đơn")}
+    {:ok, assign(socket, :page_title, "Quản lý đơn hàng")}
   end
 
   @impl true

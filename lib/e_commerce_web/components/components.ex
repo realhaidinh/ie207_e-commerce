@@ -1,6 +1,7 @@
 defmodule ECommerceWeb.Components do
   use Phoenix.Component
   use Gettext, backend: ECommerceWeb.Gettext
+  alias ECommerce.Utils.FormatUtil
   alias ECommerce.ShoppingCart.Cart
   alias ECommerce.Catalog.Product
   alias Phoenix.LiveView.JS
@@ -187,7 +188,7 @@ defmodule ECommerceWeb.Components do
               <%= if @current_user do %>
                 <button
                   type="button"
-                  class="block text-sm  text-black-500 truncate dark:text-gray-400"
+                  class="block text-sm  text-black-500 truncate dark:text-gray-400 hover:shadow"
                   id="user-menu-button"
                   aria-expanded="false"
                   data-dropdown-toggle="user-dropdown"
@@ -289,23 +290,40 @@ defmodule ECommerceWeb.Components do
             <.live_component module={ECommerceWeb.Public.SearchComponent} id="search-bar" />
 
             <div :if={@current_user} class="order-3 flex col-start-6 justify-center">
-              <.button
+              <button
                 id="dropdownDelayButton"
                 phx-click={JS.navigate("/cart")}
                 data-dropdown-toggle="dropdownDelay"
                 data-dropdown-delay="300"
                 data-dropdown-trigger="hover"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="bg-transparent flex"
                 type="button"
               >
-                Giỏ hàng
-              </.button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                  />
+                </svg>
+
+                <span class="-top-3 relative bg-white border-2 border-solid rounded-xl px-2">
+                  {length(@cart.cart_items)}
+                </span>
+              </button>
               <!-- Dropdown menu -->
               <div
                 id="dropdownDelay"
                 class="grid grid-cols-1 justify-items-stretch w-1/5 z-10 hidden bg-white divide-y divide-gray-100 shadow dark:bg-gray-700"
               >
-                <p>Sản phẩm mới thêm</p>
+                <p class="p-4">Sản phẩm mới thêm</p>
 
                 <ul
                   class="py-2 text-sm text-gray-700 dark:text-gray-200"
@@ -313,14 +331,10 @@ defmodule ECommerceWeb.Components do
                 >
                   <%= for item <- @cart.cart_items do %>
                     <li>
-                      <div class="flex justify-between m-1.5">
+                      <div class="flex justify-between m-1.5 p-2">
                         <p>{item.product.title}</p>
-                        <p
-                          id={"item-#{item.id}-price"}
-                          phx-hook="CurrencyFormat"
-                          class="text-orange-500"
-                        >
-                          {item.price_when_carted}
+                        <p class="text-orange-500">
+                          {FormatUtil.money_to_vnd(item.price_when_carted)}
                         </p>
                       </div>
                     </li>
@@ -395,12 +409,8 @@ defmodule ECommerceWeb.Components do
           >
             {@product.title}
           </p>
-          <p
-            id={"product-#{@product.id}-price"}
-            phx-hook="CurrencyFormat"
-            class="text-xl font-semibold text-orange-500"
-          >
-            {@product.price}
+          <p class="text-xl font-semibold text-orange-500">
+            {FormatUtil.money_to_vnd(@product.price)}
           </p>
         </div>
         <div class="flex">
@@ -435,10 +445,10 @@ defmodule ECommerceWeb.Components do
     <div id="product-image-gallery">
       <div id="default-carousel" class="relative w-full" data-carousel="static">
         <div class="relative h-56 overflow-hidden rounded-lg md:h-96 z-0">
-          <div :for={image <- @images} class="hidden duration-700 ease-in-out" data-carousel-item>
+          <div :for={image <- @images} class="duration-700 ease-in-out" data-carousel-item>
             <img
               src={image.url}
-              class="hover:cursor-pointer gallery-item absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+              class="hover:cursor-pointer object-contain gallery-item absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt={@title}
               phx-click={
                 show_modal("modal-image") |> JS.set_attribute({"src", image.url}, to: "#image-modal")

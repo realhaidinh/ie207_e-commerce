@@ -16,8 +16,8 @@
 
   <div class="self-end">
     Tổng tiền
-    <span id="order-total-price" phx-hook="CurrencyFormat">
-      {@order.total_price}
+    <span>
+      {ECommerce.Utils.FormatUtil.money_to_vnd(@order.total_price)}
     </span>
   </div>
   <span class="self-end">Trạng thái đơn hàng: {@order.status}</span>
