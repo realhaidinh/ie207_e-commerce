@@ -329,16 +329,19 @@ defmodule ECommerceWeb.Components do
                   class="py-2 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="dropdownDelayButton"
                 >
-                  <%= for item <- @cart.cart_items do %>
-                    <li>
-                      <div class="flex justify-between m-1.5 p-2">
-                        <p>{item.product.title}</p>
-                        <p class="text-orange-500">
-                          {FormatUtil.money_to_vnd(item.price_when_carted)}
-                        </p>
-                      </div>
-                    </li>
-                  <% end %>
+                  <li :for={item <- @cart.cart_items}>
+                    <div class="flex justify-between m-1.5 p-2">
+                      <p
+                        class="hover:cursor-pointer"
+                        phx-click={JS.navigate("/products/#{item.product.id}")}
+                      >
+                        {item.product.title}
+                      </p>
+                      <p class="text-orange-500">
+                        {FormatUtil.money_to_vnd(item.price_when_carted)}
+                      </p>
+                    </div>
+                  </li>
                 </ul>
 
                 <.button class="justify-self-end w-2/3 m-1.5" phx-click={JS.patch("/cart")}>
@@ -393,7 +396,7 @@ defmodule ECommerceWeb.Components do
       class="flex h-full flex-col hover:cursor-pointer w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
     >
       <img
-        class="h-[57.5%] p-2 items-center"
+        class="p-2 self-center sm:h-40 sm:w-40 md:h-50 md:w-50"
         src={@product.images |> List.first(%{}) |> Map.get(:url, "")}
         alt={@product.title}
       />
@@ -521,6 +524,32 @@ defmodule ECommerceWeb.Components do
         <img id="image-modal" class="self-center" src="" alt={@title} loading="lazy" />
       </.modal>
     </div>
+    """
+  end
+
+  def public_footer(assigns) do
+    ~H"""
+    <footer class="bg-white rounded-lg shadow dark:bg-gray-900 my-8">
+      <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+      <div class="w-full p-4">
+        <div class="sm:flex sm:items-center sm:justify-between">
+          <.link navigate="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+            <img
+              src="/uploads/logo.png"
+              class="sm:h-16 sm:w-16 md:h-24 md:w-24"
+              alt="UIT ECommerce Logo"
+            />
+            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+              UIT ECommerce
+            </span>
+          </.link>
+        </div>
+
+        <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+          © 2024 <.link navigate="/" class="hover:underline">UIT ECommerce™</.link>. All Rights Reserved.
+        </span>
+      </div>
+    </footer>
     """
   end
 end

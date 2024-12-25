@@ -1,4 +1,5 @@
 defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Show do
+  alias ECommerceWeb.Admin
   alias ECommerce.Catalog
   alias ECommerce.Catalog.Category
 
@@ -36,25 +37,8 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Show do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     category = Catalog.get_category!(id)
-    {_, _} = Catalog.delete_category(category)
+    Catalog.delete_category(category)
     {:noreply, stream_delete(socket, :categories, category)}
-  end
-
-  def handle_event("show-subcategories", %{"id" => id}, socket) do
-    category = Catalog.get_category_with_product_count(id)
-
-    socket =
-      if Map.get(socket.assigns.streams, category.title) do
-        socket
-      else
-        category = Map.put(category, :categories, Catalog.get_subcategories(category))
-
-        socket
-        |> stream_insert(:categories, category)
-        |> stream(category.title, [])
-      end
-
-    {:noreply, socket}
   end
 
   @impl true

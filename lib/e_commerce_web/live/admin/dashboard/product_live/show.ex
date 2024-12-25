@@ -9,12 +9,13 @@ defmodule ECommerceWeb.Admin.Dashboard.ProductLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _uri, socket) do
-    {:noreply,
-     assign(socket, :product, Catalog.get_product!(id, [:categories, :rating, :images]))}
+    product = Catalog.get_product!(id, [:categories, :rating, :images])
+    {:noreply, assign(socket, :product, product)}
   end
 
   @impl true
   def handle_info({:saved, product}, socket) do
+    product = Map.put(product, :categories, Enum.sort_by(product.categories, & &1.level))
     {:noreply, assign(socket, :product, product)}
   end
 end
