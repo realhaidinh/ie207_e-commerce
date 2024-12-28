@@ -10,7 +10,7 @@
       </div>
       <.link
         :for={category <- @subcategories}
-        patch={~p"/categories/#{category.id}"}
+        patch={~p"/categories/#{category}"}
         class="mb-2 hover:underline pl-2"
       >
         {category.title}

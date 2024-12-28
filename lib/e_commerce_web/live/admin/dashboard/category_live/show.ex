@@ -1,5 +1,4 @@
 defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Show do
-  alias ECommerceWeb.Admin
   alias ECommerce.Catalog
   alias ECommerce.Catalog.Category
 

@@ -26,15 +26,8 @@ defmodule ECommerce.Catalog do
     |> Repo.all()
   end
 
-  defp get_page_no(nil), do: 1
-  defp get_page_no(""), do: 1
-
-  defp get_page_no(page_no) do
-    String.to_integer(page_no)
-  end
-
   def search_product(params = %{}) do
-    page_no = get_page_no(Map.get(params, "page"))
+    page_no = Map.get(params, "page")
     limit = Map.get(params, "limit", 20)
     offset = (page_no - 1) * limit
     pattern = Map.get(params, "keyword", "") <> "%"

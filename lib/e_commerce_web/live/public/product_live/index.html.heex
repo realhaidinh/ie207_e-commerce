@@ -3,3 +3,21 @@
 <div class="grid grid-cols-4 gap-8" id="catalog-products" phx-update="stream">
   <.product_card :for={{dom_id, product} <- @streams.products} id={dom_id} product={product} />
 </div>
+<div class="flex justify-center m-4">
+  <button
+    class="rounded-md bg-black disabled:bg-gray-700 text-white p-2 mx-2"
+    phx-click="prev_page"
+    disabled={@page == 1}
+    type="submit"
+  >
+    Trang trước
+  </button>
+  <button
+    class="rounded-md bg-black disabled:bg-gray-700 text-white p-2 mx-2"
+    phx-click="next_page"
+    disabled={@page == @total_page}
+    type="submit"
+  >
+    Trang sau
+  </button>
+</div>

@@ -17,7 +17,8 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
      socket
      |> assign(:page_title, product.title)
      |> assign(:product, product)
-     |> assign(:reviews, Catalog.list_reviews_by_product(id))}
+     |> start_async(:fetch_reviews, fn -> Catalog.list_reviews_by_product(id) end)
+     |> stream(:reviews, []) |> stream(:review_freq, [])}
   end
 
   @impl true
@@ -37,7 +38,15 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
 
     {:noreply, socket}
   end
-
+  @impl true
+  def handle_async(:fetch_reviews, {:ok, fetched_reviews}, socket) do
+    review_freq =
+      Enum.frequencies_by(fetched_reviews, & &1.rating)
+    review_freq = for rating <- 1..5 do
+      %{id: rating, rating: rating, count: Map.get(review_freq, rating, 0)}
+    end
+    {:noreply, stream(socket, :reviews, fetched_reviews) |> stream(:review_freq, review_freq)}
+  end
   defp get_category_pages(categories) do
     Enum.map(categories, &Map.put(&1, :url, "/categories/#{&1.id}"))
   end

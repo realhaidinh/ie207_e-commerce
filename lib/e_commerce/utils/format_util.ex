@@ -21,4 +21,10 @@ defmodule ECommerce.Utils.FormatUtil do
 
     money <> " đ"
   end
+
+  def date_to_str(date = %DateTime{}) do
+    [date.day, date.month, date.year]
+    |> Enum.map(&to_string/1)
+    |> Enum.join("/")
+  end
 end
