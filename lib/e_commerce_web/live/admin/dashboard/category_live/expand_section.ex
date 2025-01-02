@@ -38,10 +38,12 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.ExpandSection do
     </div>
     """
   end
+
   @impl true
   def mount(socket) do
     {:ok, stream(socket, "", [])}
   end
+
   @impl true
   def handle_event("show-subcategories", %{"id" => id}, socket) do
     category = Catalog.get_category(id)
@@ -53,6 +55,7 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.ExpandSection do
         subcategory = Catalog.get_subcategories(category)
         stream(socket, category.title, subcategory)
       end
+
     {:noreply, socket}
   end
 

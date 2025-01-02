@@ -10,9 +10,8 @@ defmodule ECommerceWeb.Public.ProductLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    page = get_page_no(Map.get(params, "page"))
-    params = Map.put(params, "page", page)
     products = Catalog.search_product(params)
+    page = Map.get(params, "page", "1") |> String.to_integer()
 
     {:noreply,
      socket
@@ -30,12 +29,6 @@ defmodule ECommerceWeb.Public.ProductLive.Index do
 
   def handle_event("next_page", _params, socket) do
     {:noreply, push_patch(socket, to: self_path(socket, %{"page" => socket.assigns.page + 1}))}
-  end
-
-  defp get_page_no(nil), do: 1
-
-  defp get_page_no(page_no) do
-    String.to_integer(page_no)
   end
 
   defp self_path(socket, extra),

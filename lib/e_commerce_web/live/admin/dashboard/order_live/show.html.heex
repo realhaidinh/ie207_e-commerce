@@ -2,7 +2,24 @@
   Mã đơn hàng: {@order.id} |
   Trạng thái đơn hàng: {@order.status}
 </.header>
-
+<button
+  :if={@order.status == :"Đã thanh toán"}
+  type="submit"
+  phx-click="confirm-shipping"
+  data-confirm="Xác nhận giao hàng"
+  class="bg-black rounded-md p-2 text-white"
+>
+  Xác nhận giao hàng
+</button>
+<button
+  :if={@order.status == :"Đang giao hàng"}
+  type="submit"
+  phx-click="confirm-shipped"
+  data-confirm="Xác nhận đã giao hàng"
+  class="bg-black rounded-md p-2 text-white"
+>
+  Xác nhận đã giao hàng
+</button>
 <.data_table
   table_id="order-products-search-table"
   id="order-products"
@@ -27,9 +44,8 @@
 </.data_table>
 
 <h1>Tổng tiền {@order.total_price}</h1>
-
 <p>Họ tên người nhận: {@order.buyer_name}</p>
-
 <p>Địa chỉ nhận hàng: {@order.buyer_address}</p>
-
 <p>Số điện thoại nhận hàng: {@order.buyer_phone}</p>
+<p>Ngày đặt hàng: {ECommerce.Utils.TimeUtil.pretty_print(@order.inserted_at)}</p>
+<p>Phương thức thanh toán: {@order.payment_type}</p>

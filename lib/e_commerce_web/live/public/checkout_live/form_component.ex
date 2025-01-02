@@ -1,4 +1,5 @@
 defmodule ECommerceWeb.Public.CheckoutLive.FormComponent do
+  alias ECommerce.Payos
   alias ECommerce.Orders
   alias ECommerce.Orders.Order
   use ECommerceWeb, :live_component
@@ -21,6 +22,12 @@ defmodule ECommerceWeb.Public.CheckoutLive.FormComponent do
         <.input field={@changeset[:buyer_name]} type="text" label="Họ tên" />
         <.input field={@changeset[:buyer_address]} type="text" label="Địa chỉ" />
         <.input field={@changeset[:buyer_phone]} type="text" label="Số điện thoại" />
+        <.input
+          field={@changeset[:payment_type]}
+          type="select"
+          label="Phương thức thanh toán"
+          options={payment_opts()}
+        />
         <:actions>
           <.button phx-disable-with="..." data-confirm="Xác nhận đặt hàng">Đặt hàng</.button>
         </:actions>
@@ -41,13 +48,40 @@ defmodule ECommerceWeb.Public.CheckoutLive.FormComponent do
 
   @impl true
   def handle_event("pay", %{"order" => order_params}, socket) do
-    cart = socket.assigns.cart
+    handle_payment(order_params, socket.assigns.cart, socket)
+  end
 
+  defp handle_payment(
+         %{"payment_type" => "Thanh toán khi nhận hàng"} = order_params,
+         cart,
+         socket
+       ) do
     {:ok, order} =
-      Orders.make_order(cart)
-      |> Orders.change_order(order_params)
-      |> Orders.complete_order(cart)
+      Orders.make_order(cart, order_params)
 
     {:noreply, push_navigate(socket, to: ~p"/checkout/success/#{order.id}")}
   end
+
+  defp handle_payment(%{"payment_type" => "Thanh toán online"} = order_params, cart, socket) do
+    {:ok, order} =
+      Orders.make_order(cart, order_params)
+
+    payment_data =
+      Payos.create_payment_data(%{
+        amount: order.total_price,
+        description: "TTDH-#{order.id}",
+        return_url: url(~p"/checkout/success/#{order.id}")
+      })
+
+    {:ok, %{"data" => payment_link}} = Payos.create_payment_link(payment_data)
+    Orders.update_order(order, %{transaction_id: payment_link["paymentLinkId"]})
+
+    {:noreply, redirect(socket, external: payment_link["checkoutUrl"])}
+  end
+
+  defp payment_opts,
+    do: [
+      [key: "Thanh toán khi nhận hàng", value: "Thanh toán khi nhận hàng", selected: true],
+      [key: "Thanh toán online", value: "Thanh toán online", selected: false]
+    ]
 end

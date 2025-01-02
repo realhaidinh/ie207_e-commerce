@@ -35,9 +35,9 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Table do
             >
               <span class="hero-chevron-down size-6 -rotate-90" id={"chevron-#{category.id}"}></span>
             </.link>
-             <span class="px-4 py-2">{category.title}</span>
+            <span class="px-4 py-2">{category.title}</span>
           </div>
-           <span class="px-4 py-2">{category.product_count}</span>
+          <span class="px-4 py-2">{category.product_count}</span>
           <div class="flex flex-row justify-center">
             <.link
               class="px-4 py-2 text-blue-500"
@@ -54,7 +54,12 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Table do
               Xóa
             </.link>
           </div>
-           <.live_component module={ECommerceWeb.Admin.Dashboard.CategoryLive.ExpandSection} id={"subcat-#{category.id}"} category={category} />
+
+          <.live_component
+            module={ECommerceWeb.Admin.Dashboard.CategoryLive.ExpandSection}
+            id={"subcat-#{category.id}"}
+            category={category}
+          />
         </div>
       </div>
     </div>

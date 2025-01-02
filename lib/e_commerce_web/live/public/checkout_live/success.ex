@@ -7,7 +7,7 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
     ~H"""
     <div>
       <.header>
-        Đã đặt thành công đơn hàng {@order.id}
+        Đơn hàng {@order.id} {get_order_status(@status)}
       </.header>
 
       <.table
@@ -37,13 +37,36 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok,
+     socket}
   end
 
+  defp get_order_status(:pending), do: "đang thanh toán"
+  defp get_order_status(:paid), do: "đã thanh toán"
+  defp get_order_status(:processing), do: "đang xử lý"
+  defp get_order_status(:cancelled), do: "đã hủy"
+
   @impl true
-  def handle_params(%{"order_id" => order_id}, _uri, socket) do
+  def handle_params(params, _uri, socket) do
     %{current_user: %{id: user_id}} = socket.assigns
-    order = Orders.get_order!(user_id, order_id)
-    {:noreply, assign(socket, :order, order)}
+    order = Orders.get_user_order_by_transaction_id!(user_id, params["id"])
+    socket = assign(socket, :order, order)
+    if order.payment_type == :"Thanh toán khi nhận hàng" do
+      {:noreply, assign(socket, :status, :pending)}
+    else
+      case params["status"] do
+        "PAID" ->
+          {:noreply, assign(socket, :status, :paid)}
+
+        "PENDING" ->
+          {:noreply, assign(socket, :status, :pending)}
+
+        "PROCESSING" ->
+          {:noreply, assign(socket, :status, :processing)}
+
+        "CANCELLED" ->
+          {:noreply, assign(socket, :status, :canclled)}
+      end
+    end
   end
 end

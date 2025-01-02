@@ -9,7 +9,22 @@ import Config
 
 config :e_commerce,
   ecto_repos: [ECommerce.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  payos_client_id:
+    System.get_env("PAYOS_CLIENT_ID") ||
+      raise("environment variable PAYOS_CLIENT_ID is missing."),
+  payos_api_key:
+    System.get_env("PAYOS_API_KEY") ||
+      raise("environment variable PAYOS_API_KEY is missing."),
+  payos_checksum_key:
+    System.get_env("PAYOS_CHECKSUM_KEY") ||
+      raise("environment variable PAYOS_CHECKSUM_KEY is missing."),
+  return_url:
+    System.get_env("RETURN_URL") ||
+      raise("environment variable RETURN_URL is missing."),
+  cancel_url:
+    System.get_env("CANCEL_URL") ||
+      raise("environment variable CANCEL_URL is missing.")
 
 # Configures the endpoint
 config :e_commerce, ECommerceWeb.Endpoint,

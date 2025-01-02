@@ -48,6 +48,10 @@ defmodule ECommerceWeb.Router do
   end
 
   ## Authentication routes
+  scope "/webhook", ECommerceWeb do
+    pipe_through [:api]
+    post "/payment", WebhookController, :payment_confirm
+  end
 
   scope "/", ECommerceWeb do
     pipe_through [:browser, :user, :redirect_if_user_is_authenticated]
@@ -99,6 +103,8 @@ defmodule ECommerceWeb.Router do
       live "/users/confirm", Public.UserConfirmationInstructionsLive, :new
       live "/", Public.HomeLive
     end
+
+    get "/.env", PageController, :env
   end
 
   ## Authentication routes

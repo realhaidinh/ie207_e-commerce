@@ -13,6 +13,8 @@
   <:col :let={{_id, order}} label="Tổng tiền">
     {ECommerce.Utils.FormatUtil.money_to_vnd(order.total_price)}
   </:col>
-
+  <:col :let={{_id, order}} label="Ngày đặt">
+    {ECommerce.Utils.TimeUtil.pretty_print(order.inserted_at)}
+  </:col>
   <:col :let={{_id, order}} label="Trạng thái">{order.status}</:col>
 </.data_table>

@@ -50,12 +50,16 @@ defmodule ECommerce.Orders do
   """
   def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload(line_items: [:product])
 
-  def get_order!(user_id, id) do
+  def get_user_order_by_id!(user_id, id) do
     Order
     |> Repo.get_by!(id: id, user_id: user_id)
     |> Repo.preload(line_items: [:product])
   end
-
+  def get_user_order_by_transaction_id!(user_id, transaction_id) do
+    Order
+    |> Repo.get_by!(transaction_id: transaction_id, user_id: user_id)
+    |> Repo.preload(line_items: [:product])
+  end
   @doc """
   Creates a order.
 
@@ -78,7 +82,7 @@ defmodule ECommerce.Orders do
     Repo.insert(changeset)
   end
 
-  def make_order(%ShoppingCart.Cart{} = cart) do
+  def make_order(%ShoppingCart.Cart{} = cart, attrs \\ %{}) do
     line_items =
       Enum.map(cart.cart_items, fn item ->
         %LineItem{
@@ -88,11 +92,26 @@ defmodule ECommerce.Orders do
         }
       end)
 
-    %Order{
-      user_id: cart.user_id,
-      total_price: ShoppingCart.total_cart_price(cart),
-      line_items: line_items
-    }
+    order =
+      change_order(
+        %Order{
+          user_id: cart.user_id,
+          total_price: ShoppingCart.total_cart_price(cart),
+          line_items: line_items
+        },
+        attrs
+      )
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:order, order)
+    |> Ecto.Multi.run(:prune_cart, fn _repo, _changes ->
+      ShoppingCart.prune_cart_items(cart)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{order: order}} -> {:ok, order}
+      {:error, name, value, _changes_so_far} -> {:error, {name, value}}
+    end
   end
 
   @doc """
@@ -141,10 +160,12 @@ defmodule ECommerce.Orders do
   def change_order(%Order{} = order, attrs \\ %{}) do
     Order.changeset(order, attrs)
   end
-
-  def complete_order(order, %ShoppingCart.Cart{} = cart) do
+  def get_order_by_transaction_id(transaction_id) do
+    Repo.one(from o in Order, where: o.transaction_id == ^transaction_id)
+  end
+  def complete_order(order) do
     Ecto.Multi.new()
-    |> Ecto.Multi.insert(:order, order)
+    |> Ecto.Multi.update(:order, update_order(order, %{status: "Đã giao hàng"}))
     |> Ecto.Multi.update_all(
       :reduce_product_stock,
       fn %{order: order} ->
@@ -157,9 +178,6 @@ defmodule ECommerce.Orders do
       end,
       []
     )
-    |> Ecto.Multi.run(:prune_cart, fn _repo, _changes ->
-      ShoppingCart.prune_cart_items(cart)
-    end)
     |> Repo.transaction()
     |> case do
       {:ok, %{order: order}} -> {:ok, order}

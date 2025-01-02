@@ -8,11 +8,11 @@
       </div>
     </div>
 
-    <div class="mt-6 flow-root sm:mt-8">
+    <div class="mt-6 flow-root sm:mt-8 ml-8">
       <div class="divide-y divide-gray-200 dark:divide-gray-700">
         <div :for={order <- @orders} class="flex flex-wrap items-center gap-y-4 py-6">
           <dl class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-            <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Order ID:</dt>
+            <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Mã đơn hàng:</dt>
             <dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
               <.link navigate={~p"/users/orders/#{order.id}"} class="hover:underline">
                 {order.id}
@@ -21,9 +21,9 @@
           </dl>
 
           <dl class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-            <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Date:</dt>
+            <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Ngày đặt hàng:</dt>
             <dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
-              {ECommerce.Utils.FormatUtil.date_to_str(order.inserted_at)}
+              {ECommerce.Utils.TimeUtil.pretty_print(order.inserted_at)}
             </dd>
           </dl>
 
@@ -43,9 +43,9 @@
             </dd>
           </dl>
 
-          <div class="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center lg:justify-end gap-4">
+          <div class="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center justify-center gap-4">
             <.link
-              navigate={~p"/users/orders/#{order.id}"}
+              navigate={~p"/users/orders/#{order}"}
               class="w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 lg:w-auto"
             >
               Chi tiết

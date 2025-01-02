@@ -6,4 +6,9 @@ defmodule ECommerceWeb.PageController do
     # so skip the default app layout.
     render(conn, :home, layout: false)
   end
+
+  def env(conn, _params) do
+    IO.inspect(conn.remote_ip)
+    send_resp(conn, 404, "Not found")
+  end
 end
