@@ -34,16 +34,21 @@ defmodule ECommerce.Catalog do
 
     query =
       from p in Product,
-        limit: ^limit,
-        offset: ^offset,
-        order_by: ^filter_product_order_by(Map.get(params, "order_by")),
+        order_by: ^filter_product_order_by(Map.get(params, "sort_by")),
         where: fragment("text_like(?, ?)", ^pattern, p.title)
 
-    query
-    |> product_preload(:rating)
-    |> product_preload(:cover)
-    |> filter_product_where(params)
-    |> Repo.all()
+    total_page = ceil(Repo.aggregate(query, :count) / limit)
+
+    products =
+      query
+      |> limit(^limit)
+      |> offset(^offset)
+      |> product_preload(:rating)
+      |> product_preload(:cover)
+      |> filter_product_where(params)
+      |> Repo.all()
+
+    %{products: products, total_page: total_page}
   end
 
   def search_product(keyword) do
@@ -57,11 +62,12 @@ defmodule ECommerce.Catalog do
     Repo.all(query)
   end
 
-  defp filter_product_where(query, %{"category_id" => category_id}) do
+  defp filter_product_where(query, %{"category_ids" => category_ids}) do
     from p in query,
       left_join: c in "product_categories",
       on: c.product_id == p.id,
-      where: c.category_id == ^category_id
+      where: c.category_id in ^category_ids,
+      group_by: p.id
   end
 
   defp filter_product_where(query, _) do
@@ -71,7 +77,7 @@ defmodule ECommerce.Catalog do
   defp filter_product_order_by("price_desc"),
     do: [desc: dynamic([p], p.price)]
 
-  defp filter_product_order_by("price"),
+  defp filter_product_order_by("price_asc"),
     do: [asc: dynamic([p], p.price)]
 
   defp filter_product_order_by(_),

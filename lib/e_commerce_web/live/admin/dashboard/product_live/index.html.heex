@@ -1,4 +1,4 @@
-<.link patch={~p"/admin/dashboard/catalog/product/new"}>
+<.link patch={~p"/admin/dashboard/catalog/products/new"}>
   <.button class="m-8">Tạo sản phẩm mới</.button>
 </.link>
 <.data_table
@@ -7,7 +7,7 @@
   rows={@streams.products}
   searchable="true"
   sortable="true"
-  row_click={fn {_id, product} -> JS.patch(~p"/admin/dashboard/catalog/product/#{product}") end}
+  row_click={fn {_id, product} -> JS.patch(~p"/admin/dashboard/catalog/products/#{product}") end}
 >
   <:col :let={{_id, product}} label="Tên sản phẩm">{product.title}</:col>
 
@@ -24,9 +24,9 @@
   <:col :let={{_id, product}} label="Đánh giá">{product.rating}</:col>
   <:action :let={{_id, product}}>
     <div class="sr-only">
-      <.link patch={~p"/admin/dashboard/catalog/product/#{product.id}"}>Chi tiết</.link>
+      <.link patch={~p"/admin/dashboard/catalog/products/#{product}"}>Chi tiết</.link>
     </div>
-    <.link patch={~p"/admin/dashboard/catalog/product/edit/#{product.id}"}>Sửa</.link>
+    <.link patch={~p"/admin/dashboard/catalog/products/edit/#{product}"}>Sửa</.link>
   </:action>
 
   <:action :let={{_id, product}}>
@@ -43,13 +43,13 @@
   :if={@live_action in [:edit, :new]}
   id="product-modal"
   show
-  on_cancel={JS.patch(~p"/admin/dashboard/catalog/product")}
+  on_cancel={JS.patch(~p"/admin/dashboard/catalog/products")}
 >
   <.live_component
     module={ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent}
     id={@product.id || :new}
     action={@live_action}
-    patch={~p"/admin/dashboard/catalog/product"}
+    patch={~p"/admin/dashboard/catalog/products"}
     product={@product}
   />
 </.modal>

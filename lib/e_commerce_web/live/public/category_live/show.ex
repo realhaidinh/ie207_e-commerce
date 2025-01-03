@@ -10,17 +10,18 @@ defmodule ECommerceWeb.Public.CategoryLive.Show do
   end
 
   @impl true
-  def handle_params(%{"category_id" => id} = params, _, socket) do
+  def handle_params(%{"category_id" => id} = params, _uri, socket) do
     category = Catalog.get_category!(id)
-    products = Catalog.search_product(params)
+    params = Map.put(params, "category_ids", [id])
 
     {:noreply,
      socket
      |> assign(:page_title, category.title)
      |> assign(:category, category)
+     |> assign(:current_path, "/categories/#{id}")
      |> assign_parents_category(category)
      |> assign(:subcategories, Catalog.get_subcategories(category))
-     |> stream(:products, products, reset: true)}
+     |> assign(:params, params)}
   end
 
   defp assign_parents_category(socket, %Category{} = category) do

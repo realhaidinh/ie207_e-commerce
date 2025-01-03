@@ -4,7 +4,7 @@
   rows={@users}
   searchable="true"
   sortable="true"
-  row_click={fn user -> JS.patch(~p"/admin/dashboard/customer/#{user.id}") end}
+  row_click={fn user -> JS.patch(~p"/admin/dashboard/customers/#{user}") end}
 >
   <:col :let={user} label="Mã khách hàng">{user.id}</:col>
 

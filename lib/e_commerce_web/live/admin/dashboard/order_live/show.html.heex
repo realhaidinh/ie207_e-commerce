@@ -26,7 +26,7 @@
   rows={@order.line_items}
   searchable="true"
   sortable="true"
-  row_click={fn item -> JS.patch(~p"/admin/dashboard/catalog/product/#{item.product.id}") end}
+  row_click={fn item -> JS.patch(~p"/admin/dashboard/catalog/products/#{item.product.id}") end}
 >
   <:col :let={item} label="Sản phẩm">{item.product.title}</:col>
 

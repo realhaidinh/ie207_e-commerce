@@ -17,13 +17,16 @@ defmodule ECommerceWeb.Admin.Dashboard.OrderLive.Show do
   def handle_event("delivered-confirm", _unsigned_params, socket) do
     {:ok, order} = Orders.update_order(socket.assigns.order, %{status: :"Đã giao hàng"})
     OrderNotifier.deliver_order_shipped(order, order.user.email)
+
     {:noreply,
      socket
      |> assign(:order, order)
      |> put_flash(:info, "Đơn hàng #{order.id} đã giao thành công")}
   end
+
   def handle_event("delivering-confirm", _unsigned_params, socket) do
     {:ok, order} = Orders.update_order(socket.assigns.order, %{status: :"Đang giao hàng"})
+
     {:noreply,
      socket
      |> assign(:order, order)

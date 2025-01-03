@@ -12,13 +12,19 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     product = Catalog.get_product!(id, [:rating, :categories, :images])
+    category_ids = Enum.map(product.categories, & &1.id)
+    product_id = product.id
 
     {:noreply,
      socket
      |> assign(:page_title, product.title)
      |> assign(:product, product)
      |> start_async(:fetch_reviews, fn -> Catalog.list_reviews_by_product(id) end)
+     |> start_async(:fetch_related_products, fn ->
+       fetch_related_product(product_id, category_ids)
+     end)
      |> stream(:reviews, [])
+     |> stream(:related_products, [])
      |> stream(:review_freq, [])}
   end
 
@@ -53,7 +59,17 @@ defmodule ECommerceWeb.Public.ProductLive.Show do
     {:noreply, stream(socket, :reviews, fetched_reviews) |> stream(:review_freq, review_freq)}
   end
 
+  def handle_async(:fetch_related_products, {:ok, related_products}, socket) do
+    {:noreply, stream(socket, :related_products, related_products)}
+  end
+
   defp get_category_pages(categories) do
     Enum.map(categories, &Map.put(&1, :url, "/categories/#{&1.id}"))
+  end
+
+  defp fetch_related_product(product_id, category_ids) do
+    Catalog.search_product(%{"category_ids" => category_ids, "limit" => 5})
+    |> Map.get(:products)
+    |> Enum.reject(&(&1.id == product_id))
   end
 end

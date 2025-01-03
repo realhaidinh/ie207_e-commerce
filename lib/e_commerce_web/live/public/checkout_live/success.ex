@@ -63,7 +63,7 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
   end
 
   defp handle_order_status(%Order{payment_type: :"Thanh toán khi nhận hàng"} = _, socket) do
-    {:noreply, push_navigate(socket, to: ~p"/")}
+    {:noreply, {:noreply, assign(socket, :status, :cod)}}
   end
 
   defp handle_order_status(%Order{payment_type: :"Thanh toán online"} = order, socket) do
@@ -99,4 +99,5 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
   defp get_order_status(:paid), do: "đã thanh toán"
   defp get_order_status(:processing), do: "đang xử lý thanh toán"
   defp get_order_status(:cancelled), do: "đã hủy thanh toán"
+  defp get_order_status(:cod), do: "đã đặt thành công, thanh toán khi nhận hàng"
 end

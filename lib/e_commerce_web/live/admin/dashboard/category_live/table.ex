@@ -41,7 +41,7 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.Table do
           <div class="flex flex-row justify-center">
             <.link
               class="px-4 py-2 text-blue-500"
-              patch={~p"/admin/dashboard/catalog/category/#{category.id}"}
+              patch={~p"/admin/dashboard/catalog/categories/#{category}"}
             >
               Chi tiết
             </.link>

@@ -1,6 +1,6 @@
 <div class="flex justify-between">
-  <.back navigate="/admin/dashboard/catalog/product/">Trở về danh sách sản phẩm</.back>
-  <.link class="mt-16" patch={~p"/admin/dashboard/catalog/product/#{@product}/edit"}>
+  <.back navigate="/admin/dashboard/catalog/products/">Trở về danh sách sản phẩm</.back>
+  <.link class="mt-16" patch={~p"/admin/dashboard/catalog/products/#{@product}/edit"}>
     <.button>Chỉnh sửa sản phẩm</.button>
   </.link>
 </div>
@@ -46,7 +46,7 @@
       <%= for category <- @product.categories do %>
         <span class="hero-chevron-right first:hidden"></span>
         <.link
-          navigate={~p"/admin/dashboard/catalog/category/#{category}"}
+          navigate={~p"/admin/dashboard/catalog/categories/#{category}"}
           class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
         >
           {category.title}
@@ -60,13 +60,13 @@
   :if={@live_action == :edit}
   id="product-modal"
   show
-  on_cancel={JS.patch(~p"/admin/dashboard/catalog/product/#{@product}")}
+  on_cancel={JS.patch(~p"/admin/dashboard/catalog/products/#{@product}")}
 >
   <.live_component
     module={ECommerceWeb.Admin.Dashboard.ProductLive.FormComponent}
     id={@product.id}
     action={@live_action}
-    patch={~p"/admin/dashboard/catalog/product/#{@product}"}
+    patch={~p"/admin/dashboard/catalog/products/#{@product}"}
     product={@product}
   />
 </.modal>

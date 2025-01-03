@@ -4,7 +4,7 @@
   rows={@streams.orders}
   searchable="true"
   sortable="true"
-  row_click={fn {_id, order} -> JS.patch(~p"/admin/dashboard/sales/order/#{order.id}") end}
+  row_click={fn {_id, order} -> JS.patch(~p"/admin/dashboard/sales/orders/#{order}") end}
 >
   <:col :let={{_id, order}} label="Mã đơn hàng">{order.id}</:col>
 

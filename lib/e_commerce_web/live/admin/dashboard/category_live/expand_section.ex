@@ -19,7 +19,7 @@ defmodule ECommerceWeb.Admin.Dashboard.CategoryLive.ExpandSection do
         <span class="px-4 py-2">{cat.product_count}</span>
         <div class="flex flex-row justify-center">
           <.link
-            navigate={~p"/admin/dashboard/catalog/category/#{cat}"}
+            navigate={~p"/admin/dashboard/catalog/categories/#{cat}"}
             class="justify-self-center px-4 py-2 text-blue-500"
           >
             Chi tiết

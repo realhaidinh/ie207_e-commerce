@@ -95,6 +95,7 @@ defmodule ECommerceWeb.Router do
       on_mount: [{ECommerceWeb.UserAuth, :mount_current_user}, ECommerceWeb.Public.Cart] do
       live "/products", Public.ProductLive.Index, :index
       live "/products/:id", Public.ProductLive.Show, :show
+      live "/products/:id/review", Public.ProductLive.Show, :review
       live "/categories", Public.CategoryLive.Index, :index
       live "/categories/:category_id", Public.CategoryLive.Show, :show
       live "/checkout", Public.CheckoutLive.Index, :index
@@ -133,23 +134,23 @@ defmodule ECommerceWeb.Router do
       live "/settings/confirm_email/:token", Admin.SettingsLive, :confirm_email
 
       live "/dashboard", Admin.Dashboard.Index, :index
-      live "/dashboard/sales/order", Admin.Dashboard.OrderLive.Index, :index
-      live "/dashboard/sales/order/:id", Admin.Dashboard.OrderLive.Show, :show
+      live "/dashboard/sales/orders", Admin.Dashboard.OrderLive.Index, :index
+      live "/dashboard/sales/orders/:id", Admin.Dashboard.OrderLive.Show, :show
 
-      live "/dashboard/customer", Admin.Dashboard.UserLive.Index, :index
-      live "/dashboard/customer/:id", Admin.Dashboard.UserLive.Show, :show
+      live "/dashboard/customers", Admin.Dashboard.UserLive.Index, :index
+      live "/dashboard/customers/:id", Admin.Dashboard.UserLive.Show, :show
 
-      live "/dashboard/catalog/category", Admin.Dashboard.CategoryLive.Index, :index
-      live "/dashboard/catalog/category/new", Admin.Dashboard.CategoryLive.Index, :new
-      live "/dashboard/catalog/category/:id", Admin.Dashboard.CategoryLive.Show, :show
-      live "/dashboard/catalog/category/:id/edit", Admin.Dashboard.CategoryLive.Show, :edit
-      live "/dashboard/catalog/category/:id/new", Admin.Dashboard.CategoryLive.Show, :new
+      live "/dashboard/catalog/categories", Admin.Dashboard.CategoryLive.Index, :index
+      live "/dashboard/catalog/categories/new", Admin.Dashboard.CategoryLive.Index, :new
+      live "/dashboard/catalog/categories/:id", Admin.Dashboard.CategoryLive.Show, :show
+      live "/dashboard/catalog/categories/:id/edit", Admin.Dashboard.CategoryLive.Show, :edit
+      live "/dashboard/catalog/categories/:id/new", Admin.Dashboard.CategoryLive.Show, :new
 
-      live "/dashboard/catalog/product", Admin.Dashboard.ProductLive.Index, :index
-      live "/dashboard/catalog/product/new", Admin.Dashboard.ProductLive.Index, :new
-      live "/dashboard/catalog/product/edit/:id", Admin.Dashboard.ProductLive.Index, :edit
-      live "/dashboard/catalog/product/:id", Admin.Dashboard.ProductLive.Show, :show
-      live "/dashboard/catalog/product/:id/edit", Admin.Dashboard.ProductLive.Show, :edit
+      live "/dashboard/catalog/products", Admin.Dashboard.ProductLive.Index, :index
+      live "/dashboard/catalog/products/new", Admin.Dashboard.ProductLive.Index, :new
+      live "/dashboard/catalog/products/edit/:id", Admin.Dashboard.ProductLive.Index, :edit
+      live "/dashboard/catalog/products/:id", Admin.Dashboard.ProductLive.Show, :show
+      live "/dashboard/catalog/products/:id/edit", Admin.Dashboard.ProductLive.Show, :edit
     end
   end
 

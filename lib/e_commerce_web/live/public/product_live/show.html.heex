@@ -60,7 +60,7 @@
   </div>
 </section>
 
-<div id="product-content" class=" mt-8 m-b-8 bg-slate-50 p-4">
+<div id="product-content" class=" my-8 m-b-8 bg-slate-50 p-4">
   <section class="mt-8 m-b-8">
     <h2>CHI TIẾT SẢN PHẨM</h2>
     <div>
@@ -91,15 +91,26 @@
     </p>
   </section>
 </div>
-<div :if={@current_user} class="review-product">
-  <h3>Đăng đánh giá</h3>
+<.link
+  :if={@current_user}
+  class="bg-black rounded-md p-2 text-white"
+  patch={~p"/products/#{@product}/review"}
+>
+  Đăng đánh giá
+</.link>
+<.modal
+  :if={@live_action == :review && @current_user}
+  id="review-modal"
+  show
+  on_cancel={JS.patch(~p"/products/#{@product}")}
+>
   <.live_component
     module={ECommerceWeb.Public.ProductLive.ReviewFormComponent}
     id="review_form_component"
     current_user={@current_user}
     product={@product}
   />
-</div>
+</.modal>
 <div id="product-reviews">
   <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
     <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -130,7 +141,11 @@
           </div>
         </div>
       </div>
-      <div class="mt-6 divide-y divide-gray-200 dark:divide-gray-700">
+      <div
+        id="product-reviews"
+        class="mt-6 divide-y divide-gray-200 dark:divide-gray-700"
+        phx-update="stream"
+      >
         <div
           :for={{id, review} <- @streams.reviews}
           id={id}
@@ -165,7 +180,7 @@
         </div>
       </div>
 
-      <div class="mt-6 text-center">
+      <div class="mt-6 text-center hidden">
         <button
           type="button"
           class="mb-2 me-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
@@ -175,4 +190,13 @@
       </div>
     </div>
   </section>
+</div>
+
+<span class="my-8">Sản phẩm liên quan</span>
+<div class="grid grid-cols-4 gap-8" id="related-products" phx-update="stream">
+  <.product_card
+    :for={{dom_id, product} <- @streams.related_products}
+    id={dom_id}
+    product={product}
+  />
 </div>

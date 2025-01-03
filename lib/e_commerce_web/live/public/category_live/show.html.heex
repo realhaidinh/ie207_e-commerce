@@ -17,7 +17,10 @@
       </.link>
     </div>
   </div>
-  <div class="grid grid-cols-4 gap-8 basis-3/4" id="catalog-products" phx-update="stream">
-    <.product_card :for={{dom_id, product} <- @streams.products} id={dom_id} product={product} />
-  </div>
+  <.live_component
+    id="product-gallery"
+    module={ECommerceWeb.Public.ProductGalleryComponent}
+    params={@params}
+    current_path={@current_path}
+  />
 </div>
