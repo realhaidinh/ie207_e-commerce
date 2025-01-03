@@ -4,7 +4,6 @@ defmodule ECommerce.Orders.Order do
 
   schema "orders" do
     field :total_price, :integer
-    field :user_id, :id
     field :buyer_address, :string
     field :buyer_phone, :string
     field :buyer_name, :string
@@ -21,7 +20,7 @@ defmodule ECommerce.Orders.Order do
 
     has_many :line_items, ECommerce.Orders.LineItem
     has_many :products, through: [:line_items, :product]
-
+    belongs_to :user, ECommerce.Accounts.User
     timestamps(type: :utc_datetime)
   end
 

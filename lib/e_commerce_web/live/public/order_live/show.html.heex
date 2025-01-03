@@ -38,4 +38,13 @@
     <p>Số điện thoại nhận hàng: {@order.buyer_phone}</p>
     <p>Phương thức thanh toán: {@order.payment_type}</p>
   </div>
+  <a
+    :if={@order.status == :"Chờ thanh toán"}
+    href={"#{Payos.get_checkout_url(@order.transaction_id)}"}
+    rel="noopener noreferrer"
+    target="_blank"
+    class="self-end bg-black text-white rounded-md p-2"
+  >
+    Thanh toán đơn hàng ngay
+  </a>
 </div>

@@ -1,7 +1,8 @@
 defmodule ECommerceWeb.Public.CheckoutLive.Success do
+  alias ECommerce.Payos
   alias ECommerce.Orders
+  alias ECommerce.Orders.Order
   use ECommerceWeb, :live_view
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -31,30 +32,44 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
       <p>Địa chỉ nhận hàng: {@order.buyer_address}</p>
 
       <p>Số điện thoại nhận hàng: {@order.buyer_phone}</p>
+      <a
+        :if={@status == :pending}
+        href={"#{Payos.get_checkout_url(@order.transaction_id)}"}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Thanh toán đơn hàng ngay
+      </a>
     </div>
     """
   end
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok,
-     socket}
+    {:ok, socket}
   end
-
-  defp get_order_status(:pending), do: "đang thanh toán"
-  defp get_order_status(:paid), do: "đã thanh toán"
-  defp get_order_status(:processing), do: "đang xử lý"
-  defp get_order_status(:cancelled), do: "đã hủy"
 
   @impl true
   def handle_params(params, _uri, socket) do
     %{current_user: %{id: user_id}} = socket.assigns
-    order = Orders.get_user_order_by_transaction_id!(user_id, params["id"])
-    socket = assign(socket, :order, order)
-    if order.payment_type == :"Thanh toán khi nhận hàng" do
-      {:noreply, assign(socket, :status, :pending)}
+    order = Orders.get_user_order_by_id!(user_id, params["order_id"])
+
+    if params["id"] == order.transaction_id do
+      socket = assign(socket, :order, order)
+      handle_order_status(order, socket)
     else
-      case params["status"] do
+      {:noreply, push_navigate(socket, to: "/")}
+    end
+  end
+
+  defp handle_order_status(%Order{payment_type: :"Thanh toán khi nhận hàng"} = _, socket) do
+    {:noreply, push_navigate(socket, to: ~p"/")}
+  end
+
+  defp handle_order_status(%Order{payment_type: :"Thanh toán online"} = order, socket) do
+    with {:ok, %{"data" => payment_data}} <-
+           Payos.get_payment_link_information(order.transaction_id) do
+      case payment_data["status"] do
         "PAID" ->
           {:noreply, assign(socket, :status, :paid)}
 
@@ -65,8 +80,23 @@ defmodule ECommerceWeb.Public.CheckoutLive.Success do
           {:noreply, assign(socket, :status, :processing)}
 
         "CANCELLED" ->
-          {:noreply, assign(socket, :status, :canclled)}
+          socket =
+            if order.status == :"Đã hủy" do
+              socket
+            else
+              {:ok, order} = Orders.update_order(order, %{status: :"Đã hủy"})
+              assign(socket, :order, order)
+            end
+
+          {:noreply, assign(socket, :status, :cancelled)}
       end
+    else
+      _ -> {:noreply, push_navigate(socket, to: ~p"/")}
     end
   end
+
+  defp get_order_status(:pending), do: "đang thanh toán"
+  defp get_order_status(:paid), do: "đã thanh toán"
+  defp get_order_status(:processing), do: "đang xử lý thanh toán"
+  defp get_order_status(:cancelled), do: "đã hủy thanh toán"
 end

@@ -48,18 +48,14 @@ defmodule ECommerce.Orders do
       ** (Ecto.NoResultsError)
 
   """
-  def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload(line_items: [:product])
+  def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload([:user, line_items: [:product]])
 
   def get_user_order_by_id!(user_id, id) do
     Order
     |> Repo.get_by!(id: id, user_id: user_id)
-    |> Repo.preload(line_items: [:product])
+    |> Repo.preload([:user, line_items: [:product]])
   end
-  def get_user_order_by_transaction_id!(user_id, transaction_id) do
-    Order
-    |> Repo.get_by!(transaction_id: transaction_id, user_id: user_id)
-    |> Repo.preload(line_items: [:product])
-  end
+
   @doc """
   Creates a order.
 
@@ -160,9 +156,12 @@ defmodule ECommerce.Orders do
   def change_order(%Order{} = order, attrs \\ %{}) do
     Order.changeset(order, attrs)
   end
+
   def get_order_by_transaction_id(transaction_id) do
     Repo.one(from o in Order, where: o.transaction_id == ^transaction_id)
+    |> Repo.preload([:user, line_items: [:product]])
   end
+
   def complete_order(order) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:order, update_order(order, %{status: "Đã giao hàng"}))

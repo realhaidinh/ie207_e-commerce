@@ -16,6 +16,7 @@ defmodule ECommerce.Application do
       {Phoenix.PubSub, name: ECommerce.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: ECommerce.Finch},
+      {Task.Supervisor, name: ECommerce.TaskSupervisor},
       # Start a worker by calling: ECommerce.Worker.start_link(arg)
       # {ECommerce.Worker, arg},
       # Start to serve requests, typically the last entry

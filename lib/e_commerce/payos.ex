@@ -6,16 +6,19 @@ defmodule ECommerce.Payos do
   @api_key Application.compile_env(:e_commerce, :payos_api_key)
   @client_id Application.compile_env(:e_commerce, :payos_client_id)
   @checksum_key Application.compile_env(:e_commerce, :payos_checksum_key)
-  @payos_base_url "https://api-merchant.payos.vn"
+  @payos_api_url "https://api-merchant.payos.vn"
+
   def create_payment_data(data = %{}) do
     %{
-      orderCode: TimeUtil.get_current_time() |> to_string() |> String.slice(-6..-1) |> String.to_integer(),
+      orderCode:
+        TimeUtil.get_current_time() |> to_string() |> String.slice(-6..-1) |> String.to_integer(),
       returnUrl: data.return_url,
       cancelUrl: data.return_url,
       amount: data.amount,
       description: data.description
     }
   end
+
   def create_payment_link(payment_data) do
     try do
       body =
@@ -26,14 +29,12 @@ defmodule ECommerce.Payos do
         )
         |> JSON.encode_to_iodata!()
 
-      url = @payos_base_url <> "/v2/payment-requests"
+      url = @payos_api_url <> "/v2/payment-requests"
 
       headers = [
         {"Accept", "application/json"},
         {"Content-type", "application/json"},
-        {"Charset", "UTF-8"},
-        {"x-client-id", @client_id},
-        {"x-api-key", @api_key}
+        {"Charset", "UTF-8"}
       ]
 
       fetch(:post, url, headers, body)
@@ -45,14 +46,20 @@ defmodule ECommerce.Payos do
   end
 
   def get_payment_link_information(id) do
-    url = @payos_base_url <> "/v2/payment-requests/#{id}"
+    url = @payos_api_url <> "/v2/payment-requests/#{id}"
+    fetch(:get, url)
+  end
+
+  def cancel_payment_link(id) do
+    url = @payos_api_url <> "/v2/payment-requests/#{id}/cancel"
 
     headers = [
-      {"x-client-id", @client_id},
-      {"x-api-key", @api_key}
+      {"Accept", "application/json"},
+      {"Content-type", "application/json"},
+      {"Charset", "UTF-8"}
     ]
 
-    fetch(:get, url, headers)
+    fetch(:post, url, headers)
   end
 
   def verify_payment_webhook_data(%{"data" => data, "signature" => signature}) do
@@ -67,8 +74,9 @@ defmodule ECommerce.Payos do
 
   def verify_payment_webhook_data(_), do: {:error, "Missing data or signature"}
 
-  defp fetch(method, url, headers \\ [], body \\ nil, opts \\ []) do
-    request = Finch.build(method, url, headers, body, opts)
+  defp fetch(method, url, headers \\ [], body \\ nil) do
+    headers = [{"x-client-id", @client_id}, {"x-api-key", @api_key} | headers]
+    request = Finch.build(method, url, headers, body)
 
     case Finch.request(request, ECommerce.Finch) do
       {:ok, %Finch.Response{body: resp_body}} ->
@@ -77,5 +85,9 @@ defmodule ECommerce.Payos do
       error ->
         error
     end
+  end
+
+  def get_checkout_url(id) do
+    "https://pay.payos.vn/web/#{id}"
   end
 end

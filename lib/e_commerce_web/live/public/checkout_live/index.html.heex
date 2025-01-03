@@ -1,12 +1,11 @@
 <div>
-  <%= if @cart.cart_items == [] do %>
+  <%= if Enum.empty?(@cart.cart_items) do %>
     <.header>
-      My Cart
-      <:subtitle>Your cart is empty</:subtitle>
+      Giỏ hàng trống
     </.header>
   <% else %>
     <.header>
-      Checkout
+      Thanh toán
     </.header>
 
     <.live_component

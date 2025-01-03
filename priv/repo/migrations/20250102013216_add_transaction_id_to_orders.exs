@@ -3,7 +3,7 @@ defmodule ECommerce.Repo.Migrations.AddTransactionIdToOrders do
 
   def change do
     alter table("orders") do
-      add :transaction_id , :string
+      add :transaction_id, :string
     end
   end
 end

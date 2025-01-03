@@ -1,6 +1,7 @@
 defmodule ECommerceWeb.Public.OrderLive.Show do
   use ECommerceWeb, :live_view
   alias ECommerce.Orders
+  alias ECommerce.Payos
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket, layout: {ECommerceWeb.Layouts, :public_profile}}
@@ -18,11 +19,17 @@ defmodule ECommerceWeb.Public.OrderLive.Show do
 
   @impl true
   def handle_event("cancel-order", _unsigned_params, socket) do
-    {:ok, order} = Orders.update_order(socket.assigns.order, %{status: :"Đã hủy"})
+    order = socket.assigns.order
 
-    {:noreply,
-     socket
-     |> assign(:order, order)
-     |> put_flash(:info, "Đã hủy đơn hàng #{order.id}")}
+    with {:ok, _} <- Payos.cancel_payment_link(order.transaction_id),
+         {:ok, order} <-
+           Orders.update_order(order, %{status: :"Đã hủy"}) do
+      {:noreply,
+       socket
+       |> assign(:order, order)
+       |> put_flash(:info, "Đã hủy đơn hàng #{order.id}")}
+    else
+      error -> {:noreply, put_flash(socket, :error, "Xảy ra lỗi #{inspect(error)}")}
+    end
   end
 end

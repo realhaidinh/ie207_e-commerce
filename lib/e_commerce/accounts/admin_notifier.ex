@@ -8,7 +8,7 @@ defmodule ECommerce.Accounts.AdminNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"ECommerce", "contact@example.com"})
+      |> from(Mailer.get_sender())
       |> subject(subject)
       |> text_body(body)
 

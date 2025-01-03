@@ -12,6 +12,15 @@ config :e_commerce, ECommerce.Repo,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
 
+config :e_commerce, ECommerce.Mailer,
+  adapter: Swoosh.Adapters.Mua,
+  relay: "smtp.mailersend.net",
+  port: 587,
+  auth: [
+    username: System.fetch_env!("SMTP_USERNAME"),
+    password: System.fetch_env!("SMTP_PASSWORD")
+  ]
+
 # SELECT load_extension('D:/DO_AN/e_commerce/libSqliteIcu2.dll');
 # For development, we disable any cache and enable
 # debugging and code reloading.

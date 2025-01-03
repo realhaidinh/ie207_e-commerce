@@ -1,4 +1,5 @@
 defmodule ECommerceWeb.Admin.Dashboard.OrderLive.Show do
+  alias ECommerce.Orders.OrderNotifier
   alias ECommerce.Orders
   use ECommerceWeb, :live_view
 
@@ -13,12 +14,19 @@ defmodule ECommerceWeb.Admin.Dashboard.OrderLive.Show do
   end
 
   @impl true
-  def handle_event("confirm-shipped", _unsigned_params, socket) do
+  def handle_event("delivered-confirm", _unsigned_params, socket) do
     {:ok, order} = Orders.update_order(socket.assigns.order, %{status: :"Đã giao hàng"})
-
+    OrderNotifier.deliver_order_shipped(order, order.user.email)
     {:noreply,
      socket
      |> assign(:order, order)
      |> put_flash(:info, "Đơn hàng #{order.id} đã giao thành công")}
+  end
+  def handle_event("delivering-confirm", _unsigned_params, socket) do
+    {:ok, order} = Orders.update_order(socket.assigns.order, %{status: :"Đang giao hàng"})
+    {:noreply,
+     socket
+     |> assign(:order, order)
+     |> put_flash(:info, "Đơn hàng #{order.id} đang được giao")}
   end
 end

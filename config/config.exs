@@ -18,13 +18,7 @@ config :e_commerce,
       raise("environment variable PAYOS_API_KEY is missing."),
   payos_checksum_key:
     System.get_env("PAYOS_CHECKSUM_KEY") ||
-      raise("environment variable PAYOS_CHECKSUM_KEY is missing."),
-  return_url:
-    System.get_env("RETURN_URL") ||
-      raise("environment variable RETURN_URL is missing."),
-  cancel_url:
-    System.get_env("CANCEL_URL") ||
-      raise("environment variable CANCEL_URL is missing.")
+      raise("environment variable PAYOS_CHECKSUM_KEY is missing.")
 
 # Configures the endpoint
 config :e_commerce, ECommerceWeb.Endpoint,
@@ -45,6 +39,7 @@ config :e_commerce, ECommerceWeb.Endpoint,
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
 config :e_commerce, ECommerce.Mailer, adapter: Swoosh.Adapters.Local
+config :e_commerce, :smtp_username, System.fetch_env!("SMTP_USERNAME")
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -73,8 +68,12 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
+# Use Elixir native JSON for JSON parsing in Phoenix
+config :phoenix, :json_library, JSON
+config :swoosh, :json_library, JSON
+
+# Config timezone database
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
