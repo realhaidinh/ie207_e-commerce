@@ -1,16 +1,22 @@
 import Config
 
-# Configure your database
-config :exqlite,
-  load_extensions: [
-    "./priv/sqlite/text.dll"
-  ]
+db_extension =
+  case :os.type() do
+    {:unix, :linux} ->
+      "linux/text.so"
+
+    {:win32, _} ->
+      "windows/text.dll"
+  end
 
 config :e_commerce, ECommerce.Repo,
   database: Path.expand("../e_commerce_dev.db", __DIR__),
   pool_size: 5,
   stacktrace: true,
-  show_sensitive_data_on_connection_error: true
+  show_sensitive_data_on_connection_error: true,
+  load_extensions: [
+    "./priv/sqlite/" <> db_extension
+  ]
 
 config :e_commerce, ECommerce.Mailer,
   adapter: Swoosh.Adapters.Mua,
