@@ -26,6 +26,17 @@ defmodule ECommerce.Catalog do
     |> Repo.all()
   end
 
+  def search_product(keyword) when is_binary(keyword) do
+    pattern = keyword <> "%"
+
+    query =
+      from p in Product,
+        where: fragment("text_like(unaccent(?), unaccent(?))", ^pattern, p.title),
+        limit: 5
+
+    Repo.all(query)
+  end
+
   def search_product(params = %{}) do
     page_no = Map.get(params, "page", "1") |> String.to_integer()
     limit = Map.get(params, "limit", 20)
@@ -35,7 +46,7 @@ defmodule ECommerce.Catalog do
     query =
       from p in Product,
         order_by: ^filter_product_order_by(Map.get(params, "sort_by")),
-        where: fragment("text_like(?, ?)", ^pattern, p.title)
+        where: fragment("text_like(unaccent(?), unaccent(?))", ^pattern, p.title)
 
     total_page = ceil(Repo.aggregate(query, :count) / limit)
 
@@ -49,17 +60,6 @@ defmodule ECommerce.Catalog do
       |> Repo.all()
 
     %{products: products, total_page: total_page}
-  end
-
-  def search_product(keyword) do
-    pattern = keyword <> "%"
-
-    query =
-      from p in Product,
-        where: fragment("text_like(?, ?)", ^pattern, p.title),
-        limit: 5
-
-    Repo.all(query)
   end
 
   defp filter_product_where(query, %{"category_ids" => category_ids}) do

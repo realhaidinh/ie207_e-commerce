@@ -1,22 +1,22 @@
 import Config
 
-db_extension =
+arch_type =
   case :os.type() do
     {:unix, :linux} ->
-      "linux/text.so"
+      "linux"
 
     {:win32, _} ->
-      "windows/text.dll"
+      "windows"
   end
+
+db_extensions = Path.wildcard("./priv/sqlite/#{arch_type}/*")
 
 config :e_commerce, ECommerce.Repo,
   database: Path.expand("../e_commerce_dev.db", __DIR__),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
-  load_extensions: [
-    "./priv/sqlite/" <> db_extension
-  ]
+  load_extensions: db_extensions
 
 config :e_commerce, ECommerce.Mailer,
   adapter: Swoosh.Adapters.Mua,

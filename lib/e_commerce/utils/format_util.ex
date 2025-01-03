@@ -3,6 +3,7 @@ defmodule ECommerce.Utils.FormatUtil do
 
   def slugify(input) do
     input
+    |> Unidecode.decode()
     |> String.downcase()
     |> String.trim()
     |> String.normalize(:nfkd)

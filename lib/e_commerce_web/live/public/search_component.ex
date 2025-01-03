@@ -5,12 +5,7 @@ defmodule ECommerceWeb.Public.SearchComponent do
   def render(assigns) do
     ~H"""
     <div class="col-start-2 col-end-6 md:order-2 mr-2.5 relative">
-      <form
-        phx-change="update"
-        phx-target={@myself}
-        phx-throttle="500"
-        phx-submit={JS.navigate("/products?keyword=#{@keyword}")}
-      >
+      <form phx-change="update" phx-target={@myself} phx-throttle="500" phx-submit="search-product">
         <div class="flex border-2 w-5/6 rounded-md bg-white">
           <input
             class="focus:ring-0 border-0 bg-transparent flex-auto w-3/4"
@@ -70,5 +65,17 @@ defmodule ECommerceWeb.Public.SearchComponent do
      socket
      |> assign(:keyword, keyword)
      |> stream(:products, products, reset: true)}
+  end
+
+  def handle_event("search-product", _unsigned_params, socket) do
+    keyword = socket.assigns.keyword
+
+    socket =
+      if keyword == "" do
+        socket
+      else
+        push_navigate(socket, to: ~p"/products?keyword=#{keyword}")
+      end
+    {:noreply, socket}
   end
 end
