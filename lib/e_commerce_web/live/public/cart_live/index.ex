@@ -5,7 +5,8 @@ defmodule ECommerceWeb.Public.CartLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    if connected?(socket), do: ShoppingCart.subscribe()
+    cart = socket.assigns.cart
+    if connected?(socket), do: ShoppingCart.subscribe(cart.id)
     {:ok, assign(socket, :page_title, "Giỏ hàng")}
   end
 

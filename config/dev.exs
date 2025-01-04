@@ -1,6 +1,6 @@
 import Config
 
-arch_type =
+arch_path =
   case :os.type() do
     {:unix, :linux} ->
       "linux"
@@ -9,7 +9,7 @@ arch_type =
       "windows"
   end
 
-db_extensions = Path.wildcard("./priv/sqlite/#{arch_type}/*")
+db_extensions = Path.wildcard("./priv/sqlite/#{arch_path}/*")
 
 config :e_commerce, ECommerce.Repo,
   database: Path.expand("../e_commerce_dev.db", __DIR__),
@@ -27,7 +27,6 @@ config :e_commerce, ECommerce.Mailer,
     password: System.fetch_env!("SMTP_PASSWORD")
   ]
 
-# SELECT load_extension('D:/DO_AN/e_commerce/libSqliteIcu2.dll');
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

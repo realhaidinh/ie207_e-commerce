@@ -4,8 +4,8 @@ defmodule ECommerceWeb.Public.Cart do
   use Phoenix.Component
 
   def on_mount(:default, _params, _session, socket) do
-    if connected?(socket), do: ShoppingCart.subscribe()
     cart = fetch_current_cart(socket.assigns.current_user)
+    if connected?(socket), do: ShoppingCart.subscribe(cart.id)
 
     {:cont,
      socket

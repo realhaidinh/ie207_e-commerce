@@ -290,9 +290,9 @@ defmodule ECommerceWeb.Components do
             <.live_component module={ECommerceWeb.Public.SearchComponent} id="search-bar" />
 
             <div :if={@current_user} class="order-3 flex col-start-6 justify-center">
-              <button
+              <a
                 id="dropdownDelayButton"
-                phx-click={JS.navigate("/cart")}
+                href="/cart"
                 data-dropdown-toggle="dropdownDelay"
                 data-dropdown-delay="300"
                 data-dropdown-trigger="hover"
@@ -317,7 +317,7 @@ defmodule ECommerceWeb.Components do
                 <span class="-top-3 relative bg-white border-2 border-solid rounded-xl px-2">
                   {length(@cart.cart_items)}
                 </span>
-              </button>
+              </a>
               <!-- Dropdown menu -->
               <div
                 id="dropdownDelay"
@@ -533,7 +533,7 @@ defmodule ECommerceWeb.Components do
       <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
       <div class="w-full p-4">
         <div class="sm:flex sm:items-center sm:justify-between">
-          <.link navigate="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+          <.link href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
             <img
               src="/uploads/logo.png"
               class="sm:h-16 sm:w-16 md:h-24 md:w-24"
