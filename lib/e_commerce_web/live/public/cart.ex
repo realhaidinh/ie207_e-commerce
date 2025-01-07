@@ -5,7 +5,7 @@ defmodule ECommerceWeb.Public.Cart do
 
   def on_mount(:default, _params, _session, socket) do
     cart = fetch_current_cart(socket.assigns.current_user)
-    if connected?(socket), do: ShoppingCart.subscribe(cart.id)
+    if connected?(socket), do: cart && ShoppingCart.subscribe(cart.id)
 
     {:cont,
      socket
