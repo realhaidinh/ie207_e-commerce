@@ -18,7 +18,7 @@
   >
     <:col :let={item} label="Sản phẩm">{item.product.title}</:col>
 
-    <:col :let={item} label="Đơn giá">{item.price}</:col>
+    <:col :let={item} label="Đơn giá">{ECommerce.Utils.FormatUtil.money_to_vnd(item.price)}</:col>
 
     <:col :let={item} label="Số lượng">{item.quantity}</:col>
 

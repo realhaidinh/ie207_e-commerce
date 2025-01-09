@@ -8,14 +8,14 @@ defmodule ECommerce.Payos do
   @checksum_key Application.compile_env(:e_commerce, :payos_checksum_key)
   @payos_api_url "https://api-merchant.payos.vn"
 
-  def create_payment_data(data = %{}) do
+  def create_payment_data(%{return_url: return_url, amount: amount, description: description}) do
     %{
       orderCode:
         TimeUtil.get_current_time() |> to_string() |> String.slice(-6..-1) |> String.to_integer(),
-      returnUrl: data.return_url,
-      cancelUrl: data.return_url,
-      amount: data.amount,
-      description: data.description
+      returnUrl: return_url,
+      cancelUrl: return_url,
+      amount: amount,
+      description: description
     }
   end
 
